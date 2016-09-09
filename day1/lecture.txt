@@ -1,0 +1,5 @@
+# Lecture
+http://web.cs.wpi.edu/~cs3013/c07/lectures/Section01-Overview.pdf
+
+# Exercises
+1. Create process using windows API // pass parameters
