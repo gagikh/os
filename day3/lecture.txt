@@ -1,0 +1,5 @@
+# Lecture
+http://web.cs.wpi.edu/~cs3013/c07/lectures/Section03-Processes.pdf
+
+# Exercises
+1. Sync process using windows API mutex // philosopher problem with N=2 case, create 2 philosopher processes from the main thread

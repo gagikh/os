@@ -2,4 +2,4 @@
 http://web.cs.wpi.edu/~cs3013/c07/lectures/Section02-Structures.pdf
 
 # Exercises
-1. Sync process using windows API mutex // pass parameters
+1. Sync process using windows API mutex // philosopher problem with N=2 case
