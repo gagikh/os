@@ -1,0 +1,13 @@
+1. https://en.wikipedia.org/wiki/Dining_philosophers_problem
+        - Implement the problem for any number of philosophers
+        - One controller process
+        - Forks are mutexes
+        - Solution for dead-lock case
+
+2. Raspberry pi as a music player
+        - files are located under the pi filesystem
+        - pi has inet connection
+        - pi is controlled via web // dlna player
+
+
+3. Get the list of running processes with Java // C#, ...
