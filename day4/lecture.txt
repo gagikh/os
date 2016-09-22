@@ -3,7 +3,13 @@ Environement variables
 - another mechanism:
 
     - Environment variables are a set of dynamic named values that can affect the way running processes will behave on a computer.
-    - 
+
+    - They are part of the environment in which a process runs.
+
+    - By default, when a process is created, it inherits a duplicate environment of its parent process, except for explicit changes made by the parent when it creates the child
+
+    - ECHO %HOMEPATH% - for windows system
+    - echo $HOME
 
     - windows system
         - setting env variables via graphical user interface
@@ -16,22 +22,25 @@ Environement variables
             - echo %OS%
             - echo %PATH%
             - echo %PROCESSOR_ARCHITECTURE%
-
-            - echo %path% - Note, they are case-insensitive for the windows CMD
+            - echo %path% - Note, they are case-insensitive for the windows
+                CMD, unix-like systems - case-sensitive
 
         - setting variable using command line
 
         - examples:
             - set x=100
             - set x="C:\"
-            - set - list available variables
-
+            - set - list available variables for windows
+                - env - for unix like systems
 
         Buuuut: do not do some calculations with the env variables, they can be strings :)
             set x=42
             set y=5
 
             set /a z = 100 * x / y
+                but not:
+                        x=hello
+                        set /a z = 100 * x / y
 
         - when they can affect?
             - load time change?
@@ -66,10 +75,11 @@ Environement variables
                         name=value\0 name=value\0 ....
                         Can you create? :)
 
-        - equal sign is used as a separator, it must not be used in the name of an environment variable
-        - dwCreationFlags includes CREATE_UNICODE_ENVIRONMENT if env contains UNICODE, otherwise it will considered as a list ansii null-terminated strings
+        - equal sign is used as a separator, it must not be used in the name of an environment variable, why? :)
 
-        - if the **env is not presnt?
+        - dwCreationFlags includes CREATE_UNICODE_ENVIRONMENT if env contains UNICODE, otherwise it will considered as a list of ansii null-terminated strings
+
+        - if the **env is not present?
 
         - DWORD WINAPI GetEnvironmentVariable(
                         _In_opt_  LPCTSTR lpName,
@@ -81,12 +91,13 @@ Environement variables
               // including the terminating null character.
               return 0 in case of failure
 
+        - but why we pass the env to the main if there are some APIs?? :)
         - Note:
 
                 GetEnvironmentVariableW (Unicode) and GetEnvironmentVariableA (ANSI)
 
 
-        - If there is get, may be there is a set fcn? :)
+        - If there is a get fcn, may be there is a set fcn too? :)
 
             BOOL WINAPI SetEnvironmentVariable(
                   _In_     LPCTSTR lpName,
@@ -124,3 +135,18 @@ Environement variables
 
             int putenv(char *string); // so the input should be of name=value form
 
+
+
+- How to get env variables from java?
+
+- Map<String, String> env = System.getenv();
+
+- String value = System.getenv("PE_CONF_PWD");
+
+- Tasks assignement:
+        - Run the philosopher with the ID command-line argument
+
+        - How to run the philosopher passing the argument as an env variable???
+
+Q:
+        - Pass the env to the process and then change the value. Print the value in the child process, what is the result?
