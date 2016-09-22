@@ -1,0 +1,126 @@
+Environement variables
+
+- another mechanism:
+
+    - Environment variables are a set of dynamic named values that can affect the way running processes will behave on a computer.
+    - 
+
+    - windows system
+        - setting env variables via graphical user interface
+
+        - examples:
+            - TEMP directory, user-name, num cpus, os, path
+            - echo %TEMP%
+            - echo %USERNAME%
+            - echo %NUMBER_OF_PROCESSORS%
+            - echo %OS%
+            - echo %PATH%
+            - echo %PROCESSOR_ARCHITECTURE%
+
+            - echo %path% - Note, they are case-insensitive for the windows CMD
+
+        - setting variable using command line
+
+        - examples:
+            - set x=100
+            - set x="C:\"
+            - set - list available variables
+
+
+        Buuuut: do not do some calculations with the env variables, they can be strings :)
+            set x=42
+            set y=5
+
+            set /a z = 100 * x / y
+
+        - when they can affect?
+            - load time change?
+            - runtime change?
+            - machine environement  // SETX
+            - user environement     // SET
+
+        - list the existing variables from the current process
+            - char** env
+            - memory allocation for env
+            - the size is unknown, how the size is computed??
+
+        - create process with custom defined env variables?
+
+                BOOL WINAPI CreateProcess(
+                        _In_opt_    LPCTSTR               lpApplicationName,
+                        _Inout_opt_ LPTSTR                lpCommandLine,
+                        _In_opt_    LPSECURITY_ATTRIBUTES lpProcessAttributes,
+                        _In_opt_    LPSECURITY_ATTRIBUTES lpThreadAttributes,
+                        _In_        BOOL                  bInheritHandles,
+                        _In_        DWORD                 dwCreationFlags,
+                        _In_opt_    LPVOID                lpEnvironment,
+                        _In_opt_    LPCTSTR               lpCurrentDirectory,
+                        _In_        LPSTARTUPINFO         lpStartupInfo,
+                        _Out_       LPPROCESS_INFORMATION lpProcessInformation
+                        );
+
+                        TCHAR chNewEnv[BUFSIZE];
+                        lpEnvironment - If this parameter is NULL, the new process uses the environment of the calling process
+
+        - the structure of env:
+                        name=value\0 name=value\0 ....
+                        Can you create? :)
+
+        - equal sign is used as a separator, it must not be used in the name of an environment variable
+        - dwCreationFlags includes CREATE_UNICODE_ENVIRONMENT if env contains UNICODE, otherwise it will considered as a list ansii null-terminated strings
+
+        - if the **env is not presnt?
+
+        - DWORD WINAPI GetEnvironmentVariable(
+                        _In_opt_  LPCTSTR lpName,
+                        _Out_opt_ LPTSTR  lpBuffer,
+                        _In_      DWORD   nSize
+              );
+              // Note, If the function succeeds, the return value is the number
+              // of characters stored in the buffer pointed to by lpBuffer, not
+              // including the terminating null character.
+              return 0 in case of failure
+
+        - Note:
+
+                GetEnvironmentVariableW (Unicode) and GetEnvironmentVariableA (ANSI)
+
+
+        - If there is get, may be there is a set fcn? :)
+
+            BOOL WINAPI SetEnvironmentVariable(
+                  _In_     LPCTSTR lpName,
+                  _In_opt_ LPCTSTR lpValue
+            );
+
+        - why size is not specified???
+
+        - comparision with the command line??
+            - for the child process??
+            - child of child??
+
+            - runtime changing the env variable from child will affect on parent?
+            - runtime changing the env variable from parent will affect on child?
+
+    - unixoids
+        setenv
+
+            #include <stdlib.h>
+
+            int setenv(const char *name, const char *value, int overwrite);
+
+            int unsetenv(const char *name);
+
+        getenv
+
+            #include <stdlib.h>
+
+            char *getenv(const char *name);
+
+        putenv
+            change or add an environment variable
+
+            #include <stdlib.h>
+
+            int putenv(char *string); // so the input should be of name=value form
+
