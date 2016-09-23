@@ -11,3 +11,4 @@
 
 
 3. Get the list of running processes with Java // C#, ...
+4. Create a simple calculator based on the env variables like windows set /a
