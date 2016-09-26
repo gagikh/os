@@ -1,4 +1,5 @@
 links:
+https://www.cs.helsinki.fi/u/kerola/kj2/stal-01_slides_figs/T3-Vertical.pdf
 http://www.just.edu.jo/~basel/os/os_slides/OS%20Chp4%20Processes.pdf
 http://www.eecg.toronto.edu/~jacobsen/os/2007s/process.pdf
 http://image.slidesharecdn.com/ch3-150126135551-conversion-gate01/95/chapter-3-processes-22-638.jpg?cb=1422280977
