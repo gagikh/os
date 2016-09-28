@@ -1,0 +1,53 @@
+Process scheduling
+- PCB
+- First-Come, First-Served (FCFS) Scheduling
+- Shortest-Job-Next (SJN) Scheduling
+    - Unixoids: nice - Niceness values range from -20 (most favorable to the process) to 19 (least favorable to the process).
+    - Windows:
+        BOOL WINAPI SetPriorityClass(
+            _In_ HANDLE hProcess,
+            _In_ DWORD  dwPriorityClass
+            );
+        https://msdn.microsoft.com/en-us/library/windows/desktop/ms686219(v=vs.85).aspx
+            - ABOVE_NORMAL_PRIORITY_CLASS
+            - BELOW_NORMAL_PRIORITY_CLASS
+            - HIGH_PRIORITY_CLASS - Process that performs time-critical tasks that must be executed immediately
+            - IDLE_PRIORITY_CLASS - Process whose threads run only when the system is idle // screen-saver?
+            - NORMAL_PRIORITY_CLASS
+            - PROCESS_MODE_BACKGROUND_BEGIN
+            - PROCESS_MODE_BACKGROUND_END // restore to the previous mode
+            - REALTIME_PRIORITY_CLASS - BIIG notes
+
+- Shortest Remaining Time
+- Round Robin(RR) Scheduling
+- Multiple-Level Queues Scheduling
+
+- Ready process ques, waiting process queues
+- interrupts
+- system calls invocation // with the tables
+
+Task: Simple scheduling algorithm with priorities, link to std::priority_queue<T>
+
+links:
+https://www.cs.helsinki.fi/u/kerola/kj2/stal-01_slides_figs/T3-Vertical.pdf
+http://www.just.edu.jo/~basel/os/os_slides/OS%20Chp4%20Processes.pdf
+http://www.eecg.toronto.edu/~jacobsen/os/2007s/process.pdf
+http://image.slidesharecdn.com/ch3-150126135551-conversion-gate01/95/chapter-3-processes-22-638.jpg?cb=1422280977
+
+http://etm.gspi.am/wp/wp-content/uploads/2016/%D5%A2%D5%A1%D5%AF%D5%A1%D5%AC%D5%A1%D5%BE%D6%80_%D5%A1%D5%BC%D5%AF%D5%A1/%D6%86%D5%AB%D5%A6%D5%AB%D5%AF%D5%A1%D5%B4%D5%A1%D5%A9%D5%A5%D5%B4%D5%A1%D5%BF%D5%AB%D5%AF%D5%A1%D5%AF%D5%A1%D5%B6/%D4%BB%D5%B6%D6%86%D5%B8%D6%80%D5%B4%D5%A1%D5%BF%D5%AB%D5%AF%D5%A1%D6%87%D5%AF%D5%AB%D6%80%D5%A1%D5%BC%D5%A1%D5%AF%D5%A1%D5%B6%D5%B4%D5%A1%D5%A9%D5%A5%D5%B4%D5%A1%D5%BF%D5%AB%D5%AF%D5%A1/3/1/%D5%80%D5%A1%D5%B4%D5%A1%D5%AF%D5%A1%D6%80%D5%A3%D5%A1%D5%B5%D5%AB%D5%B6-%D6%87-%D5%AF%D5%AB%D6%80%D5%A1%D5%BC%D5%A1%D5%AF%D5%A1%D5%B6-%D5%AE%D6%80%D5%A1%D5%A3%D6%80%D5%A1%D5%B5%D5%AB%D5%B6-%D5%A1%D5%BA%D5%A1%D5%B0%D5%B8%D5%BE%D5%B8%D6%82%D5%B4.pdf
+
+http://www.enseignement.polytechnique.fr/informatique/INF583/INF583_5.pdf
+
+DWORD WINAPI GetCurrentProcessId(void)
+
+- How many processes can be created?
+- change PC register value
+- how to get the size of program stack?
+- how to get the size of program data segment?
+- how to get the size of code segment?
+- how main is invoked?
+- change the PID of process?
+- can the process overwrite the storage of another process?
+- are program segments shared?
+- %errorlevel% contains the exit status
+- HANDLE h; GetExitCodeProcess(h, &exit_code)
