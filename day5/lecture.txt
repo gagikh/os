@@ -1,7 +1,29 @@
 Process scheduling
 - PCB
 - First-Come, First-Served (FCFS) Scheduling
+
+    - Jobs are executed on first come, first serve basis.
+    - It is a non-preemptive scheduling algorithm.
+    - Easy to understand and implement.
+    - Its implementation is based on FIFO queue.
+    - Poor in performance as average wait time is high.
+
 - Shortest-Job-Next (SJN) Scheduling
+
+    - This is also known as shortest job first, or SJF
+    - This is a non-preemptive scheduling algorithm.
+    - Best approach to minimize waiting time.
+    - Easy to implement in Batch systems where required CPU time is known in advance.
+    - Impossible to implement in interactive systems where required CPU time is not known.
+    - The processer should know in advance how much time process will take.
+
+- Priority Based Scheduling
+
+    - Priority scheduling is a non-preemptive algorithm and one of the most common scheduling algorithms in batch systems.
+    - Each process is assigned a priority. Process with highest priority is to be executed first and so on.
+    - Processes with same priority are executed on first come first served basis.
+    - Priority can be decided based on memory requirements, time requirements or any other resource requirement.
+
     - Unixoids: nice - Niceness values range from -20 (most favorable to the process) to 19 (least favorable to the process).
     - Windows:
         BOOL WINAPI SetPriorityClass(
@@ -19,14 +41,36 @@ Process scheduling
             - REALTIME_PRIORITY_CLASS - BIIG notes
 
 - Shortest Remaining Time
+
+    - Shortest remaining time (SRT) is the preemptive version of the SJN algorithm.
+    - The processor is allocated to the job closest to completion but it can be preempted by a newer ready job with shorter time to completion.
+    - Impossible to implement in interactive systems where required CPU time is not known.
+    - It is often used in batch environments where short jobs need to give preference.
+
 - Round Robin(RR) Scheduling
+
+    - Round Robin is the preemptive process scheduling algorithm.
+    - Each process is provided a fix time to execute, it is called a quantum.
+    - Once a process is executed for a given time period, it is preempted and other process executes for a given time period.
+    - Context switching is used to save states of preempted processes.
+
 - Multiple-Level Queues Scheduling
 
-- Ready process ques, waiting process queues
+Multiple-level queues are not an independent scheduling algorithm. They make use of other existing algorithms to group and schedule jobs with common characteristics.
+
+    - Multiple queues are maintained for processes with common characteristics.
+    - Each queue can have its own scheduling algorithms.
+    - Priorities are assigned to each queue.
+
+- Ready process queues, waiting process queues
+
 - interrupts
 - system calls invocation // with the tables
 
-Task: Simple scheduling algorithm with priorities, link to std::priority_queue<T>
+Tasks:
+
+- Simple scheduling algorithm with priorities, link to std::priority_queue<T>
+- Change the process priority with SetPriorityClass
 
 links:
 https://www.cs.helsinki.fi/u/kerola/kj2/stal-01_slides_figs/T3-Vertical.pdf
