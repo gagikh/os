@@ -39,7 +39,8 @@ Process scheduling
             - PROCESS_MODE_BACKGROUND_BEGIN
             - PROCESS_MODE_BACKGROUND_END // restore to the previous mode
             - REALTIME_PRIORITY_CLASS - BIIG notes
-
+        HANDLE WINAPI GetCurrentProcess(void); // returns the handle of current process, so we can experiment the priorities inside the current process
+    
 - Shortest Remaining Time
 
     - Shortest remaining time (SRT) is the preemptive version of the SJN algorithm.
