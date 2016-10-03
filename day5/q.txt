@@ -1,0 +1,2 @@
+- Differences between threads and process
+- Scheduling algorithms
