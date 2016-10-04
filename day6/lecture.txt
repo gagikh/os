@@ -1,0 +1,25 @@
+Threads
+
+http://web.cs.wpi.edu/~cs3013/c07/lectures/Section04-Threads.pdf
+http://www.enseignement.polytechnique.fr/informatique/INF583/INF583_5.pdf
+
+HANDLE WINAPI CreateThread(
+        _In_opt_  LPSECURITY_ATTRIBUTES  lpThreadAttributes,
+        _In_      SIZE_T                 dwStackSize,
+        _In_      LPTHREAD_START_ROUTINE lpStartAddress,
+        _In_opt_  LPVOID                 lpParameter,
+        _In_      DWORD                  dwCreationFlags, // 0 bydefault
+        _Out_opt_ LPDWORD                lpThreadId // HANDLE pointer
+        );
+        - A pointer to a SECURITY_ATTRIBUTES structure that determines whether the returned handle can be inherited by child processes. If lpThreadAttributes is NULL, the handle cannot be inherited.
+        - The initial size of the stack, in bytes
+        - A pointer to the application-defined function to be executed by the thread
+
+            DWORD WINAPI MyThreadFunction( LPVOID lpParam )
+                - int MyThreadFunction(void* params)
+                - void pointer to the parameter
+                - return value
+
+
+- How many threads can be created?
+- how to get the size of program stack?
