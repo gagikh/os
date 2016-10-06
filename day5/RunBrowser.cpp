@@ -18,7 +18,8 @@ int main()
       GetEnvironmentVariable(L"PATH", arr, 1024);
       
       // Check if we can invoke the CreateProcess API using executable name only
-      // ... 
+      // - Get system path variable, split, append executable name and check file existenc
+      // - execlp(), execvp(), and execvpe() APIs do those steps automatically
       
       int status = CreateProcess(path, params, NULL, NULL, 0, 0, NULL, NULL, &si, &pi);
       if (! status) {
