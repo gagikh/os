@@ -22,4 +22,11 @@ HANDLE WINAPI CreateThread(
 
 
 - How many threads can be created?
-- how to get the size of program stack?
+        Linux:
+                cat /proc/sys/kernel/threads-max - gets the max count of threads per process
+                // example output: 64087 per process
+                cat /proc/sys/kernel/pid_max - gets the max count of process
+                - sooooo x * y
+- How arbitrary parameter/parameters can be passed to the thread function?
+- Wait for thread termination WaitForSingleObject(handle, INFINITE);
+- 
