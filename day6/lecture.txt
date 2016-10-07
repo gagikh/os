@@ -15,11 +15,24 @@ HANDLE WINAPI CreateThread(
         - The initial size of the stack, in bytes
         - A pointer to the application-defined function to be executed by the thread
 
-            DWORD WINAPI MyThreadFunction( LPVOID lpParam )
-                - int MyThreadFunction(void* params)
+            DWORD WINAPI ThreadFunction( LPVOID lpParam )
+                - int ThreadFunction(void* params)
                 - void pointer to the parameter
                 - return value
+         
+         - Creation flags
 
+        - If ThreadFunction function returns, the DWORD return value is used to terminate the thread in an implicit call to the ExitThread function.
+
+        - HANDLE WINAPI GetCurrentThread(void);
+
+        - GetExitCodeThread function gets thread's return value.
+                BOOL WINAPI GetExitCodeThread(
+                  _In_  HANDLE  hThread,
+                  _Out_ LPDWORD lpExitCode
+                );
+        
+        - Query the exit code if thread is completed yet
 
 - How many threads can be created?
         Linux:
@@ -28,5 +41,40 @@ HANDLE WINAPI CreateThread(
                 cat /proc/sys/kernel/pid_max - gets the max count of process
                 - sooooo x * y
 - How arbitrary parameter/parameters can be passed to the thread function?
-- Wait for thread termination WaitForSingleObject(handle, INFINITE);
-- 
+- Wait for thread termination:
+        WaitForSingleObject(handle, INFINITE);
+        
+- TerminateThread:
+        - BOOL WINAPI TerminateThread(
+                  _Inout_ HANDLE hThread,
+                  _In_    DWORD  dwExitCode
+                );
+        - Is this good enaugh?
+        
+        - BOOL WINAPI GetExitCodeThread(
+                  _In_  HANDLE  hThread,
+                  _Out_ LPDWORD lpExitCode
+                );
+                
+- Exit thread inside the thread function:        
+        // is this good enaugh?
+        - VOID WINAPI ExitThread(
+                _In_ DWORD dwExitCode
+        );
+
+- Suspend and resume thread:
+        Thread must have THREAD_SUSPEND_RESUME permissions:
+        
+        DWORD WINAPI ResumeThread(
+          _In_ HANDLE hThread
+        );
+        
+        DWORD WINAPI SuspendThread(
+          _In_ HANDLE hThread
+        );
+        
+        Set permissions:
+                THREAD_QUERY_INFORMATION - GetExitCodeThread()
+                THREAD_SUSPEND_RESUME
+                THREAD_TERMINATE 
+                THREAD_ALL_ACCESS
