@@ -16,13 +16,15 @@ HANDLE WINAPI CreateThread(
         - A pointer to the application-defined function to be executed by the thread
 
             DWORD WINAPI ThreadFunction( LPVOID lpParam )
-                - int ThreadFunction(void* params)
+                - DWORD ThreadFunction(void* params)
                 - void pointer to the parameter
                 - return value
          
-         - Creation flags
-
-        - If ThreadFunction function returns, the DWORD return value is used to terminate the thread in an implicit call to the ExitThread function.
+         - Creation flags:
+                0 - The thread runs immediately after creation.
+                CREATE_SUSPENDED - Create in a suspended state, Thread will run after ResumeThread function is called.
+                
+        - If ThreadFunction function exits, the DWORD return value is used to terminate the thread in an implicit call to the ExitThread function.
 
         - HANDLE WINAPI GetCurrentThread(void);
 
@@ -32,7 +34,7 @@ HANDLE WINAPI CreateThread(
                   _Out_ LPDWORD lpExitCode
                 );
         
-        - Query the exit code if thread is completed yet
+        - Query the exit code if thread is not completed yet
 
 - How many threads can be created?
         Linux:
@@ -40,7 +42,9 @@ HANDLE WINAPI CreateThread(
                 // example output: 64087 per process
                 cat /proc/sys/kernel/pid_max - gets the max count of process
                 - sooooo x * y
+                
 - How arbitrary parameter/parameters can be passed to the thread function?
+
 - Wait for thread termination:
         WaitForSingleObject(handle, INFINITE);
         
@@ -62,6 +66,22 @@ HANDLE WINAPI CreateThread(
                 _In_ DWORD dwExitCode
         );
 
+- Get Thread priority class
+        
+        int WINAPI GetThreadPriority(
+          _In_ HANDLE hThread
+        );
+
+- Change thread priority class
+        
+        BOOL WINAPI SetThreadPriority(
+          _In_ HANDLE hThread,
+          _In_ int    nPriority
+        );
+        
+        - Thread should have THREAD_SET_INFORMATION or THREAD_SET_LIMITED_INFORMATION access rights
+        - SetSecurityInfo, GetSecurityInfo
+        
 - Suspend and resume thread:
         Thread must have THREAD_SUSPEND_RESUME permissions:
         
