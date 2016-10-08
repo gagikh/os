@@ -9,7 +9,7 @@
         - pi has inet connection
         - pi is controlled via web // dlna player
 
-
-3. Get the list of running processes with Java // C#, ...
-4. Create a simple calculator based on the env variables like windows set /a
+3. Get the list of running processes // C, Java, C#, ...
+4. Create a simple calculator based on the env variables like windows cmd set /a
 5. Implement simple scheduler
+6. Implement the problem for dining philosophers with threads
