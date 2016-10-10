@@ -4,6 +4,9 @@ http://www2.latech.edu/~box/os/ch04.pdf
 http://web.cs.wpi.edu/~cs3013/c07/lectures/Section04-Threads.pdf
 http://www.enseignement.polytechnique.fr/informatique/INF583/INF583_5.pdf
 
+Just for interested peapole:
+https://www.samba.org/~tridge/talks/threads.pdf
+
 HANDLE WINAPI CreateThread(
         _In_opt_  LPSECURITY_ATTRIBUTES  lpThreadAttributes,
         _In_      SIZE_T                 dwStackSize,
