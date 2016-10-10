@@ -11,3 +11,4 @@
 - are program segments shared?
 - %errorlevel% contains the exit status
 - HANDLE h; GetExitCodeProcess(h, &exit_code)
+- Process schedulin algorithms (concepts)
