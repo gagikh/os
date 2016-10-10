@@ -5,3 +5,5 @@
 - How to prevent threads to use shared resource?
 - How to implement dining philosopher problem with threads?
 - Peterson's algorithm
+- Malloc issue
+- Read/write issues
