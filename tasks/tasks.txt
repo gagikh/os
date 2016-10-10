@@ -14,3 +14,4 @@
 5. Implement simple scheduler
 6. Implement dining philosophers problem with threads
 7. Merge sort with threads
+8. Peterson's algorithm
