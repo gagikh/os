@@ -1,3 +1,28 @@
+Պրոցոսի գաղափարը: Պրոցեսների ղեկավարումը // 1.5 - 2
+
+- show process states diagram, discribe the reasons of termination, suspention // 1.pdf, 2.pdf
+- example
+                BOOL WINAPI CreateProcess(
+                        _In_opt_    LPCTSTR               lpApplicationName,
+                        _Inout_opt_ LPTSTR                lpCommandLine,
+                        _In_opt_    LPSECURITY_ATTRIBUTES lpProcessAttributes,
+                        _In_opt_    LPSECURITY_ATTRIBUTES lpThreadAttributes,
+                        _In_        BOOL                  bInheritHandles,
+                        _In_        DWORD                 dwCreationFlags,
+                        _In_opt_    LPVOID                lpEnvironment,
+                        _In_opt_    LPCTSTR               lpCurrentDirectory,
+                        _In_        LPSTARTUPINFO         lpStartupInfo,
+                        _Out_       LPPROCESS_INFORMATION lpProcessInformation
+                        );
+
+                BOOL WINAPI TerminateProcess(
+                                __in  HANDLE hProcess,
+                                __in  UINT uExitCode
+                        );
+
+- interrupt, trap, IO read/write, GDT, IDT, LDT
+- system calls with ID and trap - > tells the system to enter kernel mode
+
 links:
 https://www.cs.helsinki.fi/u/kerola/kj2/stal-01_slides_figs/T3-Vertical.pdf
 http://www.just.edu.jo/~basel/os/os_slides/OS%20Chp4%20Processes.pdf
