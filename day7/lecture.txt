@@ -1,2 +1,14 @@
-Virtual memory
+Հիշողության ղեկավարումը: Վիրտուալ հիշողություն:
+
+http://csapp.cs.cmu.edu/2e/ch9-preview.pdf
+
+http://www.tech-recipes.com/rx/36092/windows-7-and-8-change-the-size-of-virtual-memory/
+
+https://www.tutorialspoint.com/operating_system/os_virtual_memory.htm
+
+https://www.cs.umd.edu/class/sum2003/cmsc311/Notes/Memory/virtual.html
+
+http://www.cs.utexas.edu/users/witchel/372/lectures/15.VirtualMemory.pdf
+
+https://cseweb.ucsd.edu/classes/wi14/cse141/pdf/08/12_CSE141-MBT-Virtual-Memory.ppt.pdf
 
