@@ -1,5 +1,7 @@
 Հիշողության ղեկավարումը: Վիրտուալ հիշողություն:
 
+https://www.cs.uic.edu/~jbell/CourseNotes/OperatingSystems/9_VirtualMemory.html
+
 http://csapp.cs.cmu.edu/2e/ch9-preview.pdf
 
 http://www.tech-recipes.com/rx/36092/windows-7-and-8-change-the-size-of-virtual-memory/
