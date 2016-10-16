@@ -1,1 +1,2 @@
 - Shared memory
+- Page mapper location
