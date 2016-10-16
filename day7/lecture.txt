@@ -14,3 +14,6 @@ http://www.cs.utexas.edu/users/witchel/372/lectures/15.VirtualMemory.pdf
 
 https://cseweb.ucsd.edu/classes/wi14/cse141/pdf/08/12_CSE141-MBT-Virtual-Memory.ppt.pdf
 
+TODO:
+Segmentation course is advanced, so lets start from paging than return back ;) 
+http://www.cs.utexas.edu/users/witchel/372/lectures/14.MemoryManagement.pdf
