@@ -1,2 +1,3 @@
 - Shared memory
 - Multiple segments
+- Segment sizes
