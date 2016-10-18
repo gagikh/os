@@ -1,3 +1,7 @@
 Հիշողության սեգմենտային կազմակերպում:
 
 http://www.cs.utexas.edu/users/witchel/372/lectures/14.MemoryManagement.pdf
+
+- Segments
+- Shared memory
+- Usage
