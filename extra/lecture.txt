@@ -1,0 +1,27 @@
+https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=3&cad=rja&uact=8&ved=0ahUKEwjQr4bKwvPPAhVTrRQKHWczAyEQFggtMAI&url=https%3A%2F%2Fusers.drew.edu%2Fsbradsha%2FCSCI1-Spring2007%2FLectures%2F09c-DataStructuresListsArrays.ppt&usg=AFQjCNG2qo9N9kdgyJ74Si7sd5QjjdP4FQ&sig2=Ohs1paWvl3P6IglGDR0y_g
+
+Look at this link for more info:
+http://www.bowdoin.edu/~ltoma/teaching/cs210/spring09/Slides/
+
+Function call:
+https://www.cs.swarthmore.edu/~kwebb/cs31/s15/08-Functions.pdf
+
+Llists:
+http://www.bowdoin.edu/~ltoma/teaching/cs210/spring09/Slides/210-llists.pdf
+
+Trees:
+http://www.bowdoin.edu/~ltoma/teaching/cs210/spring09/Slides/210-Trees.pdf
+
+Maps:
+http://www.bowdoin.edu/~ltoma/teaching/cs210/spring09/Slides/210-Maps.pdf
+
+TODO:
+http://www.cs.yale.edu/homes/aspnes/classes/223/notes.pdf
+
+http://www.inf.udec.cl/~leo/teoX.pdf
+
+https://www.cs.princeton.edu/courses/archive/spr11/cos217/lectures/08DsAlg.pdf
+
+http://lib.mdp.ac.id/ebook/Karya%20Umum/Dsa.pdf
+
+http://www.ethoberon.ethz.ch/WirthPubl/AD.pdf
