@@ -1,0 +1,3 @@
+- Heap free while exiting?
+- Dangling pointers
+- Garbage collection
