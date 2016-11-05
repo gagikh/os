@@ -1,2 +1,4 @@
-- Shared memory
+- Page mapping algorithms
 - Page mapper location
+- Page size
+- New page mapping

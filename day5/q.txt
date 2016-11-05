@@ -1,7 +1,7 @@
 - Differences between threads and process
 - Scheduling algorithms
 - How many processes can be created?
-- change PC register value
+- Change PC register value
 - how to get the size of program stack?
 - how to get the size of program data segment?
 - how to get the size of code segment?

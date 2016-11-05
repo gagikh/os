@@ -1,3 +1,4 @@
 - Difference between the paging and segmentation
 - Protection
 - Sharing
+- Addressing with base
