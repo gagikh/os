@@ -1,0 +1,3 @@
+- Difference between the paging and segmentation
+- Protection
+- Sharing
