@@ -18,3 +18,4 @@
 9. Producer–consumer problem
 10.Memory paging with vector
 11.Memory segmentation
+12.Simple heap manager

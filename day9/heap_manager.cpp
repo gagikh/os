@@ -58,7 +58,7 @@ public:
         meta->next = NULL;
         meta->prev = NULL;
 
-        // Freee? yep
+        // Free? yep
         meta->is_free = true;
     }
 
@@ -88,8 +88,8 @@ public:
         massert(NULL != meta);
 
         // Look for free blocks to have more than 'n' bytes data
-        // additonal 'sizeof(metadata_t) + 1 bytes are required to add a new header
-        // Or, the free block size is equal to n, w'll just change its flag
+        // additional 'sizeof(metadata_t) + 1 bytes are required to add a new header
+        // Or, the free block size is equal to n, we'll just change its flag
         const size_t m = n + sizeof(metadata_t);
         while (! ((meta->size > m || meta->size == n) && meta->is_free)) {
             meta = meta->next;
