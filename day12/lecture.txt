@@ -1,5 +1,7 @@
 Ներմուծման/արտածման ծրագրային ապահովում:
 
+https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=8&cad=rja&uact=8&ved=0ahUKEwjpot2Pq7rQAhVHaxQKHTTSAtEQFghRMAc&url=http%3A%2F%2Fwww.ics.uci.edu%2F~bic%2Fcourses%2FNUS-OS%2FLectures-on-line%2Fch11.pptx&usg=AFQjCNHl_gwcGsDg_Pk3yQk6UG9jvsQV-Q&sig2=wRkZ4b2VUEbVJ5dtwLQ6Ug
+
 https://www.cs.princeton.edu/courses/archive/fall09/cos318/lectures/Device.pdf
 https://www.cs.uic.edu/~jbell/CourseNotes/OperatingSystems/13_IOSystems.html
 
