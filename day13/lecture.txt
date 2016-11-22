@@ -1,0 +1,9 @@
+Ֆայլային համակարգեր: Ֆայլեր և թղթապանակներ:
+
+https://web.cs.wpi.edu/~cs3013/c07/lectures/Section10-File_Systems.pdf
+http://www.cs.utexas.edu/users/witchel/372/lectures/18.FileSystems-Fundamentals.pdf
+http://www.cs.unibo.it/~sangio/SO_currentAA/Luc_SO/FileSystem/File_Systems1.pdf
+http://www.tldp.org/LDP/intro-linux/html/sect_03_01.html
+
+
+http://etm.gspi.am/wp/wp-content/uploads/2016/%D5%A2%D5%A1%D5%AF%D5%A1%D5%AC%D5%A1%D5%BE%D6%80_%D5%A1%D5%BC%D5%AF%D5%A1/%D6%86%D5%AB%D5%A6%D5%AB%D5%AF%D5%A1%D5%B4%D5%A1%D5%A9%D5%A5%D5%B4%D5%A1%D5%BF%D5%AB%D5%AF%D5%A1%D5%AF%D5%A1%D5%B6/%D4%BB%D5%B6%D6%86%D5%B8%D6%80%D5%B4%D5%A1%D5%BF%D5%AB%D5%AF%D5%A1%D6%87%D5%AF%D5%AB%D6%80%D5%A1%D5%BC%D5%A1%D5%AF%D5%A1%D5%B6%D5%B4%D5%A1%D5%A9%D5%A5%D5%B4%D5%A1%D5%BF%D5%AB%D5%AF%D5%A1/3/1/%D5%80%D5%A1%D5%B4%D5%A1%D5%AF%D5%A1%D6%80%D5%A3%D5%A1%D5%B5%D5%AB%D5%B6-%D6%87-%D5%AF%D5%AB%D6%80%D5%A1%D5%BC%D5%A1%D5%AF%D5%A1%D5%B6-%D5%AE%D6%80%D5%A1%D5%A3%D6%80%D5%A1%D5%B5%D5%AB%D5%B6-%D5%A1%D5%BA%D5%A1%D5%B0%D5%B8%D5%BE%D5%B8%D6%82%D5%B4.pdf

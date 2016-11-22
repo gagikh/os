@@ -1,2 +1,4 @@
 IO buffering
 Caching
+Error correction algorithms
+Blocking and non-blocking IO
