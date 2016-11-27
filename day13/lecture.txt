@@ -1,5 +1,6 @@
 Ֆայլային համակարգեր: Ֆայլեր և թղթապանակներ:
 
+http://www.tldp.org/LDP/tlk/fs/filesystem.html
 https://web.cs.wpi.edu/~cs3013/c07/lectures/Section10-File_Systems.pdf
 http://www.cs.utexas.edu/users/witchel/372/lectures/18.FileSystems-Fundamentals.pdf
 http://www.cs.unibo.it/~sangio/SO_currentAA/Luc_SO/FileSystem/File_Systems1.pdf
