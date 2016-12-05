@@ -1,6 +1,56 @@
 Ֆայլային համակարգեր: Անվտանգություն:
 
+At the time a new file is created, it gets a free inode. In that inode is the following information:
+    Owner and group owner of the file.
+    File type (regular, directory, ...)
+      -	Regular file
+      d	Directory
+      l	Link
+      c	Special file
+      s	Socket
+      p	Named pipe
+      b	Block device
+
+    Permissions on the file Section
+      https://www.linux.com/learn/understanding-linux-file-permissions
+      Read/write/execute
+      
+        special attrubutes:
+        s - The setuid/setguid permissions are used to tell the system 
+          to run an executable as the owner with the owner\'s permissions.
+          
+        t - Sticky Bit Special Permissions
+          The sticky bit can be very useful in shared environment because when it 
+          has been assigned to the permissions on a directory it sets it so only file
+          owner can rename or delete the said file
+        
+    The permissions table for u/g/o
+        read, write, and execute 	rwx 	111 	7
+        read and write 	          rw- 	110 	6
+        read and execute 	        r-x 	101 	5
+        read 	                    r-- 	100 	4
+        write and execute 	      -wx 	011 	3
+        write 	                  -w- 	010 	2
+        execute 	                --x 	001 	1
+        no permissions 	          --- 	000 	0
+    
+    Special permissions table
+      1 = sticky bit
+      2 = setgid
+      4 = setuid
+
+    Date and time of creation, last read and change.
+    Date and time this information has been changed in the inode.
+    Number of links to this file
+    File size
+    An address defining the actual location of the file data.
+    EFS
+
+http://infosec.wfu.edu/files/2013/02/EFS.pdf
+
 https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=10&cad=rja&uact=8&ved=0ahUKEwj-gs7o0NDQAhUxb5oKHWhKCJ8QFghlMAk&url=http%3A%2F%2Fwww.cs.fsu.edu%2F~burmeste%2FCIS4360%2F3a.ppt&usg=AFQjCNE2OrCBnDt6GCWu9W121Dzjs-XHlw
+
+https://en.wikipedia.org/wiki/Encrypting_File_System
 
 http://www.tldp.org/LDP/tlk/fs/filesystem.html
 https://web.cs.wpi.edu/~cs3013/c07/lectures/Section10-File_Systems.pdf
