@@ -48,6 +48,9 @@ At the time a new file is created, it gets a free inode. In that inode is the fo
 
 http://infosec.wfu.edu/files/2013/02/EFS.pdf
 
+File Holes:
+https://lwn.net/Articles/357767/
+
 https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=10&cad=rja&uact=8&ved=0ahUKEwj-gs7o0NDQAhUxb5oKHWhKCJ8QFghlMAk&url=http%3A%2F%2Fwww.cs.fsu.edu%2F~burmeste%2FCIS4360%2F3a.ppt&usg=AFQjCNE2OrCBnDt6GCWu9W121Dzjs-XHlw
 
 https://en.wikipedia.org/wiki/Encrypting_File_System
