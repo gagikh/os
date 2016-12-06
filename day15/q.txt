@@ -1,0 +1,4 @@
+Process and threads
+File system
+Virtual memory
+System calls
