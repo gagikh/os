@@ -1,3 +1,9 @@
+Lectures:
+http://advancedlinuxprogramming.com/alp-folder/advanced-linux-programming.pdf
+
+Advanced linux programming (lab)
+http://www.cse.hcmut.edu.vn/~hungnq/courses/nap/alp.pdf
+
 https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=3&cad=rja&uact=8&ved=0ahUKEwjQr4bKwvPPAhVTrRQKHWczAyEQFggtMAI&url=https%3A%2F%2Fusers.drew.edu%2Fsbradsha%2FCSCI1-Spring2007%2FLectures%2F09c-DataStructuresListsArrays.ppt&usg=AFQjCNG2qo9N9kdgyJ74Si7sd5QjjdP4FQ&sig2=Ohs1paWvl3P6IglGDR0y_g
 
 Look at this link for more info:
