@@ -1,0 +1,212 @@
+Linux command-line
+- environment variables
+- linux setup
+- status codes and exit status
+
+Lectures:
+http://advancedlinuxprogramming.com/alp-folder/advanced-linux-programming.pdf
+
+Advanced linux programming (lab)
+http://www.cse.hcmut.edu.vn/~hungnq/courses/nap/alp.pdf
+
+- show process states diagram, discribe the reasons of termination, suspention // 1.pdf, 2.pdf
+- example
+                BOOL WINAPI CreateProcess(
+                        _In_opt_    LPCTSTR               lpApplicationName,
+                        _Inout_opt_ LPTSTR                lpCommandLine,
+                        _In_opt_    LPSECURITY_ATTRIBUTES lpProcessAttributes,
+                        _In_opt_    LPSECURITY_ATTRIBUTES lpThreadAttributes,
+                        _In_        BOOL                  bInheritHandles,
+                        _In_        DWORD                 dwCreationFlags,
+                        _In_opt_    LPVOID                lpEnvironment,
+                        _In_opt_    LPCTSTR               lpCurrentDirectory,
+                        _In_        LPSTARTUPINFO         lpStartupInfo,
+                        _Out_       LPPROCESS_INFORMATION lpProcessInformation
+                        );
+
+                BOOL WINAPI TerminateProcess(
+                                __in  HANDLE hProcess,
+                                __in  UINT uExitCode
+                        );
+
+- interrupt, trap, IO read/write, GDT, IDT, LDT
+- system calls with ID and trap - > tells the system to enter kernel mode
+
+links:
+https://www.cs.helsinki.fi/u/kerola/kj2/stal-01_slides_figs/T3-Vertical.pdf
+http://www.just.edu.jo/~basel/os/os_slides/OS%20Chp4%20Processes.pdf
+http://www.eecg.toronto.edu/~jacobsen/os/2007s/process.pdf
+http://image.slidesharecdn.com/ch3-150126135551-conversion-gate01/95/chapter-3-processes-22-638.jpg?cb=1422280977
+
+http://etm.gspi.am/wp/wp-content/uploads/2016/%D5%A2%D5%A1%D5%AF%D5%A1%D5%AC%D5%A1%D5%BE%D6%80_%D5%A1%D5%BC%D5%AF%D5%A1/%D6%86%D5%AB%D5%A6%D5%AB%D5%AF%D5%A1%D5%B4%D5%A1%D5%A9%D5%A5%D5%B4%D5%A1%D5%BF%D5%AB%D5%AF%D5%A1%D5%AF%D5%A1%D5%B6/%D4%BB%D5%B6%D6%86%D5%B8%D6%80%D5%B4%D5%A1%D5%BF%D5%AB%D5%AF%D5%A1%D6%87%D5%AF%D5%AB%D6%80%D5%A1%D5%BC%D5%A1%D5%AF%D5%A1%D5%B6%D5%B4%D5%A1%D5%A9%D5%A5%D5%B4%D5%A1%D5%BF%D5%AB%D5%AF%D5%A1/3/1/%D5%80%D5%A1%D5%B4%D5%A1%D5%AF%D5%A1%D6%80%D5%A3%D5%A1%D5%B5%D5%AB%D5%B6-%D6%87-%D5%AF%D5%AB%D6%80%D5%A1%D5%BC%D5%A1%D5%AF%D5%A1%D5%B6-%D5%AE%D6%80%D5%A1%D5%A3%D6%80%D5%A1%D5%B5%D5%AB%D5%B6-%D5%A1%D5%BA%D5%A1%D5%B0%D5%B8%D5%BE%D5%B8%D6%82%D5%B4.pdf
+
+http://www.enseignement.polytechnique.fr/informatique/INF583/INF583_5.pdf
+
+Notes:
+
+DWORD WINAPI GetCurrentProcessId(void)
+
+- How many processes can be created?
+- change PC register value
+- how to get the size of program stack?
+- how to get the size of program data segment?
+- how to get the size of code segment?
+- how main is invoked?
+- change the PID of process?
+- can the process overwrite the storage of another process?
+- are program segments shared?
+- %errorlevel% contains the exit status
+- HANDLE h; GetExitCodeProcess(h, &exit_code)
+
+Environement variables
+
+- another mechanism:
+
+    - Environment variables are a set of dynamic named values that can affect the way running processes will behave on a computer.
+
+    - They are part of the environment in which a process runs.
+
+    - By default, when a process is created, it inherits a duplicate environment of its parent process, except for explicit changes made by the parent when it creates the child
+
+    - ECHO %HOMEPATH% - for windows system
+    - echo $HOME
+
+    - windows system
+        - setting env variables via graphical user interface
+
+        - examples:
+            - TEMP directory, user-name, num cpus, os, path
+            - echo %TEMP%
+            - echo %USERNAME%
+            - echo %NUMBER_OF_PROCESSORS%
+            - echo %OS%
+            - echo %PATH%
+            - echo %PROCESSOR_ARCHITECTURE%
+            - echo %path% - Note, they are case-insensitive for the windows
+                CMD, unix-like systems - case-sensitive
+
+        - setting variable using command line
+
+        - examples:
+            - set x=100
+            - set x="C:\"
+            - set - list available variables for windows
+                - env - for unix like systems
+
+        Buuuut: do not do some calculations with the env variables, they can be strings :)
+            set x=42
+            set y=5
+
+            set /a z = 100 * x / y
+                but not:
+                        x=hello
+                        set /a z = 100 * x / y
+
+        - when they can affect?
+            - load time change?
+            - runtime change?
+            - machine environement  // SETX
+            - user environement     // SET
+
+        - list the existing variables from the current process
+            - char** env
+            - memory allocation for env
+            - the size is unknown, how the size is computed??
+
+        - create process with custom defined env variables?
+
+                BOOL WINAPI CreateProcess(
+                        _In_opt_    LPCTSTR               lpApplicationName,
+                        _Inout_opt_ LPTSTR                lpCommandLine,
+                        _In_opt_    LPSECURITY_ATTRIBUTES lpProcessAttributes,
+                        _In_opt_    LPSECURITY_ATTRIBUTES lpThreadAttributes,
+                        _In_        BOOL                  bInheritHandles,
+                        _In_        DWORD                 dwCreationFlags,
+                        _In_opt_    LPVOID                lpEnvironment,
+                        _In_opt_    LPCTSTR               lpCurrentDirectory,
+                        _In_        LPSTARTUPINFO         lpStartupInfo,
+                        _Out_       LPPROCESS_INFORMATION lpProcessInformation
+                        );
+
+                        TCHAR chNewEnv[BUFSIZE];
+                        lpEnvironment - If this parameter is NULL, the new process uses the environment of the calling process
+
+        - the structure of env:
+                        name=value\0 name=value\0 ....
+                        Can you create? :)
+
+        - equal sign is used as a separator, it must not be used in the name of an environment variable, why? :)
+
+        - dwCreationFlags includes CREATE_UNICODE_ENVIRONMENT if env contains UNICODE, otherwise it will considered as a list of ansii null-terminated strings
+
+        - if the **env is not present?
+
+        - DWORD WINAPI GetEnvironmentVariable(
+                        _In_opt_  LPCTSTR lpName,
+                        _Out_opt_ LPTSTR  lpBuffer,
+                        _In_      DWORD   nSize
+              );
+              // Note, If the function succeeds, the return value is the number
+              // of characters stored in the buffer pointed to by lpBuffer, not
+              // including the terminating null character.
+              return 0 in case of failure
+
+        - but why we pass the env to the main if there are some APIs?? :)
+        - Note:
+
+                GetEnvironmentVariableW (Unicode) and GetEnvironmentVariableA (ANSI)
+
+
+        - If there is a get fcn, may be there is a set fcn too? :)
+
+            BOOL WINAPI SetEnvironmentVariable(
+                  _In_     LPCTSTR lpName,
+                  _In_opt_ LPCTSTR lpValue
+            );
+
+        - why size is not specified???
+
+        - comparision with the command line??
+            - for the child process??
+            - child of child??
+
+            - runtime changing the env variable from child will affect on parent?
+            - runtime changing the env variable from parent will affect on child?
+
+    - unixoids
+        setenv
+
+            #include <stdlib.h>
+
+            int setenv(const char *name, const char *value, int overwrite);
+
+            int unsetenv(const char *name);
+
+        getenv
+
+            #include <stdlib.h>
+
+            char *getenv(const char *name);
+
+        putenv
+            change or add an environment variable
+
+            #include <stdlib.h>
+
+            int putenv(char *string); // so the input should be of name=value form
+
+
+
+- How to get env variables from java?
+
+- Map<String, String> env = System.getenv();
+
+- String value = System.getenv("PE_CONF_PWD");
+
+- Tasks assignement:
+        - Run the philosopher with the ID command-line argument
+
+        - How to run the philosopher passing the argument as an env variable???
+
+Q:
+        - Pass the env to the process and then change the value. Print the value in the child process, what is the result?
