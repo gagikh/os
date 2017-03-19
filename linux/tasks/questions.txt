@@ -1,0 +1,7 @@
+﻿1.  
+2.  
+3. Linux command line and gcc
+4. Basic commands and usage - ls, cd, pwd, env, cat, rm, rmdir, eval, export, man
+
+
+

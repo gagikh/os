@@ -1,0 +1,2 @@
+﻿1. Create a simple calculator based on the env variables
+2. Bash scripts to manipulate files
