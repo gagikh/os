@@ -1,0 +1,5 @@
+Pipes, Redirection, and REGEX / Pipes, Redirection REGEX
+
+http://www.tldp.org/LDP/tlk/fs/filesystem.html
+http://ryanstutorials.net/linuxtutorial/piping.php
+http://www.hydro.washington.edu/~nijssen/computing_workshops/streams_pipes_redirects.pdf
