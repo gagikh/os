@@ -12,7 +12,7 @@ Linux-ի օգտագործումը(Using Linux):						 2 +
 
 Արխիվացում և սեղմում (Archiving and Compression):				 2
 
-Pipes, Redirection, and REGEX / Pipes, Redirection և REGEX			  2 -
+Pipes, Redirection, and REGEX / Pipes, Redirection և REGEX			  2 +-
 
 Բազային սկրիպտավորում (Basic Scripting):					2 +
 
