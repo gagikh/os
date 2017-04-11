@@ -5,3 +5,4 @@ http://www.linuxnix.com/regular-expressions-linux-i/
 
 grep
 https://www.digitalocean.com/community/tutorials/using-grep-regular-expressions-to-search-for-text-patterns-in-linux
+https://www.gnu.org/software/grep/manual/html_node/Regular-Expressions.html
