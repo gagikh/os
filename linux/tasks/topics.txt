@@ -1,6 +1,6 @@
 Ներածություն (Introduction to Linux ):						  2 -
 
-Բաց կոդով ծրագրերը և լիցենզիաները (Open Source Applications and Licenses ):	2 -
+Բաց կոդով ծրագրերը և լիցենզիաները (Open Source Applications and Licenses ):	2 +
 
 Linux-ի օգտագործումը(Using Linux):						 2 +
 
@@ -12,7 +12,7 @@ Linux-ի օգտագործումը(Using Linux):						 2 +
 
 Արխիվացում և սեղմում (Archiving and Compression):				 2
 
-Pipes, Redirection, and REGEX / Pipes, Redirection և REGEX			  2 +-
+Pipes, Redirection, and REGEX / Pipes, Redirection և REGEX			  2 +
 
 Բազային սկրիպտավորում (Basic Scripting):					2 +
 
@@ -22,11 +22,11 @@ Pipes, Redirection, and REGEX / Pipes, Redirection և REGEX			  2 +-
 
 Ցանցային կարգավորումներ (Network Configuration):				2
 
-Համակարգի և օգտագործողի անվտանգությունը (System and User Security):	      2
+Համակարգի և օգտագործողի անվտանգությունը (System and User Security):	      2 +
 
-Ստեղծել նոր օգտատեր (Create a new user):					2
+Ստեղծել նոր օգտատեր (Create a new user):					2 -
 
-Սեփականություն և թույլատվություն (Ownership and Permissions):			 2
+Սեփականություն և թույլատվություն (Ownership and Permissions):			 2 +
 
 Իրավունքների բաշխման անվտանգություն, հղումներ, ֆայլերի տեղակայում 
-		(Securing Permissions, Links and File Locations):		  2
+		(Securing Permissions, Links and File Locations):		  2 +
