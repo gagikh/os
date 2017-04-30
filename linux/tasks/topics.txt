@@ -1,4 +1,4 @@
-Ներածություն (Introduction to Linux ):						  2 -
+Ներածություն (Introduction to Linux ):						  2 +
 
 Բաց կոդով ծրագրերը և լիցենզիաները (Open Source Applications and Licenses ):	2 +
 
@@ -16,11 +16,11 @@ Pipes, Redirection, and REGEX / Pipes, Redirection և REGEX			  2 +
 
 Բազային սկրիպտավորում (Basic Scripting):					2 +
 
-Համակարգչի հասկացությունը (Understanding Computer Hardware):			2
+Համակարգչի հասկացությունը (Understanding Computer Hardware):			2 // Drivers, 
 
-Փաթեթների և պրոցեսների ղեկավարում (Managing Packages and Processes):	       2
+Փաթեթների և պրոցեսների ղեկավարում (Managing Packages and Processes):	       2 // apt
 
-Ցանցային կարգավորումներ (Network Configuration):				2
+Ցանցային կարգավորումներ (Network Configuration):				2 
 
 Համակարգի և օգտագործողի անվտանգությունը (System and User Security):	      2 +
 
@@ -30,3 +30,7 @@ Pipes, Redirection, and REGEX / Pipes, Redirection և REGEX			  2 +
 
 Իրավունքների բաշխման անվտանգություն, հղումներ, ֆայլերի տեղակայում 
 		(Securing Permissions, Links and File Locations):		  2 +
+
+Process and threads under linux							  2 +
+
+Sockets and Posix sokects library						  2 +
