@@ -1,0 +1,6 @@
+Sockets and posix sockets library
+
+// Advanced linux programming
+- simple chat
+- nc
+- nmap
