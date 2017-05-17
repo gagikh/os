@@ -1,32 +1,50 @@
 Ներածություն (Introduction to Linux ):						  2 +
+- կառուցվածքը, հիմնական հատկությունները
 
 Բաց կոդով ծրագրերը և լիցենզիաները (Open Source Applications and Licenses ):	2 +
 
-Linux-ի օգտագործումը(Using Linux):						 2 +
+Linux-ի օգտագործումը (Using Linux):						 2 +
 
 Հրամանային տողի հմտություները (Command Line Skills ):				2 +
+– Bash սկրիպտային լեզու
+– Փոփոխականներ, պայմանի և ցիկլի օպերատորներ
 
 Տեղեկության ստացում (Getting Help):						 2 +
 
 ֆայլերի և դիրեկտորիաների հետ աշխատանք (Working with Files and Directories):   2 +
+– ֆայլերի և դիրեկտորիաների ստեղծում, հեռացում
+– Hard/Soft լինկեր
+– ext2 - filesytem-ի կառուցվածքը
 
 Արխիվացում և սեղմում (Archiving and Compression):				 2
 
 Pipes, Redirection, and REGEX / Pipes, Redirection և REGEX			  2 +
+– Ռեգուլյար արտահայտություններ, սահմանումը
+– Grep, find
+- Pipes
+- Redirections
 
 Բազային սկրիպտավորում (Basic Scripting):					2 +
+- creating/running skripts
+- env variables and scripts
 
 Համակարգչի հասկացությունը (Understanding Computer Hardware):			2 // Drivers, 
 
 Փաթեթների և պրոցեսների ղեկավարում (Managing Packages and Processes):	       2 // apt
+- ղեկավարման համակարգի նկարագությունը
 
-Ցանցային կարգավորումներ (Network Configuration):				2 
+Ցանցային կարգավորումներ (Network Configuration):				2 – 
+– IP address
+- Interfaces
+- Sockets and ports
 
 Համակարգի և օգտագործողի անվտանգությունը (System and User Security):	      2 +
 
 Ստեղծել նոր օգտատեր (Create a new user):					2 -
 
 Սեփականություն և թույլատվություն (Ownership and Permissions):			 2 +
+- Filesystem permissions
+- Group/user permissions
 
 Իրավունքների բաշխման անվտանգություն, հղումներ, ֆայլերի տեղակայում 
 		(Securing Permissions, Links and File Locations):		  2 +
