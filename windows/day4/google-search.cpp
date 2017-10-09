@@ -4,7 +4,7 @@
 #include <string>
 
 using namespace std;
-// @author - Sano Madoyan, madoyan1996@gmail.com
+// @author - Sano Madoyan, madoyan1996@gmail.com, 52-2
 
 // Use command line to open google chrome and make a search
 // Search text is passed as an input argument
