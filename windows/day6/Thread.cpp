@@ -6,7 +6,7 @@
 
 int f(int i) {
 	if (i < 2) {
-		return i;
+		return 1;
 	}
 	return f(i - 1) + f(i - 2);
 }
@@ -44,6 +44,7 @@ int main()
 	if (GetExitCodeThread(h, &ec)) {
 		std::cout << "probed exit code = " << ec << std::endl;
 	}
+	CloseHandle(h);
 	
 	getchar();
   return 0;
