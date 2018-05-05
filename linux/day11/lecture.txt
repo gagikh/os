@@ -7,4 +7,6 @@ Sockets and posix sockets library
 
 http://www.csd.uoc.gr/~hy556/material/tutorials/cs556-3rd-tutorial.pdf
 
+http://informatik.unibas.ch/uploads/media/M02-Socket-Programming-in-C.pdf
+
 example: https://www.binarytides.com/server-client-example-c-sockets-linux/
