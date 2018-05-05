@@ -4,3 +4,6 @@ Sockets and posix sockets library
 - simple chat
 - nc
 - nmap
+
+http://www.csd.uoc.gr/~hy556/material/tutorials/cs556-3rd-tutorial.pdf
+
