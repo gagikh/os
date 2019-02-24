@@ -1,1 +1,20 @@
 http://tldp.org/LDP/abs/html/
+
+echo, variables
+write, mesg, tty, who
+arh, uname
+last
+ltrace, strace
+env
+free
+procinfo (idle Bootup, ...)
+du, df
+lsof
+strace
+dmesg
+stat (file information), vmstat (vm information)
+uptime
+kill (-l list available signals)
+
+loops and bracnhes: http://tldp.org/LDP/abs/html/loops.html
+
