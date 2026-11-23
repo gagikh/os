@@ -1,0 +1,21 @@
+# CMake build folders
+build/
+build-*/
+
+# Binaries built by hand from the day folders
+hello_c
+hello_cpp
+sysinfo
+sysinfo_solution
+*.o
+
+# Lab output
+report*.txt
+
+# Python
+__pycache__/
+
+# Editors
+.vscode/
+*.swp
+*~

@@ -1,0 +1,80 @@
+<svg viewBox="0 0 900 470" xmlns="http://www.w3.org/2000/svg" font-family="Helvetica, Arial, sans-serif" xmlns:c2pa="http://c2pa.org/manifest">
+  <rect width="900" height="470" fill="#0d1117"/>
+  <text x="450" y="32" text-anchor="middle" fill="#e6edf3" font-size="20" font-weight="bold">One tree, starting at /</text>
+  <text x="450" y="52" text-anchor="middle" fill="#8b949e" font-size="12">No C:\ or D:\ in Linux. Every disk, device and kernel setting appears somewhere under the root directory /.</text>
+
+  <!-- root -->
+  <rect x="410" y="70" width="80" height="36" rx="6" fill="#1f6feb"/>
+  <text x="450" y="94" text-anchor="middle" fill="#e6edf3" font-size="18" font-weight="bold" font-family="Consolas, Menlo, monospace">/</text>
+  <path d="M450 106 V124 M90 124 H810" stroke="#8b949e" stroke-width="1.5" fill="none"/>
+  <g stroke="#8b949e" stroke-width="1.5">
+    <line x1="90" y1="124" x2="90" y2="140"/><line x1="270" y1="124" x2="270" y2="140"/><line x1="450" y1="124" x2="450" y2="140"/>
+    <line x1="630" y1="124" x2="630" y2="140"/><line x1="810" y1="124" x2="810" y2="140"/>
+  </g>
+
+  <!-- Row 1: real files on disk -->
+  <g font-size="11">
+    <rect x="10" y="140" width="160" height="110" rx="6" fill="#161b22" stroke="#2ea043" stroke-width="1.5"/>
+    <text x="90" y="162" text-anchor="middle" fill="#2ea043" font-size="15" font-weight="bold" font-family="Consolas, Menlo, monospace">/home</text>
+    <text x="90" y="182" text-anchor="middle" fill="#e6edf3">users' own files</text>
+    <text x="90" y="204" text-anchor="middle" fill="#8b949e" font-family="Consolas, Menlo, monospace">/home/lab = ~</text>
+    <text x="90" y="222" text-anchor="middle" fill="#8b949e">your labs live here</text>
+
+    <rect x="190" y="140" width="160" height="110" rx="6" fill="#161b22" stroke="#2ea043" stroke-width="1.5"/>
+    <text x="270" y="162" text-anchor="middle" fill="#2ea043" font-size="15" font-weight="bold" font-family="Consolas, Menlo, monospace">/etc</text>
+    <text x="270" y="182" text-anchor="middle" fill="#e6edf3">system configuration</text>
+    <text x="270" y="204" text-anchor="middle" fill="#8b949e" font-family="Consolas, Menlo, monospace">os-release &#160;hostname</text>
+    <text x="270" y="222" text-anchor="middle" fill="#8b949e" font-family="Consolas, Menlo, monospace">ssh/ &#160;netplan/</text>
+
+    <rect x="370" y="140" width="160" height="110" rx="6" fill="#161b22" stroke="#2ea043" stroke-width="1.5"/>
+    <text x="450" y="162" text-anchor="middle" fill="#2ea043" font-size="15" font-weight="bold" font-family="Consolas, Menlo, monospace">/boot</text>
+    <text x="450" y="182" text-anchor="middle" fill="#e6edf3">kernel and device tree</text>
+    <text x="450" y="204" text-anchor="middle" fill="#8b949e" font-family="Consolas, Menlo, monospace">Image &#160;*.dtb</text>
+    <text x="450" y="222" text-anchor="middle" fill="#8b949e">do not edit by hand (Day 2)</text>
+
+    <rect x="550" y="140" width="160" height="110" rx="6" fill="#161b22" stroke="#2ea043" stroke-width="1.5"/>
+    <text x="630" y="162" text-anchor="middle" fill="#2ea043" font-size="15" font-weight="bold" font-family="Consolas, Menlo, monospace">/usr</text>
+    <text x="630" y="182" text-anchor="middle" fill="#e6edf3">installed programs</text>
+    <text x="630" y="204" text-anchor="middle" fill="#8b949e" font-family="Consolas, Menlo, monospace">bin/gcc &#160;bin/python3</text>
+    <text x="630" y="222" text-anchor="middle" fill="#8b949e" font-family="Consolas, Menlo, monospace">lib/ &#160;include/</text>
+
+    <rect x="730" y="140" width="160" height="110" rx="6" fill="#161b22" stroke="#2ea043" stroke-width="1.5"/>
+    <text x="810" y="162" text-anchor="middle" fill="#2ea043" font-size="15" font-weight="bold" font-family="Consolas, Menlo, monospace">/var &#160;/tmp</text>
+    <text x="810" y="182" text-anchor="middle" fill="#e6edf3">changing data</text>
+    <text x="810" y="204" text-anchor="middle" fill="#8b949e" font-family="Consolas, Menlo, monospace">/var/log &#160;logs</text>
+    <text x="810" y="222" text-anchor="middle" fill="#8b949e">/tmp is wiped at reboot</text>
+  </g>
+
+  <!-- Row 2: virtual -->
+  <path d="M540 124 V270 M175 270 H725" stroke="#a371f7" stroke-width="1.5" stroke-dasharray="6 4" fill="none"/>
+  <g stroke="#a371f7" stroke-width="1.5" stroke-dasharray="6 4">
+    <line x1="175" y1="270" x2="175" y2="288"/><line x1="450" y1="270" x2="450" y2="288"/><line x1="725" y1="270" x2="725" y2="288"/>
+  </g>
+  <text x="356" y="264" text-anchor="middle" fill="#a371f7" font-size="12" font-weight="bold">not on any disk: the kernel creates these in RAM, live</text>
+
+  <g font-size="11">
+    <rect x="70" y="288" width="210" height="122" rx="6" fill="#161b22" stroke="#a371f7" stroke-width="1.5" stroke-dasharray="6 4"/>
+    <text x="175" y="310" text-anchor="middle" fill="#a371f7" font-size="15" font-weight="bold" font-family="Consolas, Menlo, monospace">/dev</text>
+    <text x="175" y="330" text-anchor="middle" fill="#e6edf3">devices as files</text>
+    <text x="175" y="352" text-anchor="middle" fill="#8b949e" font-family="Consolas, Menlo, monospace">ttyUSB0 &#160;&#160;serial port</text>
+    <text x="175" y="370" text-anchor="middle" fill="#8b949e" font-family="Consolas, Menlo, monospace">i2c-1 &#160;&#160;&#160;&#160;I2C bus</text>
+    <text x="175" y="388" text-anchor="middle" fill="#8b949e" font-family="Consolas, Menlo, monospace">gpiochip0 GPIO pins</text>
+
+    <rect x="345" y="288" width="210" height="122" rx="6" fill="#161b22" stroke="#a371f7" stroke-width="1.5" stroke-dasharray="6 4"/>
+    <text x="450" y="310" text-anchor="middle" fill="#a371f7" font-size="15" font-weight="bold" font-family="Consolas, Menlo, monospace">/proc</text>
+    <text x="450" y="330" text-anchor="middle" fill="#e6edf3">processes and kernel state</text>
+    <text x="450" y="352" text-anchor="middle" fill="#8b949e" font-family="Consolas, Menlo, monospace">cpuinfo &#160;meminfo</text>
+    <text x="450" y="370" text-anchor="middle" fill="#8b949e" font-family="Consolas, Menlo, monospace">uptime &#160;&#160;device-tree/</text>
+    <text x="450" y="388" text-anchor="middle" fill="#8b949e" font-family="Consolas, Menlo, monospace">1234/ &#160;one dir per PID</text>
+
+    <rect x="620" y="288" width="210" height="122" rx="6" fill="#161b22" stroke="#a371f7" stroke-width="1.5" stroke-dasharray="6 4"/>
+    <text x="725" y="310" text-anchor="middle" fill="#a371f7" font-size="15" font-weight="bold" font-family="Consolas, Menlo, monospace">/sys</text>
+    <text x="725" y="330" text-anchor="middle" fill="#e6edf3">hardware settings</text>
+    <text x="725" y="352" text-anchor="middle" fill="#8b949e" font-family="Consolas, Menlo, monospace">class/thermal/ &#160;temps</text>
+    <text x="725" y="370" text-anchor="middle" fill="#8b949e" font-family="Consolas, Menlo, monospace">class/leds/ &#160;&#160;&#160;&#160;LEDs</text>
+    <text x="725" y="388" text-anchor="middle" fill="#8b949e" font-family="Consolas, Menlo, monospace">class/net/ &#160;&#160;&#160;&#160;&#160;network</text>
+  </g>
+
+  <text x="450" y="440" text-anchor="middle" fill="#e6edf3" font-size="12"><tspan font-family="Consolas, Menlo, monospace" fill="#2ea043">cat /sys/class/thermal/thermal_zone0/temp</tspan> &#160;reads the CPU temperature: a "file" whose content the kernel computes each time you read it.</text>
+  <text x="450" y="460" text-anchor="middle" fill="#8b949e" font-size="12">Solid border: stored on the SD card / eMMC. &#160;&#160;Dashed border: virtual, generated by the kernel.</text>
+<metadata><c2pa:manifest>AAAWgmp1bWIAAAAeanVtZGMycGEAEQAQgAAAqgA4m3EDYzJwYQAAABZcanVtYgAAAEdqdW1kYzJtYQARABCAAACqADibcQN1cm46YzJwYTpiNDdhOTc3Yy0xZDQ3LTRiMzQtOTI0ZC1lZWE3YTVmOGY1YTcAAAADl2p1bWIAAAApanVtZGMyYXMAEQAQgAAAqgA4m3EDYzJwYS5hc3NlcnRpb25zAAAAALxqdW1iAAAARGp1bWRjYm9yABEAEIAAAKoAOJtxE2MycGEuaW5ncmVkaWVudC52MwAAAAAYYzJzaFci3tvuqDBtjXiYq0j55V0AAABwY2JvcqNpZGM6Zm9ybWF0bWltYWdlL3N2Zyt4bWxqaW5zdGFuY2VJRHgseG1wOmlpZDpkYzkzNDBiNC01OThmLTQ1OTUtYWU5OC1lYWNhODc2NzU1YmJscmVsYXRpb25zaGlwaHBhcmVudE9mAAAB4mp1bWIAAABBanVtZGNib3IAEQAQgAAAqgA4m3ETYzJwYS5hY3Rpb25zLnYyAAAAABhjMnNo08lr8mAhDFKRAnxB15vyCgAAAZljYm9yomdhY3Rpb25zgqJmYWN0aW9ua2MycGEub3BlbmVkanBhcmFtZXRlcnOha2luZ3JlZGllbnRzgaJjdXJseC1zZWxmI2p1bWJmPWMycGEuYXNzZXJ0aW9ucy9jMnBhLmluZ3JlZGllbnQudjNkaGFzaFggoXys1C/P05Qc+2n2rmbqQn2/LSe0DJ8DKzMLl39W40ikZmFjdGlvbngdY29tLmFudGhyb3BpYy5jbGF1ZGUucHJvdmlkZWRqcGFyYW1ldGVyc6F4H2NvbS5hbnRocm9waWMub3JpZ2luLWNvbmZpZGVuY2VndW5rbm93bmtkZXNjcmlwdGlvbnhmQ2xhdWRlIHByb3ZpZGVkIHRoaXMgZmlsZSBhdCB0aGUgcmVxdWVzdCBvZiBhIHVzZXIgYW5kIG1heSBoYXZlIGNyZWF0ZWQgb3IgbW9kaWZpZWQgdGhlIGZpbGUgY29udGVudHMubXNvZnR3YXJlQWdlbnShZG5hbWVmQ2xhdWRlcmFsbEFjdGlvbnNJbmNsdWRlZPUAAADIanVtYgAAAEBqdW1kY2JvcgARABCAAACqADibcRNjMnBhLmhhc2guZGF0YQAAAAAYYzJzaME+AMvsG2GmDUBG03xu4XIAAACAY2JvcqVjYWxnZnNoYTI1NmNwYWRMAAAAAAAAAAAAAAAAZGhhc2hYINeXUxKzbt2kRz+14Y23H42K3yZHfXj0sjQVsb9X3WkbZG5hbWVuanVtYmYgbWFuaWZlc3RqZXhjbHVzaW9uc4GiZXN0YXJ0GR15Zmxlbmd0aBkeBAAAAj5qdW1iAAAAJ2p1bWRjMmNsABEAEIAAAKoAOJtxA2MycGEuY2xhaW0udjIAAAACD2Nib3KlY2FsZ2ZzaGEyNTZpc2lnbmF0dXJleE1zZWxmI2p1bWJmPS9jMnBhL3VybjpjMnBhOmI0N2E5NzdjLTFkNDctNGIzNC05MjRkLWVlYTdhNWY4ZjVhNy9jMnBhLnNpZ25hdHVyZWppbnN0YW5jZUlEeCx4bXA6aWlkOjI2OWI1NWE2LWIyNzEtNDZhNS04YmYxLWM1ZWNlYWM4MWI0MXJjcmVhdGVkX2Fzc2VydGlvbnODomN1cmx4LXNlbGYjanVtYmY9YzJwYS5hc3NlcnRpb25zL2MycGEuaW5ncmVkaWVudC52M2RoYXNoWCChfKzUL8/TlBz7afauZupCfb8tJ7QMnwMrMwuXf1bjSKJjdXJseCpzZWxmI2p1bWJmPWMycGEuYXNzZXJ0aW9ucy9jMnBhLmFjdGlvbnMudjJkaGFzaFggqWKJYNuqpZUWPO6+qucNnfULHyw5o9aTk6TxrWWuR0SiY3VybHgpc2VsZiNqdW1iZj1jMnBhLmFzc2VydGlvbnMvYzJwYS5oYXNoLmRhdGFkaGFzaFgg3BKoOrJGI+vCkeGGWK6DMo6T6tBuKhNC6Y/s07XO4z50Y2xhaW1fZ2VuZXJhdG9yX2luZm+jZG5hbWVvQW50aHJvcGljIEZpbGVzZ3ZlcnNpb25lMS4wLjBrc3BlY1ZlcnNpb25lMi40LjAAABA4anVtYgAAAChqdW1kYzJjcwARABCAAACqADibcQNjMnBhLnNpZ25hdHVyZQAAABAIY2JvctKEWQISogEmGCFZAgowggIGMIIBjaADAgECAhRA5aAK7sI50L64g/oGQgU9Z1UTADAKBggqhkjOPQQDAzBJMRcwFQYDVQQKEw5BbnRocm9waWMsIFBCQzEuMCwGA1UEAxMlQW50aHJvcGljIENvbnRlbnQgQ3JlZGVudGlhbHMgUm9vdCBDQTAeFw0yNjA4MDcxODQzNTZaFw0yODA4MDYxOTQzNTZaMEQxFzAVBgNVBAoTDkFudGhyb3BpYywgUEJDMSkwJwYDVQQDEyBBbnRocm9waWMgQ2xhdWRlIENvbnRlbnQgU2lnbmluZzBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABJh6CmvLUBgFFNU0vUKlOVtE6djd17L5SuwX0LemFisBM3dkd/3cyjxFA3Qo5S46fX0/ihY0VZ7mfb9KF703t5OjWDBWMA4GA1UdDwEB/wQEAwIHgDAVBgNVHSUEDjAMBgorBgEEAYPoXgIBMAwGA1UdEwEB/wQCMAAwHwYDVR0jBBgwFoAUzlHiBIFOZFsj+OPEz5o+nMHXXMIwCgYIKoZIzj0EAwMDZwAwZAIwMXMdFJ4BetLLVY7ORuE9noqbbAZOZn/aArXyTwFAZfKrPzxF2vPoJNf1+UCdg1XGAjBwX1zd9WGqYkqmL5SFqw1QySjr1zJfpJM9+1rdDwSPLMOPOjKuiXjoU/pUUeG9RwmhY3BhZFkNngAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPZYQJehWLBUBr6Mo4jkOkqd8DY0rD/ZOjUpfQhDzUFUT3W9Pf8plep9oO6H6nIlbXfJRrd6tAd1gk0KCMbm1eWSIYA=</c2pa:manifest></metadata></svg>
