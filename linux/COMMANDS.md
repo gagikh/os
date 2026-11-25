@@ -247,3 +247,14 @@
 | `sudo dmesg -w` | Kernel-ի հաղորդագրությունները իրական ժամանակում | 9 |
 | `ls /sys/class`, `cat /sys/class/net/eth0/address` | sysfs | 9 |
 | `sudo sysctl -w key=value` | Kernel-ի պարամետր | 9 |
+
+## Process-ներ և thread-եր
+
+| Հրաման | Ինչ է անում | Օր |
+|---|---|---|
+| `ps -o pid,ppid,stat,cmd --forest` | Process-ների ծառը | 10 |
+| `ps -eLf`, `ps -o pid,nlwp,cmd -p PID` | Thread-երը (LWP) և նրանց քանակը | 10 |
+| `top -H -p PID`, `ls /proc/PID/task` | Process-ի thread-երը | 10 |
+| `strace -f -e trace=clone,execve,wait4 cmd` | Ինչ process-ներ է ստեղծում ծրագիրը | 10 |
+| `g++ -pthread`, `g++ -fsanitize=thread` | Thread-երով ծրագիր, ThreadSanitizer | 10 |
+| `valgrind --tool=helgrind ./prog` | Race condition-ների որոնում | 10 |

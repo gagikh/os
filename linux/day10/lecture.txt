@@ -1,6 +1,0 @@
-Process/thread creation under linux
-// Advanced linux programming
-
-- exec*
-- fork
-- clone

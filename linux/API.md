@@ -19,3 +19,4 @@ Signature-ները համապատասխանում են [Linux man pages](https:/
 | [7](day07/README.md#functions--ֆունկցիաներ) | `getuid` · `geteuid` · `getgid` · `getegid` · `getgroups` · `access` · `setreuid` · `chown` · `chmod` · `umask` · `getpwnam` · `getgrgid` |
 | [8](day08/README.md#functions--ֆունկցիաներ) | `getpid` · `getppid` · `nice` · `pause` · `sigaction` · `kill` · `raise` · `sig_atomic_t` · `nanosleep` |
 | [9](day09/README.md#functions--ֆունկցիաներ) | `open` · `read` · `write` · `close` · `ioctl` · `major` · `minor` · `std::filesystem::directory_iterator` |
+| [10](day10/README.md#functions--ֆունկցիաներ) | `fork` · `execvp` · `_exit` · `waitpid` · `WEXITSTATUS` · `WTERMSIG` · `pipe` · `dup2` · `chdir` · `pthread_create` · `pthread_join` · `pthread_mutex_lock` · `std::thread` · `std::mutex` · `std::lock_guard` · `std::condition_variable` |

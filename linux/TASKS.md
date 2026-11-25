@@ -92,3 +92,13 @@
 69. <a id="task-69"></a>Հավաքիր «hello» kernel module-ը [LKMPG](https://sysprog21.github.io/lkmpg/)-ի «Hello World» բաժնից (VM-ում, ոչ իրական համակարգչում)։ Բեռնիր `insmod`-ով և գտիր նրա հաղորդագրությունը `dmesg`-ում, տես նրան `lsmod`-ում, հեռացրու։ *(Օր 9)*
 70. <a id="task-70"></a>Template-ը ընդլայնիր PCI սարքերով `/sys/bus/pci/devices/*/vendor`, `device` և `driver` symlink-ից (`readlink`, Օր 3)։ Համեմատիր `lspci -k`-ի հետ։ *(Օր 9)*
 71. <a id="task-71"></a>Գրիր ծրագիր, որը `ioctl(TIOCGWINSZ)`-ով տպում է terminal-ի չափը և թարմացնում այն, երբ պատուհանը փոխում ես (`SIGWINCH`, Օր 8)։ *(Օր 9)*
+
+## Օր 10. Process-ներ և thread-եր
+72. <a id="task-72"></a>Գրիր ծրագիր, որը `printf("hello")` (առանց `\n`), ապա `fork()`։ Քանի անգամ է տպվում hello։ Ինչու։ Ուղղիր `fflush`-ով։ *(Օր 10)*
+73. <a id="task-73"></a>Ստեղծիր zombie C++-ում և տես այն `ps`-ով։ Ապա ավելացրու `SIGCHLD` handler, որը մաքրում է երեխաներին (Օր 8)։ *(Օր 10)*
+74. <a id="task-74"></a>Հաշվիր Fibonacci-ի թվերը կամ պարզ թվերը մինչև 10⁷ մեկ, երկու, չորս և ութ thread-ով։ Չափիր ժամանակը (`std::chrono`)։ Ինչու արագացումը `nproc`-ից հետո չի աճում։ (Համեմատիր [`windows/day6`](../../windows/day6/)-ի Fibonacci-ի հետ։) *(Օր 10)*
+75. <a id="task-75"></a>Գործարկիր `counter++` օրինակը առանց mutex-ի 10 անգամ և գրիր արդյունքները։ Ապա `-fsanitize=thread`-ով։ Ինչ է հաղորդում ThreadSanitizer-ը։ *(Օր 10)*
+76. <a id="task-76"></a>Համեմատիր երեք տարբերակի արագությունը. mutex ամեն `++`-ի համար, `std::atomic<long>`, տեղային գումար + մեկ lock։ *(Օր 10)*
+77. <a id="task-77"></a>Իրականացրու ճաշող փիլիսոփաներին `std::thread`-ով և `std::mutex`-ով։ Նախ ստացիր deadlock, ապա ուղղիր այն կողպեքների հերթականությամբ։ *(Օր 10)*
+78. <a id="task-78"></a>Գրիր պարզ heap manager (հին `docs/tasks.txt`-ի #4 առաջադրանքը). `my_malloc(size)` և `my_free(ptr)` 1 MB ստատիկ զանգվածի վրա՝ ազատ block-երի ցուցակով։ Ինչ է fragmentation-ը, և ինչպես է այն երևում քո ալոկատորում։ *(Օր 10)*
+79. <a id="task-79"></a>Ընդլայնիր template-ի shell-ը `>` և `<` redirection-ով (`open` + `dup2`)։ *(Օր 10)*

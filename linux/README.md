@@ -107,9 +107,12 @@ Every template uses [`common/sys_check.h`](common/sys_check.h): wrap a system ca
 - Special devices; kernel modules (`modprobe`)  
 - `/proc` and `/sys`; `ioctl`
 
-### Day 10: Processes and Threads *(in progress)*
-- `fork`, `exec`, `wait`, `clone`  
-- POSIX threads and synchronization
+### [Day 10: Processes and Threads](day10/README.md)
+- `fork`, `exec`, `waitpid`; exit status and `$?`; zombies and orphans  
+- How a shell works; pipes and redirection from the inside (`pipe`, `dup2`)  
+- Threads: `std::thread`, pthreads, `clone`  
+- Race conditions, mutexes, deadlock, condition variables  
+- Processes vs threads
 
 ### Day 11: Networking and Sockets *(in progress)*
 - IP addresses, interfaces, ports  
