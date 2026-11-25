@@ -3,7 +3,7 @@
 ## Objectives · Նպատակներ
 - Գրել, գործարկել և debug անել bash script-եր. shebang, `chmod +x`, `bash -x`
 - Տարբերել `./script.sh`-ը և `source script.sh`-ը և բացատրել, թե ինչու է դա կարևոր environment-ի համար
-- Օգտագործել փոփոխականներ, չակերտներ, parameter expansion, command substitution, թվաբանություն, զանգվածներ
+- Օգտագործել variable-ներ, չակերտներ, parameter expansion, command substitution, թվաբանություն, զանգվածներ
 - Կարդալ script-ի argument-ները (`$1`, `$#`, `"$@"`, `shift`, `getopts`)
 - Գրել պայմաններ (`if`, `[ ]`, `[[ ]]`, `(( ))`, `case`) և ցիկլեր (`for`, `while`, `until`)
 - Գրել ֆունկցիաներ և հուսալի script-եր. `set -euo pipefail`, `trap`, exit code-եր
@@ -28,11 +28,11 @@
 
 **Shebang** — Script-ի առաջին տողը, որը սկսվում է `#!`-ով և ասում է kernel-ին, թե որ ծրագիրը պետք է կատարի ֆայլը. `#!/usr/bin/env bash`, `#!/usr/bin/env python3`։
 
-**Source (`.`)** — Script-ի կատարում **ընթացիկ** shell-ում՝ առանց նոր process-ի. `source file` կամ `. file`։ Script-ի փոփոխությունները (փոփոխականներ, `cd`) մնում են shell-ում։
+**Source (`.`)** — Script-ի կատարում **ընթացիկ** shell-ում՝ առանց նոր process-ի. `source file` կամ `. file`։ Script-ի փոփոխությունները (variable-ներ, `cd`) մնում են shell-ում։
 
-**Word splitting** — Shell-ը չակերտներից դուրս գտնվող փոփոխականի արժեքը բաժանում է բառերի բացատներով։ `f="my file.txt"; rm $f` փորձում է ջնջել երկու ֆայլ. `my` և `file.txt`։ Դրանից պաշտպանում են կրկնակի չակերտները. `rm "$f"`։
+**Word splitting** — Shell-ը չակերտներից դուրս գտնվող variable-ի արժեքը բաժանում է բառերի բացատներով։ `f="my file.txt"; rm $f` փորձում է ջնջել երկու ֆայլ. `my` և `file.txt`։ Դրանից պաշտպանում են կրկնակի չակերտները. `rm "$f"`։
 
-**Parameter expansion** — `${...}` գրելաձևը, որով shell-ը փոփոխականի արժեքի հետ գործողություններ է անում. լռելյայն արժեք, երկարություն, մասի կտրում, փոխարինում։
+**Parameter expansion** — `${...}` գրելաձևը, որով shell-ը variable-ի արժեքի հետ գործողություններ է անում. լռելյայն արժեք, երկարություն, մասի կտրում, փոխարինում։
 
 **Command substitution** — `$(command)`. հրամանի ելքը տեղադրվում է տողի մեջ. `today=$(date +%F)`։
 
@@ -40,20 +40,20 @@
 
 **`[[ ]]`** — Bash-ի պայմանի կառուցվածք, որը ավելի հուսալի է, քան `[ ]`-ը. ներսում չկա word splitting և globbing, աշխատում են `&&`, `||`, `<`, `>`, `=~` (regex)։
 
-**`(( ))`** — Թվաբանական արտահայտություն։ Ներսում փոփոխականներին `$` պետք չէ։ Exit status-ը 0 է, եթե արդյունքը **զրո չէ**։
+**`(( ))`** — Թվաբանական արտահայտություն։ Ներսում variable-ներին `$` պետք չէ։ Exit status-ը 0 է, եթե արդյունքը **զրո չէ**։
 
 **Function** — Անվանված հրամանների խումբ script-ի ներսում։ Ստանում է argument-ներ `$1`, `$2`-ով, վերադարձնում է exit status (`return N`) և կարող է «վերադարձնել» տեքստ՝ տպելով այն stdout։
 
 **`trap`** — Հրաման, որը կատարվում է, երբ script-ը ստանում է signal կամ ավարտվում է. `trap 'rm -f "$tmp"' EXIT`՝ մաքրել ժամանակավոր ֆայլերը ցանկացած դեպքում։
 
-**`set -euo pipefail`** — Script-ը դարձնում է խիստ. `-e`՝ կանգնել առաջին սխալի վրա, `-u`՝ չսահմանված փոփոխականը սխալ է, `-o pipefail`՝ pipeline-ը ձախողված է, եթե ձախողվել է նրա ցանկացած հրաման։
+**`set -euo pipefail`** — Script-ը դարձնում է խիստ. `-e`՝ կանգնել առաջին սխալի վրա, `-u`՝ չսահմանված variable-ը սխալ է, `-o pipefail`՝ pipeline-ը ձախողված է, եթե ձախողվել է նրա ցանկացած հրաման։
 
 ---
 
 ## 1. Առաջին script-ը
 
 ### Visual
-![Bash script-ի կառուցվածքը՝ մեկնաբանություններով. shebang, set -euo pipefail, հաստատուններ, ֆունկցիաներ local փոփոխականներով, argument-ների ստուգում, main մասը, exit status-ը](script_anatomy.svg)
+![Bash script-ի կառուցվածքը՝ մեկնաբանություններով. shebang, set -euo pipefail, հաստատուններ, ֆունկցիաներ local variable-ներով, argument-ների ստուգում, main մասը, exit status-ը](script_anatomy.svg)
 
 ```bash
 #!/usr/bin/env bash
@@ -63,7 +63,7 @@ echo "You are in $PWD and gave me $# arguments: $*"
 ```
 
 ```bash
-chmod +x hello.sh       # առանց x իրավունքի ./hello.sh-ը կտա «Permission denied» (Օր 7)
+chmod +x hello.sh       # առանց x permission-ի ./hello.sh-ը կտա «Permission denied» (Օր 7)
 ./hello.sh one two
 ```
 
@@ -72,19 +72,19 @@ chmod +x hello.sh       # առանց x իրավունքի ./hello.sh-ը կտա �
 ## 2. Գործարկել, թե source անել
 
 ### Visual
-![./script.sh-ը ստեղծում է նոր bash process. նրա cd-ն և փոփոխականները անհետանում են ավարտվելիս. source script.sh-ը կատարվում է հենց ընթացիկ shell-ում. փոփոխությունները մնում են](run_vs_source.svg)
+![./script.sh-ը ստեղծում է նոր bash process. նրա cd-ն և variable-ները անհետանում են ավարտվելիս. source script.sh-ը կատարվում է հենց ընթացիկ shell-ում. փոփոխությունները մնում են](run_vs_source.svg)
 
-Օր 2-ի կանոնը. երեխան չի կարող փոխել ծնողին։ `./script.sh`-ը նոր process է, ուստի նրա `cd`-ն, `export`-ը և փոփոխականները անհետանում են, երբ այն ավարտվում է.
+Օր 2-ի կանոնը. child-ը չի կարող փոխել parent-ին։ `./script.sh`-ը նոր process է, ուստի նրա `cd`-ն, `export`-ը և variable-ները անհետանում են, երբ այն ավարտվում է.
 
 ```bash
 echo 'cd /tmp; X=42' > s.sh
-bash s.sh ; pwd ; echo "[$X]"       # նույն թղթապանակը, X-ը դատարկ է
+bash s.sh ; pwd ; echo "[$X]"       # նույն directory-ն, X-ը դատարկ է
 source s.sh ; pwd ; echo "[$X]"     # /tmp, [42]
 ```
 
 `source`-ը (կամ `.`) կատարում է ֆայլը **ընթացիկ** shell-ում։ Այդպես են աշխատում `~/.bashrc`-ը, Python-ի `venv/bin/activate`-ը և ROS-ի `setup.bash`-ը. դրանց նպատակը հենց ընթացիկ shell-ի environment-ը փոխելն է։
 
-## 3. Փոփոխականներ և չակերտներ
+## 3. Variable-ներ և չակերտներ
 
 ```bash
 name="Linux kernel"      # = նշանի շուրջ բացատ չի կարելի
@@ -94,7 +94,7 @@ echo '$name'             # $name
 echo "${name}s"          # Linux kernels. {}-ով սահմանում ենք անվան վերջը
 ```
 
-**Գլխավոր կանոնը. փոփոխականները միշտ դիր կրկնակի չակերտների մեջ։** Առանց չակերտների shell-ը արժեքը բաժանում է բառերի (word splitting) և `*`-ը բացում է որպես ֆայլերի անուններ (globbing).
+**Գլխավոր կանոնը. variable-ները միշտ դիր կրկնակի չակերտների մեջ։** Առանց չակերտների shell-ը արժեքը բաժանում է բառերի (word splitting) և `*`-ը բացում է որպես ֆայլերի անուններ (globbing).
 
 ```bash
 f="my file.txt"
@@ -141,7 +141,7 @@ age[anna]=21 ; age[aram]=23
 for k in "${!age[@]}"; do echo "$k ${age[$k]}"; done
 ```
 
-**Environment variable-ները և script-երը.** Script-ը ժառանգում է shell-ի **export արված** փոփոխականները (Օր 2)։ Script-ի ներսում սովորական փոփոխականը տեսանելի է միայն script-ին, իսկ `export`-ով՝ նաև նրա գործարկած ծրագրերին.
+**Environment variable-ները և script-երը.** Script-ը ժառանգում է shell-ի **export արված** variable-ները (Օր 2)։ Script-ի ներսում սովորական variable-ը տեսանելի է միայն script-ին, իսկ `export`-ով՝ նաև նրա գործարկած ծրագրերին.
 
 ```bash
 LOG_LEVEL=debug ./script.sh   # միայն այս գործարկման համար
@@ -198,9 +198,9 @@ if cd "$dir" 2>/dev/null; then echo "moved"; else echo "no such dir"; fi
 |---|---|---|---|
 | `-e f` գոյություն ունի | `-z "$s"` դատարկ է | `-eq` = | `==` |
 | `-f f` սովորական ֆայլ | `-n "$s"` դատարկ չէ | `-ne` ≠ | `!=` |
-| `-d f` թղթապանակ | `"$a" = "$b"` հավասար | `-lt` < | `<` |
+| `-d f` directory | `"$a" = "$b"` հավասար | `-lt` < | `<` |
 | `-L f` symlink | `"$a" != "$b"` | `-le` ≤ | `<=` |
-| `-r` `-w` `-x f` իրավունքներ | `[[ $s == *.txt ]]` glob | `-gt` > | `>` |
+| `-r` `-w` `-x f` permission-ներ | `[[ $s == *.txt ]]` glob | `-gt` > | `>` |
 | `-s f` դատարկ չէ | `[[ $s =~ ^[0-9]+$ ]]` regex (Օր 4) | `-ge` ≥ | `>=` |
 
 ```bash
@@ -278,7 +278,7 @@ if is_even 42; then echo even; fi
 
 ```bash
 #!/usr/bin/env bash
-set -euo pipefail               # կանգնել սխալի վրա, չսահմանված փոփոխականը սխալ է, pipe-ի սխալները չկորչեն
+set -euo pipefail               # կանգնել սխալի վրա, չսահմանված variable-ը սխալ է, pipe-ի սխալները չկորչեն
 
 tmp=$(mktemp -d)                # Օր 2
 trap 'rm -rf "$tmp"' EXIT       # կմաքրվի ցանկացած դեպքում. նորմալ ավարտ, սխալ, Ctrl+C
@@ -293,7 +293,7 @@ Debug անելու գործիքներ.
 
 ```bash
 bash -n script.sh        # միայն syntax
-bash -x script.sh        # տպել ամեն հրամանը՝ փոփոխականները բացված. կամ script-ի ներսում set -x ... set +x
+bash -x script.sh        # տպել ամեն հրամանը՝ variable-ները բացված. կամ script-ի ներսում set -x ... set +x
 shellcheck script.sh     # ստատիկ վերլուծություն. գտնում է չակերտների բացակայություն, սխալ համեմատություններ և այլն
 ```
 
@@ -313,7 +313,7 @@ bash -x script.sh                       # տպել ամեն հրամանը կա�
 bash -n script.sh                       # միայն ստուգել syntax-ը
 shellcheck script.sh                    # գտնել տիպիկ սխալները (sudo apt install shellcheck)
 
-# Փոփոխականներ և expansion
+# Variable-ներ և expansion
 name="Linux" ; echo "Hello, ${name}!"
 echo "${1:-default}" "${#name}" "${name,,}" "${name^^}"
 f=photo.tar.gz ; echo "${f##*.}" "${f#*.}" "${f%.*}" "${f%%.*}"   # gz tar.gz photo.tar photo
@@ -338,7 +338,7 @@ case "$ext" in jpg|png) echo image ;; *) echo other ;; esac
 ```bash
 getopts "nvh" opt        # option-ների մշակում, ինչպես C-ի getopt-ը (Օր 2). OPTARG, OPTIND
 shift [N]                # տեղաշարժել positional parameter-ները ձախ
-local var=value          # ֆունկցիայի տեղային փոփոխական
+local var=value          # ֆունկցիայի տեղային variable
 return [N]               # ֆունկցիայի exit status
 exit [N]                 # script-ի exit status
 trap 'commands' EXIT INT TERM   # կատարել ավարտվելիս / signal ստանալիս
@@ -356,11 +356,11 @@ printf '%-10s %5d\n' "$name" "$n"   # ֆորմատավորված տպում, ի�
 
 ## Hands-On Task · Գործնական առաջադրանք
 
-Գրիր script, որը կարգի է բերում թղթապանակը. ֆայլերը տեղափոխում է ենթաթղթապանակների ըստ տեսակի. [`template.sh`](template.sh)։
+Գրիր script, որը կարգի է բերում directory-ն. ֆայլերը տեղափոխում է ենթաdirectory-ների ըստ տեսակի. [`template.sh`](template.sh)։
 
 ```bash
 chmod +x template.sh
-./template.sh --selftest            # ստեղծում է փորձնական թղթապանակ և ստուգում քո ֆունկցիաները
+./template.sh --selftest            # ստեղծում է փորձնական directory և ստուգում քո ֆունկցիաները
 ./template.sh -n ~/Downloads        # dry run. միայն ցույց տալ, ինչ կտեղափոխվեր
 ./template.sh -v ~/Downloads        # տեղափոխել և պատմել
 ```
@@ -381,16 +381,16 @@ chmod +x template.sh
 1. Գրիր script, որը հաշվում է հաշվիչը environment variable-ներով, ինչպես Օր 2-ի C++ ծրագիրը. `x=10 y=20 ./calc.sh x+y`։ Համեմատիր երկու իրականացումները։
 2. Գրիր `backup.sh DIR`, որը ստեղծում է `DIR-YYYY-MM-DD.tar.gz` (Օր 5), պահում է միայն վերջին 7 backup-ները և ջնջում հներին։
 3. Գրիր script, որը `/var/log/auth.log`-ից (կամ `journalctl -u ssh`) հաշվում է SSH-ի ձախողված մուտքերը ըստ IP-ի և տպում 5 ամենաշատը (Օր 4)։
-4. Գրիր `watch_dir.sh DIR`, որը ամեն 2 վայրկյանը մեկ ստուգում է, թե արդյոք թղթապանակում նոր ֆայլ է հայտնվել, և տպում նրա անունը։ Ctrl+C-ով կանգնեցնելիս թող տպի «bye» (`trap ... INT`)։
+4. Գրիր `watch_dir.sh DIR`, որը ամեն 2 վայրկյանը մեկ ստուգում է, թե արդյոք directory-ում նոր ֆայլ է հայտնվել, և տպում նրա անունը։ Ctrl+C-ով կանգնեցնելիս թող տպի «bye» (`trap ... INT`)։
 5. Համեմատիր `for arg in "$@"`, `for arg in $@`, `for arg in "$*"`-ը `./t.sh a "b c" d`-ի վրա։ Բացատրիր արդյունքները։
 6. Գրիր ռեկուրսիվ ֆունկցիա, որը հաշվում է ֆակտորիալը։ Ինչ է պատահում 21!-ի դեպքում և ինչու (64-bit ամբողջ թվեր)։
 7. Վերցրու քո script-երից մեկը և գործարկիր `shellcheck`։ Ուղղիր բոլոր զգուշացումները և բացատրիր, թե ինչ սխալներ էին դրանք։
-8. Ընդլայնիր template-ը `-r` option-ով. տեղափոխել ֆայլերը նաև ենթաթղթապանակներից (`find ... -print0` + `while IFS= read -r -d ''`)։
+8. Ընդլայնիր template-ը `-r` option-ով. տեղափոխել ֆայլերը նաև ենթաdirectory-ներից (`find ... -print0` + `while IFS= read -r -d ''`)։
 
 ## Self-Check · Ինքնաստուգում
 Պատասխաններ չկան։ Մտածիր ինքնուրույն։
 
-1. Ինչո՞ւ `./script.sh`-ը, որը կատարում է `cd /tmp`, չի փոխում քո terminal-ի թղթապանակը։ Ինչպես գրել script, որը փոխում է այն։
+1. Ինչո՞ւ `./script.sh`-ը, որը կատարում է `cd /tmp`, չի փոխում քո terminal-ի directory-ն։ Ինչպես գրել script, որը փոխում է այն։
 2. Ինչ կանի `rm $file`-ը, եթե `file="-rf /"`։ Իսկ `rm -- "$file"`-ը։
 3. Ինչ տարբերություն կա `"$@"`-ի և `"$*"`-ի միջև։ Ինչ կլինի առանց չակերտների։
 4. Ինչո՞ւ է `[ -f $f ]`-ը աշխատում սովորական անունների վրա, բայց կոտրվում `my file.txt`-ի վրա։

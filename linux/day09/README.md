@@ -2,7 +2,7 @@
 
 ## Objectives · Նպատակներ
 - Բացատրել, թե ինչպես է ծրագրի խնդրանքը հասնում սարքին. system call, VFS, driver, bus, interrupt
-- Պարզել համակարգչի hardware-ը. CPU, հիշողություն, սկավառակներ, PCI և USB սարքեր, ցանցային քարտեր
+- Պարզել համակարգչի hardware-ը. CPU, memory, disk-ներ, PCI և USB սարքեր, network քարտեր
 - Տարբերել character և block սարքերը, բացատրել major/minor համարները և `/dev`-ը
 - Բացատրել, թե ինչպես են սարքերի ֆայլերը հայտնվում ավտոմատ (udev) և գրել udev կանոն
 - Կառավարել kernel module-ները. `lsmod`, `modinfo`, `modprobe`, `rmmod`
@@ -22,25 +22,25 @@
 
 *Այսօր ներմուծվող տերմինները։ Նույն տեքստը կա [GLOSSARY.md](../GLOSSARY.md)-ում։*
 
-**Device driver** — Kernel-ի կոդ, որը գիտի, թե ինչպես աշխատել կոնկրետ սարքի կամ սարքերի ընտանիքի հետ, և այն ներկայացնում է մնացած համակարգին ստանդարտ ինտերֆեյսով (ֆայլ `/dev`-ում, ցանցային ինտերֆեյս, block սարք)։
+**Device driver** — Kernel-ի կոդ, որը գիտի, թե ինչպես աշխատել կոնկրետ սարքի կամ սարքերի ընտանիքի հետ, և այն ներկայացնում է մնացած համակարգին ստանդարտ ինտերֆեյսով (ֆայլ `/dev`-ում, network ինտերֆեյս, block սարք)։
 
-**Bus** — Կապի ուղի CPU-ի և սարքերի միջև՝ իր կանոններով. **PCIe** (վիդեոքարտ, NVMe սկավառակ, ցանցային քարտ), **USB**, իսկ embedded բորդերում նաև **I2C**, **SPI**, **UART**։
+**Bus** — Կապի ուղի CPU-ի և սարքերի միջև՝ իր կանոններով. **PCIe** (վիդեոքարտ, NVMe disk, network քարտ), **USB**, իսկ embedded բորդերում նաև **I2C**, **SPI**, **UART**։
 
-**Interrupt (ընդհատում)** — Ազդանշան սարքից CPU-ին. «ինձ ուշադրություն է պետք» (ստեղնը սեղմվեց, փաթեթը եկավ, սկավառակը ավարտեց կարդալը)։ CPU-ն ընդհատում է ընթացիկ աշխատանքը և կանչում driver-ի **interrupt handler**-ը։
+**Interrupt** — Ազդանշան սարքից CPU-ին. «ինձ ուշադրություն է պետք» (ստեղնը սեղմվեց, packet-ը եկավ, disk-ը ավարտեց կարդալը)։ CPU-ն ընդհատում է ընթացիկ աշխատանքը և կանչում driver-ի **interrupt handler**-ը։
 
 **DMA (Direct Memory Access)** — Սարքը ինքն է պատճենում տվյալները RAM-ում՝ առանց CPU-ի մասնակցության, և ավարտելուց հետո ուղարկում է interrupt։
 
-**Character device** — Սարք, որի հետ աշխատում են բայթերի հոսքով, առանց պատահական դիմման. terminal, serial port, ձայնային քարտ, `/dev/null`։ `ls -l`-ում՝ `c`։
+**Character device** — Սարք, որի հետ աշխատում են բայթերի stream-ով, առանց պատահական դիմման. terminal, serial port, ձայնային քարտ, `/dev/null`։ `ls -l`-ում՝ `c`։
 
-**Block device** — Սարք, որի հետ աշխատում են ֆիքսված չափի block-երով և ցանկացած հերթականությամբ. սկավառակներ, flash, SD քարտ։ `ls -l`-ում՝ `b`։ Ծրագրերը սովորաբար դրանց հետ աշխատում են ոչ ուղիղ, այլ ֆայլային համակարգի միջոցով։
+**Block device** — Սարք, որի հետ աշխատում են ֆիքսված չափի block-երով և ցանկացած հերթականությամբ. disk-ներ, flash, SD քարտ։ `ls -l`-ում՝ `b`։ Ծրագրերը սովորաբար դրանց հետ աշխատում են ոչ ուղիղ, այլ filesystem-ի միջոցով։
 
 **Major / minor number** — Սարքի ֆայլի երկու համարը։ **Major**-ը որոշում է driver-ը, **minor**-ը՝ կոնկրետ սարքը կամ նրա մասը այդ driver-ի ներսում։ `/dev/sda`-ն 8,0 է, `/dev/sda1`-ը՝ 8,1։
 
-**udev** — User space ծառայություն, որը kernel-ից ստանում է հաղորդագրություններ սարքերի միացման և անջատման մասին և ստեղծում, անվանում, իրավունքներ է տալիս `/dev`-ի ֆայլերին՝ ըստ **կանոնների**։
+**udev** — User space service, որը kernel-ից ստանում է հաղորդագրություններ սարքերի միացման և անջատման մասին և ստեղծում, անվանում, permission-ներ է տալիս `/dev`-ի ֆայլերին՝ ըստ **կանոնների**։
 
 **Kernel module** — Kernel-ի կոդի կտոր (`.ko` ֆայլ), որը կարելի է բեռնել և հեռացնել աշխատող համակարգում։ Driver-ների մեծ մասը module-ներ են։
 
-**sysfs (`/sys`)** — Վիրտուալ ֆայլային համակարգ, որը ցույց է տալիս kernel-ի սարքերի մոդելը. սարքեր, bus-եր, դասեր, driver-ներ։ Յուրաքանչյուր ֆայլ սովորաբար պարունակում է **մեկ** արժեք, և որոշները կարելի է փոխել։
+**sysfs (`/sys`)** — Վիրտուալ filesystem, որը ցույց է տալիս kernel-ի սարքերի մոդելը. սարքեր, bus-եր, դասեր, driver-ներ։ Յուրաքանչյուր ֆայլ սովորաբար պարունակում է **մեկ** արժեք, և որոշները կարելի է փոխել։
 
 **`ioctl`** — Համընդհանուր system call սարքին հատուկ հրամաններ ուղարկելու համար, որոնք չեն տեղավորվում `read`/`write`-ի մեջ. ստանալ էկրանի չափը, փոխել serial port-ի արագությունը, բացել CD-ROM-ը։
 
@@ -49,7 +49,7 @@
 ## 1. Ծրագրից մինչև սարք
 
 ### Visual
-![Ճանապարհը ծրագրից սարք. read() system call-ը → VFS → driver (օրինակ՝ NVMe կամ USB serial) → bus-ի controller (PCIe, USB) → սարքը. սարքը տվյալները DMA-ով գրում է RAM և ուղարկում interrupt. kernel-ը արթնացնում է սպասող process-ը](hardware_stack.svg)
+![Path-ը ծրագրից սարք. read() system call-ը → VFS → driver (օրինակ՝ NVMe կամ USB serial) → bus-ի controller (PCIe, USB) → սարքը. սարքը տվյալները DMA-ով գրում է RAM և ուղարկում interrupt. kernel-ը արթնացնում է սպասող process-ը](hardware_stack.svg)
 
 Օր 1-ում ասացինք, որ ծրագիրը չի կարող ուղիղ դիմել hardware-ին։ Ահա ինչ է կատարվում, երբ ծրագիրը կարդում է, օրինակ, serial port-ից.
 
@@ -60,7 +60,7 @@
 5. Երբ սարքը ստանում է բայթեր, այն դրանք գրում է RAM-ում (**DMA**) և ուղարկում **interrupt**։
 6. Kernel-ը կանչում է driver-ի interrupt handler-ը, որը արթնացնում է process-ը։ `read`-ը վերադարձնում է բայթերը։
 
-Driver-ը սարքի ռեգիստրներին դիմում է **memory-mapped I/O**-ով. սարքի ռեգիստրները երևում են որպես հասցեներ հիշողության մեջ, և դրանցում գրելը սարքին հրաման ուղարկելն է։
+Driver-ը սարքի ռեգիստրներին դիմում է **memory-mapped I/O**-ով. սարքի ռեգիստրները երևում են որպես հասցեներ memory-ի մեջ, և դրանցում գրելը սարքին հրաման ուղարկելն է։
 
 Driver-ները Linux kernel-ի կոդի կեսից ավելին են։ Դրա շնորհիվ նույն `read`-ը աշխատում է հազարավոր տարբեր սարքերի հետ։
 
@@ -69,11 +69,11 @@ Driver-ները Linux kernel-ի կոդի կեսից ավելին են։ Դրա �
 | Ինչ | Հրաման | Որտեղից |
 |---|---|---|
 | CPU | `lscpu`, `nproc` | `/proc/cpuinfo`, `/sys/devices/system/cpu` |
-| Հիշողություն | `free -h` | `/proc/meminfo` |
-| Սկավառակներ | `lsblk`, `df -h` | `/sys/block`, `/proc/partitions` |
+| Memory | `free -h` | `/proc/meminfo` |
+| Disk-ներ | `lsblk`, `df -h` | `/sys/block`, `/proc/partitions` |
 | PCI սարքեր | `lspci -k` | `/sys/bus/pci/devices` |
 | USB սարքեր | `lsusb`, `lsusb -t` | `/sys/bus/usb/devices` |
-| Ցանց | `ip link` | `/sys/class/net` |
+| Network | `ip link` | `/sys/class/net` |
 | Ջերմաստիճան | `sensors` | `/sys/class/thermal`, `/sys/class/hwmon` |
 | Interrupt-ներ | | `/proc/interrupts` |
 | Ամեն ինչ | `sudo lshw -short`, `inxi -F` | |
@@ -95,12 +95,12 @@ Driver-ները Linux kernel-ի կոդի կեսից ավելին են։ Դրա �
 ### Visual
 ![Սարքի ֆայլը driver-ի դուռ է. /dev/sda (b 8,0) → major 8 → sd driver → disk 0. /dev/ttyUSB0 (c 188,0) → major 188 → usbserial driver. USB սարք միացնելիս kernel-ը ուղարկում է uevent → udev-ը կարդում է կանոնները → ստեղծում է /dev/ttyUSB0 ճիշտ group-ով և symlink /dev/gps](device_files.svg)
 
-Սարքի ֆայլը տվյալներ չի պահում սկավառակի վրա. այն **դուռ է դեպի driver**։ Ինչ գրում ես այնտեղ, գնում է driver-ին, ինչ կարդում ես՝ գալիս է driver-ից։
+Սարքի ֆայլը տվյալներ չի պահում disk-ի վրա. այն **դուռ է դեպի driver**։ Ինչ գրում ես այնտեղ, գնում է driver-ին, ինչ կարդում ես՝ գալիս է driver-ից։
 
 ```bash
 ls -l /dev/sda /dev/sda1 /dev/ttyS0 /dev/null
 # brw-rw---- 1 root disk    8,  0 ... /dev/sda       ← block, major 8 (SCSI/SATA disk), minor 0
-# brw-rw---- 1 root disk    8,  1 ... /dev/sda1      ← նույն սկավառակի 1-ին partition
+# brw-rw---- 1 root disk    8,  1 ... /dev/sda1      ← նույն disk-ի 1-ին partition
 # crw-rw---- 1 root dialout 4, 64 ... /dev/ttyS0     ← character, serial port
 # crw-rw-rw- 1 root root    1,  3 ... /dev/null
 ```
@@ -117,7 +117,7 @@ echo hello > mynull ; cat mynull    # ոչինչ. տվյալները անհետ�
 sudo rm mynull                  # ջնջվում է միայն դուռը, ոչ թե driver-ը
 ```
 
-Գործնականում ձեռքով ոչինչ չենք ստեղծում. `/dev`-ը **devtmpfs** ֆայլային համակարգ է, որը kernel-ը լրացնում է ինքը, իսկ **udev**-ը սարքերը միացնելիս տալիս է անուններ, իրավունքներ և symlink-եր։
+Գործնականում ձեռքով ոչինչ չենք ստեղծում. `/dev`-ը **devtmpfs** filesystem է, որը kernel-ը լրացնում է ինքը, իսկ **udev**-ը սարքերը միացնելիս տալիս է անուններ, permission-ներ և symlink-եր։
 
 ### udev
 
@@ -128,7 +128,7 @@ udevadm monitor --udev           # միացրու USB flash. տես իրադար
 udevadm info -a -n /dev/ttyUSB0  # սարքի հատկությունները. idVendor, idProduct, serial
 ```
 
-Կանոնի օրինակ. ամեն անգամ, երբ միանում է կոնկրետ GPS ընդունիչը, տալ նրան կայուն անուն և իրավունքներ.
+Կանոնի օրինակ. ամեն անգամ, երբ միանում է կոնկրետ GPS ընդունիչը, տալ նրան կայուն անուն և permission-ներ.
 
 ```bash
 # /etc/udev/rules.d/99-gps.rules
@@ -148,10 +148,10 @@ ls -l /dev/gps                   # /dev/gps -> ttyACM0. անունը չի փոխ
 |---|---|---|---|
 | `/dev/null` | EOF անմիջապես | Ամեն ինչ անհետանում է | `cmd 2>/dev/null` |
 | `/dev/zero` | Անվերջ զրոներ | Անհետանում է | Ֆայլ զրոներով. `head -c 1M /dev/zero > f` |
-| `/dev/full` | Զրոներ | Միշտ «No space left on device» | Ստուգել, թե ինչպես է ծրագիրը մշակում լիքը սկավառակը |
+| `/dev/full` | Զրոներ | Միշտ «No space left on device» | Ստուգել, թե ինչպես է ծրագիրը մշակում լիքը disk-ը |
 | `/dev/urandom` | Պատահական բայթեր | — | Key-եր, պատահական թվեր |
-| `/dev/tty` | Ընթացիկ terminal-ը | Ընթացիկ terminal-ը | Հարցնել գաղտնաբառ, նույնիսկ եթե stdin-ը ուղղորդված է |
-| `/dev/loopN` | Ֆայլի պարունակությունը | Ֆայլի մեջ | Ֆայլը որպես սկավառակ (Օր 3). `losetup`, `mount -o loop` |
+| `/dev/tty` | Ընթացիկ terminal-ը | Ընթացիկ terminal-ը | Հարցնել password, նույնիսկ եթե stdin-ը ուղղորդված է |
+| `/dev/loopN` | Ֆայլի պարունակությունը | Ֆայլի մեջ | Ֆայլը որպես disk (Օր 3). `losetup`, `mount -o loop` |
 
 Բինար տվյալները տեսնելու համար օգտագործիր `xxd` (hex dump). `head -c 16 /dev/urandom | xxd`։
 
@@ -173,7 +173,7 @@ ls /lib/modules/$(uname -r)/kernel/drivers/
 
 `modprobe`-ը ավելի խելացի է, քան ցածր մակարդակի `insmod`-ը և `rmmod`-ը. այն գիտի module-ների կախվածությունները (`modules.dep`)։ Module-ի բեռնումը արգելելու համար՝ `blacklist` տող `/etc/modprobe.d/`-ում։
 
-Module-ը, որ բեռնվում է, աշխատում է kernel space-ում՝ լրիվ իրավունքներով։ Այդ պատճառով.
+Module-ը, որ բեռնվում է, աշխատում է kernel space-ում՝ լրիվ permission-ներով։ Այդ պատճառով.
 
 - միայն root-ը կարող է բեռնել module-ներ,
 - Secure Boot-ով համակարգերում module-ը պետք է ստորագրված լինի,
@@ -190,14 +190,14 @@ Module-ը, որ բեռնվում է, աշխատում է kernel space-ում՝ �
 | Ֆայլ | Ինչ կա |
 |---|---|
 | `/proc/PID/` | Ամեն process-ի մասին (Օր 8) |
-| `/proc/cpuinfo`, `/proc/meminfo` | CPU, հիշողություն |
+| `/proc/cpuinfo`, `/proc/meminfo` | CPU, memory |
 | `/proc/interrupts` | Քանի interrupt է ստացել ամեն սարքը, ամեն CPU-ի վրա |
 | `/proc/devices` | Driver-ների major համարները |
 | `/proc/partitions`, `/proc/mounts` | Partition-ներ, mount-եր |
 | `/proc/uptime`, `/proc/loadavg` | Աշխատանքի ժամանակը, ծանրաբեռնվածությունը |
 | `/proc/sys/` | Kernel-ի կարգավորելի պարամետրեր. `sysctl` |
 
-**`/sys`**-ը (sysfs) կառուցվածքային է և ցույց է տալիս kernel-ի **սարքերի մոդելը**. ամեն սարք՝ թղթապանակ, ամեն հատկություն՝ ֆայլ մեկ արժեքով.
+**`/sys`**-ը (sysfs) կառուցվածքային է և ցույց է տալիս kernel-ի **սարքերի մոդելը**. ամեն սարք՝ directory, ամեն հատկություն՝ ֆայլ մեկ արժեքով.
 
 ```bash
 ls /sys/class                          # դասեր. net, block, tty, thermal, leds, gpio ...
@@ -205,7 +205,7 @@ ls /sys/class/net                      # eth0 lo wlan0
 cat /sys/class/net/eth0/address        # MAC հասցեն
 cat /sys/class/net/eth0/operstate      # up / down
 cat /sys/block/sda/size                # չափը 512-բայթանոց sector-ներով
-cat /sys/block/sda/queue/rotational    # 1՝ պտտվող սկավառակ, 0՝ SSD
+cat /sys/block/sda/queue/rotational    # 1՝ պտտվող disk, 0՝ SSD
 ls /sys/bus/usb/devices                # USB ծառը
 cat /sys/bus/usb/devices/1-1/idVendor /sys/bus/usb/devices/1-1/product
 ```
@@ -302,7 +302,7 @@ unsigned int minor(dev_t dev);
 
 ```cpp
 #include <filesystem>
-// C++17. թղթապանակի entry-ների ցիկլ (opendir/readdir-ի փոխարեն, Օր 3)
+// C++17. directory-ի entry-ների ցիկլ (opendir/readdir-ի փոխարեն, Օր 3)
 for (auto &entry : std::filesystem::directory_iterator("/sys/class/net"))
     std::cout << entry.path().filename() << '\n';
 ```
@@ -328,7 +328,7 @@ usb      : 046d:c52b  USB Receiver
 random   : 8f3a91c0e2b45d17   (8 bytes from /dev/urandom)
 ```
 
-Լրացրու TODO-ները. CPU-ի մոդելը (x86-ի `model name` և ARM-ի `Model`/`Hardware`), block սարքերը `/sys/block`-ից (բաց թողնել 0 չափ ունեցողները), ցանցային ինտերֆեյսները, USB սարքերը, 8 պատահական բայթ `/dev/urandom`-ից `open`/`read`-ով։ Համեմատիր արդյունքը `lscpu`-ի, `lsblk`-ի, `ip link`-ի, `lsusb`-ի հետ։ Գործարկիր նաև բորդի վրա. ինչ է տարբեր։
+Լրացրու TODO-ները. CPU-ի մոդելը (x86-ի `model name` և ARM-ի `Model`/`Hardware`), block սարքերը `/sys/block`-ից (բաց թողնել 0 չափ ունեցողները), network ինտերֆեյսները, USB սարքերը, 8 պատահական բայթ `/dev/urandom`-ից `open`/`read`-ով։ Համեմատիր արդյունքը `lscpu`-ի, `lsblk`-ի, `ip link`-ի, `lsusb`-ի հետ։ Գործարկիր նաև բորդի վրա. ինչ է տարբեր։
 
 ## Self-Learning · Ինքնուրույն աշխատանք
 1. Գործարկիր `udevadm monitor` և միացրու USB flash։ Գրիր, թե ինչ իրադարձություններ եկան և ինչ հերթականությամբ։ Ինչ հայտնվեց `dmesg`-ում։
@@ -345,7 +345,7 @@ random   : 8f3a91c0e2b45d17   (8 bytes from /dev/urandom)
 
 1. Ինչ է կատարվում kernel-ում `read()`-ի ժամանակ serial port-ից, երբ տվյալներ դեռ չկան։ Ով և ինչպես է արթնացնում process-ը։
 2. Ինչ տարբերություն կա character և block սարքերի միջև։ Բեր երկուական օրինակ։
-3. `/dev/sda`-ն ջնջեցիր `rm`-ով։ Ինչ պատահեց սկավառակի հետ։ Ինչպես վերականգնել ֆայլը։
+3. `/dev/sda`-ն ջնջեցիր `rm`-ով։ Ինչ պատահեց disk-ի հետ։ Ինչպես վերականգնել ֆայլը։
 4. Ինչ են ցույց տալիս major և minor համարները։ Ինչու են `/dev/sda1`-ը և `/dev/sda2`-ը նույն major-ով։
 5. Ինչու են USB-serial սարքերը երբեմն `ttyUSB0`, երբեմն՝ `ttyUSB1`։ Ինչպես լուծել այս խնդիրը։
 6. Ինչ տարբերություն կա `insmod`-ի և `modprobe`-ի միջև։

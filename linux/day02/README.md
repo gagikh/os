@@ -1,11 +1,11 @@
-# Day 2: The Shell and the Program's Environment · Օր 2. Shell-ը և ծրագրի միջավայրը
+# Day 2: The Shell and the Program's Environment · Օր 2. Shell-ը և ծրագրի environment-ը
 
 ## Objectives · Նպատակներ
-- Բացատրել, թե ինչ է ստանում ծրագիրը գործարկվելիս. argument-ների ցանկ, environment, երեք ստանդարտ հոսք, և ինչ է վերադարձնում՝ exit status
+- Բացատրել, թե ինչ է ստանում ծրագիրը գործարկվելիս. argument-ների ցանկ, environment, երեք ստանդարտ stream, և ինչ է վերադարձնում՝ exit status
 - Կարդալ argument-ները C/C++-ում (`argc`, `argv`) և մշակել option-ները `getopt_long`-ով՝ GNU-ի կանոններով
 - Տարբերել `stdout`-ը և `stderr`-ը, ուղղորդել դրանք ֆայլ (`>`, `2>`, `2>&1`) և բացատրել buffering-ը
 - Օգտագործել exit status-ը shell-ում (`$?`, `&&`, `||`, `!`) և ճիշտ exit code վերադարձնել ծրագրից
-- Տարբերել shell-ի փոփոխականը environment variable-ից, օգտագործել `export`, `env`, `PATH`-ը, և բացատրել, թե ինչպես է environment-ը ժառանգվում
+- Տարբերել shell-ի variable-ը environment variable-ից, օգտագործել `export`, `env`, `PATH`-ը, և բացատրել, թե ինչպես է environment-ը ժառանգվում
 - Օգտագործել համակարգի մասին տեղեկություն տվող հրամանները. `who`, `tty`, `last`, `stat`, `du`, `df`, `vmstat`, `lsof`, `strace`, `dmesg`
 
 ## Key Concepts · Հիմնական գաղափարներ
@@ -25,39 +25,39 @@
 
 **Short option / long option** — GNU-ի կանոնով option-ը ունի կարճ ձև՝ մեկ գծիկ և մեկ տառ (`-v`), և երկար ձև՝ երկու գծիկ և բառ (`--verbose`)։ Կարճը արագ է գրելու, երկարը՝ հեշտ կարդալու script-երում։
 
-**Standard streams (ստանդարտ հոսքեր)** — Երեք հոսք, որոնք բաց են յուրաքանչյուր process-ում սկզբից. **stdin** (մուտք, file descriptor 0), **stdout** (ելք, 1), **stderr** (սխալներ, 2)։ Լռելյայն երեքն էլ կապված են terminal-ին։
+**Standard streams** — Երեք stream, որոնք բաց են յուրաքանչյուր process-ում սկզբից. **stdin** (մուտք, file descriptor 0), **stdout** (ելք, 1), **stderr** (սխալներ, 2)։ Լռելյայն երեքն էլ կապված են terminal-ին։
 
-**File descriptor** — Փոքր ամբողջ թիվ, որով process-ը դիմում է բաց ֆայլին, pipe-ին կամ սարքին։ 0, 1, 2-ը ստանդարտ հոսքերն են, հաջորդ բացված ֆայլը ստանում է 3։
+**File descriptor** — Փոքր ամբողջ թիվ, որով process-ը դիմում է բաց ֆայլին, pipe-ին կամ սարքին։ 0, 1, 2-ը ստանդարտ stream-ներն են, հաջորդ բացված ֆայլը ստանում է 3։
 
-**Redirection (ուղղորդում)** — Shell-ի գործողություն, որը փոխում է, թե ուր են գնում հրամանի հոսքերը. `>` (stdout ֆայլ), `2>` (stderr ֆայլ), `<` (stdin ֆայլից), `2>&1` (stderr այնտեղ, ուր stdout-ը)։
+**Redirection** — Shell-ի գործողություն, որը փոխում է, թե ուր են գնում հրամանի stream-ները. `>` (stdout ֆայլ), `2>` (stderr ֆայլ), `<` (stdin ֆայլից), `2>&1` (stderr այնտեղ, ուր stdout-ը)։
 
-**Buffering** — `stdout`-ի տվյալները նախ հավաքվում են հիշողության մեջ և ուղարկվում մեծ կտորներով. երբ buffer-ը լցվում է, երբ տող է ավարտվում (terminal-ի դեպքում) կամ ծրագիրը ավարտվում է։ `stderr`-ը buffer չունի և տպում է անմիջապես։
+**Buffering** — `stdout`-ի տվյալները նախ հավաքվում են memory-ի մեջ և ուղարկվում մեծ կտորներով. երբ buffer-ը լցվում է, երբ տող է ավարտվում (terminal-ի դեպքում) կամ ծրագիրը ավարտվում է։ `stderr`-ը buffer չունի և տպում է անմիջապես։
 
 **Exit status (exit code)** — 0-ից 255 թիվ, որ ծրագիրը վերադարձնում է ավարտվելիս. `0`՝ հաջող, մնացածը՝ սխալ։ C/C++-ում դա `main`-ի վերադարձրած արժեքն է կամ `exit()`-ի argument-ը, shell-ում՝ `$?`-ը։
 
-**Shell variable** — Փոփոխական, որ գոյություն ունի միայն ընթացիկ shell-ում. `x=10`։ Shell-ից գործարկված ծրագրերը այն չեն տեսնում։
+**Shell variable** — Variable, որ գոյություն ունի միայն ընթացիկ shell-ում. `x=10`։ Shell-ից գործարկված ծրագրերը այն չեն տեսնում։
 
-**Environment variable** — Անուն=արժեք զույգ, որը process-ը ժառանգում է իր ծնողից և փոխանցում իր երեխաներին։ Shell-ի փոփոխականը դառնում է environment variable `export`-ով։ Ըստ սովորության անունները գրվում են մեծատառերով. `HOME`, `PATH`, `USER`։
+**Environment variable** — Անուն=արժեք զույգ, որը process-ը ժառանգում է իր parent-ից և փոխանցում իր child-ներին։ Shell-ի variable-ը դառնում է environment variable `export`-ով։ Ըստ սովորության անունները գրվում են մեծատառերով. `HOME`, `PATH`, `USER`։
 
-**Environment (միջավայր)** — Process-ի բոլոր environment variable-ների ամբողջությունը։ Հիշողության մեջ այն `"NAME=value"` տողերի զանգված է, որի վերջում `NULL` է։ C-ում հասանելի է `environ` գլոբալ փոփոխականով։
+**Environment** — Process-ի բոլոր environment variable-ների ամբողջությունը։ Memory-ի մեջ այն `"NAME=value"` տողերի զանգված է, որի վերջում `NULL` է։ C-ում հասանելի է `environ` գլոբալ variable-ով։
 
-**`PATH`** — Environment variable, որը պարունակում է թղթապանակների ցանկ՝ `:`-ով բաժանված։ Երբ գրում ես `ls`, shell-ը փնտրում է `ls` անունով ծրագիր այդ թղթապանակներում՝ հերթով։
+**`PATH`** — Environment variable, որը պարունակում է directory-ների ցանկ՝ `:`-ով բաժանված։ Երբ գրում ես `ls`, shell-ը փնտրում է `ls` անունով ծրագիր այդ directory-ներում՝ հերթով։
 
-**Built-in command** — Հրաման, որը shell-ն ինքն է կատարում՝ առանց նոր ծրագիր գործարկելու. `cd`, `export`, `echo`, `exit`։ `cd`-ն չի կարող լինել առանձին ծրագիր. առանձին process-ը չի կարող փոխել shell-ի ընթացիկ թղթապանակը։
+**Built-in command** — Հրաման, որը shell-ն ինքն է կատարում՝ առանց նոր ծրագիր գործարկելու. `cd`, `export`, `echo`, `exit`։ `cd`-ն չի կարող լինել առանձին ծրագիր. առանձին process-ը չի կարող փոխել shell-ի ընթացիկ directory-ն։
 
-**Temporary file** — Ֆայլ՝ տվյալները կարճ ժամանակով պահելու համար, սովորաբար `/tmp`-ում։ Անունը պետք է լինի եզակի և անկանխատեսելի, իրավունքները՝ միայն owner-ի համար. դա ապահովում են `mktemp` հրամանը և `mkstemp()` ֆունկցիան։
+**Temporary file** — Ֆայլ՝ տվյալները կարճ ժամանակով պահելու համար, սովորաբար `/tmp`-ում։ Անունը պետք է լինի եզակի և անկանխատեսելի, permission-ները՝ միայն owner-ի համար. դա ապահովում են `mktemp` հրամանը և `mkstemp()` ֆունկցիան։
 
 ---
 
 ## 1. Ի՞նչ է ստանում ծրագիրը գործարկվելիս
 
 ### Visual
-![Process-ը և իր միջավայրը. ձախից մտնում են argument-ների ցանկը (argv) և environment-ը (environ), երեք ստանդարտ հոսքեր (0 stdin, 1 stdout, 2 stderr), աջից դուրս է գալիս exit status-ը, որը shell-ը պահում է $?-ում](process_environment.svg)
+![Process-ը և իր environment-ը. ձախից մտնում են argument-ների ցանկը (argv) և environment-ը (environ), երեք ստանդարտ stream-ներ (0 stdin, 1 stdout, 2 stderr), աջից դուրս է գալիս exit status-ը, որը shell-ը պահում է $?-ում](process_environment.svg)
 
 Երբ C++-ում գրում ես `int main()`, թվում է, թե ծրագիրը սկսվում է դատարկ տեղից։ Իրականում OS-ը ծրագրին տալիս է չորս բան.
 
 1. **Argument list**՝ բառերը, որ գրեցիր հրամանի տողում (§2)
-2. **Երեք բաց հոսք**՝ stdin, stdout, stderr (§3)
+2. **Երեք բաց stream**՝ stdin, stdout, stderr (§3)
 3. **Environment**՝ անուն=արժեք զույգերի ցանկ (§5)
 4. Իսկ ավարտվելիս ծրագիրը **վերադարձնում** է մեկ թիվ՝ **exit status** (§4)
 
@@ -81,7 +81,7 @@ Shell-ը argument-ները պատրաստում է ծրագրի համար, և �
 |---|---|---|
 | `./prog a b` | `a`, `b` | բացատը բաժանում է բառերը |
 | `./prog "a b"` | `a b` | չակերտները միացնում են |
-| `./prog $HOME` | `/home/student` | shell-ը բացեց փոփոխականը |
+| `./prog $HOME` | `/home/student` | shell-ը բացեց variable-ը |
 | `./prog '$HOME'` | `$HOME` | միակ չակերտներում ամեն ինչ բառացի է |
 | `./prog *.txt` | `a.txt`, `b.txt` | shell-ը `*`-ը փոխարինեց ֆայլերի անուններով (**globbing**) |
 | `./prog '*'` | `*` | չակերտներում `*`-ը չի բացվում |
@@ -98,7 +98,7 @@ Shell-ը argument-ները պատրաստում է ծրագրի համար, և �
 - `--`-ը նշանակում է «option-ները վերջացան». `rm -- -file` ջնջում է `-file` անունով ֆայլը։
 - Option-ներից հետո գալիս են մնացած argument-ները, սովորաբար ֆայլերի անուններ։
 
-C/C++-ում option-ները ձեռքով մշակելը ձանձրալի է և սխալներով լի։ GNU C գրադարանը տալիս է `getopt_long`-ը.
+C/C++-ում option-ները ձեռքով մշակելը ձանձրալի է և սխալներով լի։ GNU C library-ն տալիս է `getopt_long`-ը.
 
 ```cpp
 #include <getopt.h>
@@ -123,7 +123,7 @@ while (-1 != (opt = getopt_long(argc, argv, short_options, long_options, nullptr
 // argv[optind] ... argv[argc - 1]՝ մնացած argument-ները
 ```
 
-## 3. Ստանդարտ հոսքեր և redirection
+## 3. Ստանդարտ stream-ներ և redirection
 
 ### Visual
 ![File descriptor-ների աղյուսակը երեք դեպքում. լռելյայն (0, 1, 2՝ terminal), `> out.txt 2>&1` (1-ը և 2-ը՝ ֆայլ), `2>&1 > out.txt` (2-ը մնում է terminal-ում, քանի որ պատճենվեց մինչև 1-ի փոխվելը)](redirection.svg)
@@ -136,10 +136,10 @@ while (-1 != (opt = getopt_long(argc, argv, short_options, long_options, nullptr
 | 1 | stdout | `stdout`, `printf` | `std::cout` | terminal |
 | 2 | stderr | `stderr`, `fprintf(stderr, ...)` | `std::cerr` | terminal |
 
-**Կանոն.** արդյունքը գրիր stdout, սխալներն ու հաղորդագրությունները՝ stderr։ Այդ դեպքում օգտատերը կարող է արդյունքը ուղարկել ֆայլ կամ pipe, իսկ սխալները դեռ կտեսնի terminal-ում.
+**Կանոն.** արդյունքը գրիր stdout, սխալներն ու հաղորդագրությունները՝ stderr։ Այդ դեպքում user-ը կարող է արդյունքը ուղարկել ֆայլ կամ pipe, իսկ սխալները դեռ կտեսնի terminal-ում.
 
 ```bash
-ls / /nothing > out.txt         # terminal-ում միայն սխալը, out.txt-ում՝ / թղթապանակի ցանկը
+ls / /nothing > out.txt         # terminal-ում միայն սխալը, out.txt-ում՝ / directory-ի ցանկը
 ls / /nothing 2> err.txt        # հակառակը
 ls / /nothing > all.txt 2>&1    # երկուսն էլ all.txt-ում
 ls / /nothing &> all.txt        # նույնը, bash-ի կարճ ձևը
@@ -200,7 +200,7 @@ int main()
 |---|---|
 | 1 | Ընդհանուր սխալ |
 | 2 | Shell-ի built-in-ի սխալ օգտագործում (շատ ծրագրեր 2-ով նաև սխալ argument-ներ են նշում) |
-| 126 | Ծրագիրը գտնվեց, բայց կատարել հնարավոր չէ (իրավունք չկա, `x` չկա) |
+| 126 | Ծրագիրը գտնվեց, բայց կատարել հնարավոր չէ (permission չկա, `x` չկա) |
 | 127 | Հրամանը չի գտնվել (`PATH`-ում չկա, կամ սխալ անուն) |
 | 128+n | Ծրագիրը սպանվեց signal n-ով. `kill -9`-ից հետո `$?` = 137, Ctrl+C-ից հետո (signal 2)՝ 130 |
 
@@ -221,10 +221,10 @@ make && ./app || echo "failed"      # շղթա
 false | true ; echo $? ${PIPESTATUS[@]}    # 0  1 0
 ```
 
-## 5. Փոփոխականներ և environment
+## 5. Variable-ներ և environment
 
 ### Visual
-![Environment-ի ժառանգումը. shell-ում x=10 (միայն shell-ում), export y=20 (environment-ում). ./prog-ը ստանում է y-ի պատճենը, բայց ոչ x-ը. երբ ./prog-ը փոխում է y-ը, shell-ի y-ը չի փոխվում. Z=5 ./prog՝ փոփոխական միայն մեկ հրամանի համար](env_inheritance.svg)
+![Environment-ի ժառանգումը. shell-ում x=10 (միայն shell-ում), export y=20 (environment-ում). ./prog-ը ստանում է y-ի պատճենը, բայց ոչ x-ը. երբ ./prog-ը փոխում է y-ը, shell-ի y-ը չի փոխվում. Z=5 ./prog՝ variable միայն մեկ հրամանի համար](env_inheritance.svg)
 
 **Shell variable**-ը գոյություն ունի միայն shell-ում.
 
@@ -234,7 +234,7 @@ echo $x         # 10
 bash -c 'echo "child sees: [$x]"'    # child sees: []. նոր process-ը x-ը չի տեսնում
 ```
 
-**Environment variable**-ը փոխանցվում է բոլոր երեխա process-ներին.
+**Environment variable**-ը փոխանցվում է բոլոր child process-ներին.
 
 ```bash
 export x        # x-ը հիմա environment-ում է
@@ -244,9 +244,9 @@ export EDITOR=nano                   # ստեղծել և export անել միա�
 
 Երեք կանոն, որոնք պետք է հիշել.
 
-1. **Երեխան ստանում է պատճեն։** Երբ process-ը ստեղծվում է, նրա environment-ը ծնողի environment-ի պատճենն է։
-2. **Երեխան չի կարող փոխել ծնողին։** Եթե script-ը փոխում է `PATH`-ը, այն փոխվում է միայն script-ի ներսում. script-ի ավարտից հետո shell-ի `PATH`-ը նույնն է։ Դրա համար են `cd`-ն և `export`-ը built-in. դրանք պետք է փոխեն հենց shell-ը։
-3. **Մեկ հրամանի համար.** `LANG=C ls /nothing`՝ փոփոխականը միայն `ls`-ի environment-ում է, shell-ում՝ ոչ։
+1. **Child-ը ստանում է պատճեն։** Երբ process-ը ստեղծվում է, նրա environment-ը parent-ի environment-ի պատճենն է։
+2. **Child-ը չի կարող փոխել parent-ին։** Եթե script-ը փոխում է `PATH`-ը, այն փոխվում է միայն script-ի ներսում. script-ի ավարտից հետո shell-ի `PATH`-ը նույնն է։ Դրա համար են `cd`-ն և `export`-ը built-in. դրանք պետք է փոխեն հենց shell-ը։
+3. **Մեկ հրամանի համար.** `LANG=C ls /nothing`՝ variable-ը միայն `ls`-ի environment-ում է, shell-ում՝ ոչ։
 
 ```bash
 env                     # բոլոր environment variable-ները
@@ -255,22 +255,22 @@ set | less              # բոլորը՝ ներառյալ shell variable-ներ�
 unset x                 # ջնջել
 ```
 
-### Կարևոր փոփոխականներ
+### Կարևոր variable-ներ
 
-| Փոփոխական | Ինչ է պահում |
+| Variable | Ինչ է պահում |
 |---|---|
-| `HOME` | Օգտատիրոջ home թղթապանակը. `cd`-ն առանց argument-ի գնում է այստեղ |
-| `USER` | Օգտատիրոջ անունը |
+| `HOME` | User-ի home directory-ն. `cd`-ն առանց argument-ի գնում է այստեղ |
+| `USER` | User-ի անունը |
 | `SHELL` | Մուտքի shell-ը (`/etc/passwd`-ից) |
-| `PWD` | Ընթացիկ թղթապանակը |
-| `PATH` | Թղթապանակներ, որտեղ shell-ը փնտրում է ծրագրերը, `:`-ով բաժանված |
+| `PWD` | Ընթացիկ directory-ն |
+| `PATH` | Directory-ներ, որտեղ shell-ը փնտրում է ծրագրերը, `:`-ով բաժանված |
 | `PS1` | Prompt-ի տեսքը |
 | `LANG` | Լեզուն և կոդավորումը. `LANG=C`՝ անգլերեն հաղորդագրություններ |
 | `EDITOR` | Խմբագրիչ, որը բացում են մյուս ծրագրերը (`crontab -e`, `git commit`) |
 
-Shell-ի հատուկ փոփոխականներ, որոնք environment-ում չեն.
+Shell-ի հատուկ variable-ներ, որոնք environment-ում չեն.
 
-| Փոփոխական | Ինչ է պահում |
+| Variable | Ինչ է պահում |
 |---|---|
 | `$?` | Վերջին հրամանի exit status-ը |
 | `$$` | Shell-ի PID-ը |
@@ -291,9 +291,9 @@ which ls           # /usr/bin/ls. առաջին համընկնումը
 type -a echo       # echo is a shell builtin / echo is /usr/bin/echo
 ```
 
-Ընթացիկ թղթապանակը `PATH`-ում չէ. դրա համար ենք գրում `./day02`։ Սա պաշտպանություն է. եթե `.`-ը `PATH`-ի սկզբում լիներ, ուրիշի թղթապանակում `ls` անունով վնասակար ծրագիրը կգործարկվեր `ls` գրելիս։
+Ընթացիկ directory-ն `PATH`-ում չէ. դրա համար ենք գրում `./day02`։ Սա պաշտպանություն է. եթե `.`-ը `PATH`-ի սկզբում լիներ, ուրիշի directory-ում `ls` անունով վնասակար ծրագիրը կգործարկվեր `ls` գրելիս։
 
-Քո ծրագրերի համար թղթապանակ ավելացնել (մշտապես).
+Քո ծրագրերի համար directory ավելացնել (մշտապես).
 
 ```bash
 mkdir -p ~/bin
@@ -311,14 +311,14 @@ auto const home = getenv("HOME");          // const char* կամ nullptr
 auto const server = getenv("SERVER_NAME");
 auto const name = server ? server : "server.example.com";   // լռելյայն արժեք
 
-setenv("MODE", "debug", 1);                // փոխել (միայն այս process-ում և նրա երեխաներում)
+setenv("MODE", "debug", 1);                // փոխել (միայն այս process-ում և նրա child-ներում)
 unsetenv("MODE");
 
 for (auto var = environ; nullptr != *var; ++var)   // բոլոր "NAME=value" տողերը
     std::cout << *var << '\n';
 ```
 
-Environment variable-ները հարմար են կարգավորումների համար, որոնք հազվադեպ են փոխվում. server-ի հասցե, debug ռեժիմ, թղթապանակի ճանապարհ։ Ծրագիրը կարդում է փոփոխականը, իսկ եթե այն չկա՝ օգտագործում լռելյայն արժեքը։
+Environment variable-ները հարմար են կարգավորումների համար, որոնք հազվադեպ են փոխվում. server-ի հասցե, debug ռեժիմ, directory-ի path։ Ծրագիրը կարդում է variable-ը, իսկ եթե այն չկա՝ օգտագործում լռելյայն արժեքը։
 
 Մի փոխիր `environ`-ը ուղիղ. օգտագործիր `setenv`-ը և `unsetenv`-ը։
 
@@ -327,16 +327,16 @@ Environment variable-ները հարմար են կարգավորումների �
 Երբեմն ծրագրին պետք է ֆայլ՝ տվյալները կարճ ժամանակով պահելու կամ այլ ծրագրի փոխանցելու համար։ Դրանք պահվում են `/tmp`-ում։ Երեք վտանգ.
 
 - Ծրագիրը կարող է աշխատել միաժամանակ մի քանի օրինակով. անունները չպետք է համընկնեն։
-- Ուրիշ օգտատերը չպետք է կարողանա կարդալ կամ փոխել ֆայլը։
+- Ուրիշ user-ը չպետք է կարողանա կարդալ կամ փոխել ֆայլը։
 - Անունը չպետք է լինի կանխատեսելի (`/tmp/myprog.tmp`), այլապես հարձակվողը կարող է նախապես ստեղծել այդ անունով ֆայլ կամ link։
 
 Shell-ում.
 
 ```bash
-f=$(mktemp)                 # /tmp/tmp.k3J9xQ2aBc, իրավունքները՝ -rw-------
+f=$(mktemp)                 # /tmp/tmp.k3J9xQ2aBc, permission-ները՝ -rw-------
 echo data > "$f"
 rm "$f"
-d=$(mktemp -d)              # ժամանակավոր թղթապանակ
+d=$(mktemp -d)              # ժամանակավոր directory
 ```
 
 C/C++-ում՝ `mkstemp`.
@@ -369,10 +369,10 @@ mesg n              # արգելել ուրիշներին գրել իմ terminal
 | Ինչ | Հրաման | Նշում |
 |---|---|---|
 | Architecture | `arch`, `uname -m` | |
-| Հիշողություն | `free -h`, `vmstat 1 5` | `vmstat`-ը ցույց է տալիս նաև CPU-ի բեռնվածությունը և I/O-ն |
-| Ֆայլի մանրամասներ | `stat file` | inode, չափ, իրավունքներ, երեք ժամանակ (Օր 3) |
-| Թղթապանակի չափը | `du -sh dir` | `-s`՝ միայն ընդհանուրը, `-h`՝ KB/MB/GB |
-| Սկավառակների ազատ տեղը | `df -h` | |
+| Memory | `free -h`, `vmstat 1 5` | `vmstat`-ը ցույց է տալիս նաև CPU-ի բեռնվածությունը և I/O-ն |
+| Ֆայլի մանրամասներ | `stat file` | inode, չափ, permission-ներ, երեք ժամանակ (Օր 3) |
+| Directory-ի չափը | `du -sh dir` | `-s`՝ միայն ընդհանուրը, `-h`՝ KB/MB/GB |
+| Disk-ների ազատ տեղը | `df -h` | |
 | Բաց ֆայլեր | `lsof -p PID`, `lsof file` | ով է պահում ֆայլը բաց |
 | Kernel-ի հաղորդագրություններ | `dmesg`, `journalctl -k` | կարող է պահանջել `sudo` |
 | Ֆայլի վերջը | `tail file`, `tail -n 20 file`, `tail -f log` | վերջին 10 (20) տողը. `-f`՝ շարունակել տպել նոր տողերը. `sudo dmesg \| tail`՝ kernel-ի վերջին հաղորդագրությունները |
@@ -399,7 +399,7 @@ ltrace -c ls > /dev/null                     # գրադարանային ֆուն
 *Ամփոփում. այս օրվա հրամանները, որոնք բացատրված են վերևում։ Անգիր անել պետք չէ. վերադարձիր այստեղ, երբ մոռանաս գրելաձևը։ Բոլոր օրերի հրամանների ցանկը [COMMANDS.md](../COMMANDS.md)-ում է։*
 
 ```bash
-# Ստանդարտ հոսքեր և redirection
+# Ստանդարտ stream-ներ և redirection
 ls / /nothing                       # stdout և stderr միասին terminal-ում
 ls / /nothing > out.txt             # stdout՝ ֆայլ, stderr՝ terminal
 ls / /nothing 2> err.txt            # stderr՝ ֆայլ
@@ -415,14 +415,14 @@ cd /nothing || echo "no such dir"   # echo միայն եթե cd-ն ձախողվ�
 ! false ; echo $?                   # 0. ! շրջում է արդյունքը
 true ; false                        # հրամաններ, որոնք միայն 0 կամ 1 են վերադարձնում
 
-# Փոփոխականներ և environment
+# Variable-ներ և environment
 x=10 ; echo $x                      # shell variable. = նշանի շուրջ բացատ չի կարելի
 export x                            # դարձնել environment variable
 export EDITOR=nano                  # ստեղծել և export անել միանգամից
-env ; printenv HOME                 # environment-ը / մեկ փոփոխական
-set | less                          # բոլոր փոփոխականները՝ նաև shell-ինը
+env ; printenv HOME                 # environment-ը / մեկ variable
+set | less                          # բոլոր variable-ները՝ նաև shell-ինը
 unset x                             # ջնջել
-LANG=C ls /nothing                  # փոփոխականը միայն այս հրամանի համար
+LANG=C ls /nothing                  # variable-ը միայն այս հրամանի համար
 echo $PATH | tr ':' '\n'            # PATH-ը՝ տող առ տող
 type cd ls                          # built-in է, թե ծրագիր
 
@@ -433,8 +433,8 @@ f=$(mktemp) ; echo $f ; rm $f       # /tmp/tmp.k3J9xQ2aBc
 who ; tty ; last | head             # ով է մուտք գործել, իմ terminal-ը, մուտքերի պատմությունը
 arch ; uname -m                     # architecture
 stat /etc/passwd                    # ֆայլի մանրամասները՝ inode, չափ, ժամեր
-du -sh ~ ; df -h /                  # թղթապանակի չափը, սկավառակի ազատ տեղը
-vmstat 1 5                          # հիշողություն, CPU, I/O. 5 անգամ, ամեն վայրկյան
+du -sh ~ ; df -h /                  # directory-ի չափը, disk-ի ազատ տեղը
+vmstat 1 5                          # memory, CPU, I/O. 5 անգամ, ամեն վայրկյան
 lsof -p $$ | head                   # shell-ի բաց ֆայլերը
 sudo dmesg | tail                   # kernel-ի հաղորդագրությունները
 strace -c ls > /dev/null            # ինչ system call-եր արեց ls-ը և քանի անգամ
@@ -478,7 +478,7 @@ extern char **environ;
 int unlink(const char *pathname);
 
 #include <stdio.h>
-// Տպել ընտրված հոսքում. stderr՝ սխալների համար
+// Տպել ընտրված stream-ում. stderr՝ սխալների համար
 int fprintf(FILE *stream, const char *format, ...);
 // Դատարկել stdout-ի buffer-ը հիմա
 int fflush(FILE *stream);
@@ -504,7 +504,7 @@ z=7 ./day02 z/2        # 3. z-ը միայն այս հրամանի համար
 ./day02 --list         # բոլոր environment variable-ները, որոնց արժեքը ամբողջ թիվ է
 ```
 
-Լրացրու [`template.cpp`](template.cpp)-ի TODO-ները. option-ները `getopt_long`-ով, արժեքները `getenv`-ով, ամբողջ environment-ը `environ`-ով, սխալները stderr-ում, և ճիշտ exit code-եր (0, 1, 2, 3)։ Ստուգիր յուրաքանչյուր exit code-ը `echo $?`-ով, իսկ սխալների ուղղորդումը՝ `./day02 q+1 2> err.txt`-ով։
+Լրացրու [`template.cpp`](template.cpp)-ի TODO-ները. option-ները `getopt_long`-ով, արժեքները `getenv`-ով, ամբողջ environment-ը `environ`-ով, սխալները stderr-ում, և ճիշտ exit code-եր (0, 1, 2, 3)։ Ստուգիր յուրաքանչյուր exit code-ը `echo $?`-ով, իսկ սխալների ոredirection-ը՝ `./day02 q+1 2> err.txt`-ով։
 
 ## Self-Learning · Ինքնուրույն աշխատանք
 1. Գրիր ծրագիր, որը տպում է իր բոլոր argument-ները քառակուսի փակագծերում՝ `[a] [b c]`։ Գործարկիր `./args a "b c" *.txt '$HOME' $HOME`-ով և բացատրիր ամեն արդյունքը։
@@ -512,7 +512,7 @@ z=7 ./day02 z/2        # 3. z-ը միայն այս հրամանի համար
 3. Գրիր C++ ծրագիր, որը տպում է `.`-ներ վայրկյանը մեկ `printf`-ով, ապա `fprintf(stderr, ...)`-ով, ապա `printf` + `fflush`-ով։ Համեմատիր։ Գործարկիր առաջինը `./dots | cat`-ով. ինչ փոխվեց։
 4. Գործարկիր `sleep 100`, ապա Ctrl+C։ Ի՞նչ է `$?`-ը։ Նույնը՝ `kill -9`-ով ուրիշ terminal-ից։ Համեմատիր `kill -l`-ի ցանկի հետ։
 5. `strace -f -e trace=execve bash -c 'ls | wc -l'`. քանի՞ ծրագիր գործարկվեց, և ով գործարկեց դրանք։
-6. Գտիր, թե ինչ ֆայլեր է բացում `ls`-ը, մինչև կհասնի թղթապանակը կարդալուն. `strace -e trace=openat ls 2>&1 | grep -v ENOENT`։ Որո՞նք են գրադարաններ (`.so`), և որո՞նք՝ կարգավորումներ։
+6. Գտիր, թե ինչ ֆայլեր է բացում `ls`-ը, մինչև կհասնի directory-ն կարդալուն. `strace -e trace=openat ls 2>&1 | grep -v ENOENT`։ Որո՞նք են library-ներ (`.so`), և որո՞նք՝ կարգավորումներ։
 7. Գրիր ծրագիր, որը ստեղծում է ժամանակավոր ֆայլ `mkstemp`-ով, գրում է այնտեղ 1 MB, ապա `sleep(30)`։ Մինչ ծրագիրը քնած է, գտիր ֆայլը `lsof -p PID`-ով։ Կրկնիր `unlink`-ով և առանց դրա։ Ի՞նչ է ցույց տալիս `lsof`-ը առաջին դեպքում։
 8. Փոխիր `PS1`-ը, որ prompt-ում երևա ժամը և վերջին հրամանի exit status-ը։ Կարդա `man bash`, PROMPTING բաժինը։
 
@@ -522,12 +522,12 @@ z=7 ./day02 z/2        # 3. z-ը միայն այս հրամանի համար
 1. `./prog *.c` հրամանում ով է փոխարինում `*.c`-ն ֆայլերի անուններով՝ shell-ը, թե ծրագիրը։ Ի՞նչ կստանա ծրագիրը, եթե `.c` ֆայլ չկա։
 2. Ինչո՞ւ է `argv`-ի վերջում `NULL`, եթե `argc`-ն արդեն ասում է քանակը։ Իսկ ինչպե՞ս է ծրագիրը իմանում `environ`-ի չափը, եթե «envc» չկա։
 3. Ինչո՞ւ `=` նշանը չի կարող լինել environment variable-ի անվան մեջ։
-4. Ծնողը փոխանցում է environment-ը երեխային։ Եթե երեխան փոխի փոփոխականի արժեքը, կտեսնի՞ ծնողը։ Իսկ երեխայի երեխան։ Իսկ եթե ծնողը փոխի արժեքը երեխային գործարկելուց հետո։
+4. Parent-ը փոխանցում է environment-ը child-ին։ Եթե child-ը փոխի variable-ի արժեքը, կտեսնի՞ parent-ը։ Իսկ child-ի child-ը։ Իսկ եթե parent-ը փոխի արժեքը child-ին գործարկելուց հետո։
 5. Ինչո՞ւ `cd`-ն չի կարող լինել առանձին ծրագիր, ինչպես `ls`-ը։
 6. `cmd > f 2>&1` և `cmd 2>&1 > f`. որտե՞ղ կհայտնվեն սխալները ամեն դեպքում և ինչու։
 7. Ծրագիրը տպում է `printf("start")`, ապա վթարի է ենթարկվում (segmentation fault)։ `start`-ը չի երևում։ Ինչո՞ւ։
 8. Ի՞նչ կնշանակի `$?` = 126, 127, 137, 130։
-9. Ինչո՞ւ է ընթացիկ թղթապանակը բացակայում `PATH`-ից։
+9. Ինչո՞ւ է ընթացիկ directory-ն բացակայում `PATH`-ից։
 10. Եթե server-ի հասցեն կարելի է տալ և՛ argument-ով, և՛ environment variable-ով, որ մեկը պետք է գերակայի և ինչու։
 11. Ինչո՞ւ է վտանգավոր ժամանակավոր ֆայլի համար օգտագործել `/tmp/myprog.tmp` ֆիքսված անունը։
 12. `./day02 -5+x`-ը տպում է «invalid option -- '5'»։ Ինչո՞ւ, և ինչ է փոխում `./day02 -- -5+x`-ը։ Նույն պատճառով ինչպե՞ս ջնջել `-file` անունով ֆայլը։

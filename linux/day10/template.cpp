@@ -40,15 +40,15 @@ static std::vector<char *> make_argv(Words &words)
     return argv;
 }
 
-// Ընթացիկ թղթապանակը prompt-ի համար
+// Ընթացիկ directory-ն prompt-ի համար
 static std::string current_dir()
 {
     char buf[4096];
     return nullptr != getcwd(buf, sizeof buf) ? std::string(buf) : std::string("?");
 }
 
-// Երեխայում. փոխարինել ծրագիրը։ Եթե exec-ը ձախողվեց, տպել սխալը և _exit(127)։
-// Ինչու _exit. exit-ը կդատարկեր ծնողից պատճենված stdio buffer-ները (Օր 10, §1)։
+// Child-ում. փոխարինել ծրագիրը։ Եթե exec-ը ձախողվեց, տպել սխալը և _exit(127)։
+// Ինչու _exit. exit-ը կդատարկեր parent-ից պատճենված stdio buffer-ները (Օր 10, §1)։
 [[noreturn, maybe_unused]] static void exec_or_die(Words &words)
 {
     auto argv = make_argv(words);
@@ -93,7 +93,7 @@ static bool run_builtin(Words const &words, Shell &sh)
 }
 
 // TODO 3. Գործարկել արտաքին հրաման։
-//   fork → երեխայում exec_or_die(words)
+//   fork → child-ում exec_or_die(words)
 //   background == false → waitpid(pid) և վերադարձնել decode_status(...)
 //   background == true  → տպել "[pid]\n" և վերադարձնել 0 (չսպասել)
 static int run_command(Words words, bool background)
@@ -103,7 +103,7 @@ static int run_command(Words words, bool background)
     return -1;
 }
 
-// TODO 4. Մաքրել ավարտված ֆոնային երեխաներին (zombie-ներին), առանց սպասելու.
+// TODO 4. Մաքրել ավարտված ֆոնային child-ներին (zombie-ներին), առանց սպասելու.
 //   waitpid(-1, &raw, WNOHANG) ցիկլով, քանի դեռ վերադարձնում է > 0
 //   ամեն մեկի համար տպել "[pid] done, status N\n"
 //   վերադարձնել մաքրվածների քանակը
@@ -114,9 +114,9 @@ static int reap_background()
 
 // TODO 5. left | right.
 //   pipe(fds)
-//   երեխա 1. dup2(fds[1], STDOUT_FILENO), փակել երկու ծայրը, exec_or_die(left)
-//   երեխա 2. dup2(fds[0], STDIN_FILENO),  փակել երկու ծայրը, exec_or_die(right)
-//   ծնող. փակել երկու ծայրը (այլապես right-ը երբեք EOF չի ստանա), սպասել երկուսին
+//   child 1. dup2(fds[1], STDOUT_FILENO), փակել երկու ծայրը, exec_or_die(left)
+//   child 2. dup2(fds[0], STDIN_FILENO),  փակել երկու ծայրը, exec_or_die(right)
+//   parent. փակել երկու ծայրը (այլապես right-ը երբեք EOF չի ստանա), սպասել երկուսին
 //   վերադարձնել right-ի status-ը (ինչպես bash-ը)
 static int run_pipeline(Words left, Words right)
 {
@@ -165,7 +165,7 @@ static void check(bool ok, char const *what)
 
 static int selftest()
 {
-    // decode_status-ի համար raw արժեքները ստանում ենք իրական երեխաներից
+    // decode_status-ի համար raw արժեքները ստանում ենք իրական child-ներից
     auto raw_of = [](char const *script) {
         auto const pid = SYS_CHECK(fork());
         if (0 == pid) { execl("/bin/sh", "sh", "-c", script, (char *)nullptr); _exit(127); }

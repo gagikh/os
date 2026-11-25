@@ -1,10 +1,10 @@
 # Day 1: Introduction to Linux · Օր 1. Linux-ի ներածություն
 
 ## Objectives · Նպատակներ
-- Բացատրել, թե ինչ է օպերացիոն համակարգը, և ինչ տեղ ունի Linux-ը Unix-ի ընտանիքում
+- Բացատրել, թե ինչ է operating system-ը, և ինչ տեղ ունի Linux-ը Unix-ի ընտանիքում
 - Պատմել Linux-ի ծագումը. Unix, GNU, MINIX, Linus Torvalds, POSIX
 - Նկարագրել Linux kernel-ի կառուցվածքը (monolithic, modules) և համեմատել այն microkernel-ի հետ
-- Տարբերել distribution-ները և ընտրել աշխատանքային միջավայր. WSL2, virtual machine, server, բորդ
+- Տարբերել distribution-ները և ընտրել աշխատանքային environment. WSL2, virtual machine, server, բորդ
 - Բացատրել open source-ի գաղափարը և հիմնական license-ների տարբերությունը. MIT, BSD, Apache, LGPL, GPL
 - Միանալ Linux համակարգին և կատարել առաջին հրամանները. shell, հրամանի կառուցվածք, history, օգնություն (`man`, `--help`)
 
@@ -21,25 +21,25 @@
 
 *Այսօր ներմուծվող տերմինները։ Նույն տեքստը կա [GLOSSARY.md](../GLOSSARY.md)-ում։*
 
-**Operating system (օպերացիոն համակարգ)** — Ծրագրային շերտ hardware-ի և կիրառական ծրագրերի միջև։ Բաշխում է ռեսուրսները (CPU, հիշողություն, սարքեր) ծրագրերի միջև և նրանց տալիս է պարզ ինտերֆեյս՝ ֆայլեր, process-ներ, ցանց։
+**Operating system** — Ծրագրային շերտ hardware-ի և կիրառական ծրագրերի միջև։ Բաշխում է ռեսուրսները (CPU, memory, սարքեր) ծրագրերի միջև և նրանց տալիս է պարզ ինտերֆեյս՝ ֆայլեր, process-ներ, network։
 
-**Kernel (միջուկ)** — Օպերացիոն համակարգի կենտրոնական մասը, որն աշխատում է պրոցեսորի արտոնյալ ռեժիմում (kernel mode) և միակն է, որ ուղիղ դիմում է hardware-ին։ Linux-ը, խիստ իմաստով, միայն kernel է։
+**Kernel** — Operating system-ի կենտրոնական մասը, որն աշխատում է պրոցեսորի արտոնյալ ռեժիմում (kernel mode) և միակն է, որ ուղիղ դիմում է hardware-ին։ Linux-ը, խիստ իմաստով, միայն kernel է։
 
-**Unix** — Օպերացիոն համակարգ, որը ստեղծվել է 1969 թ. AT&T-ի Bell Labs-ում (Ken Thompson, Dennis Ritchie)։ Multiuser և multitasking համակարգ է, որի գաղափարներն ու հրամանները ժառանգել են Linux-ը, BSD-ները և macOS-ը։
+**Unix** — Operating system, որը ստեղծվել է 1969 թ. AT&T-ի Bell Labs-ում (Ken Thompson, Dennis Ritchie)։ Multiuser և multitasking համակարգ է, որի գաղափարներն ու հրամանները ժառանգել են Linux-ը, BSD-ները և macOS-ը։
 
 **GNU** — Richard Stallman-ի 1983 թ. հայտարարած նախագիծը՝ ստեղծել ազատ Unix-անման համակարգ։ GNU-ից են `bash`-ը, `gcc`-ն, `glibc`-ն, `ls`, `cp` և հարյուրավոր այլ ծրագրեր։ Linux kernel + GNU ծրագրեր = ամբողջական ազատ Unix-անման համակարգ։
 
 **POSIX** — IEEE ստանդարտ, որը սահմանում է Unix-անման համակարգի ինտերֆեյսը. system call-եր, shell, հիմնական հրամաններ։ POSIX-ին համապատասխանող ծրագիրը հեշտությամբ տեղափոխվում է Linux-ից macOS կամ BSD և հակառակը։
 
-**Monolithic kernel** — Kernel, որի բոլոր հիմնական մասերը (process-ների կառավարում, հիշողություն, ֆայլային համակարգեր, ցանց, driver-ներ) աշխատում են kernel space-ում՝ որպես մեկ ծրագիր։ Linux-ը monolithic է։
+**Monolithic kernel** — Kernel, որի բոլոր հիմնական մասերը (process-ների կառավարում, memory, filesystem-ներ, network, driver-ներ) աշխատում են kernel space-ում՝ որպես մեկ ծրագիր։ Linux-ը monolithic է։
 
 **Loadable kernel module** — Kernel-ի կոդի կտոր (սովորաբար driver), որը կարելի է բեռնել և հեռացնել աշխատող համակարգում՝ առանց վերագործարկման։ Ֆայլի ընդլայնումը `.ko` է, ցանկը՝ `lsmod`։
 
-**Microkernel** — Kernel, որում kernel space-ում մնում է միայն նվազագույնը (process-ներ, հիշողություն, հաղորդագրություններ), իսկ driver-ները և ֆայլային համակարգերը աշխատում են որպես առանձին user space ծրագրեր։ Օրինակներ՝ MINIX 3, QNX, seL4։
+**Microkernel** — Kernel, որում kernel space-ում մնում է միայն նվազագույնը (process-ներ, memory, հաղորդագրություններ), իսկ driver-ները և filesystem-ները աշխատում են որպես առանձին user space ծրագրեր։ Օրինակներ՝ MINIX 3, QNX, seL4։
 
-**Distribution (դիստրիբուտիվ)** — Linux kernel-ը՝ GNU և այլ ծրագրերի, package manager-ի և կարգավորումների հետ միասին, պատրաստ տեղադրման համար։ Օրինակներ՝ Debian, Ubuntu, Fedora, Arch։
+**Distribution** — Linux kernel-ը՝ GNU և այլ ծրագրերի, package manager-ի և կարգավորումների հետ միասին, պատրաստ տեղադրման համար։ Օրինակներ՝ Debian, Ubuntu, Fedora, Arch։
 
-**Free software (ազատ ծրագիր)** — Ծրագիր, որը տալիս է չորս ազատություն. գործարկել ցանկացած նպատակով, ուսումնասիրել և փոխել կոդը, տարածել պատճենները, տարածել փոփոխված տարբերակները։ «Free»-ն այստեղ նշանակում է ազատություն, ոչ թե անվճար։
+**Free software** — Ծրագիր, որը տալիս է չորս ազատություն. գործարկել ցանկացած նպատակով, ուսումնասիրել և փոխել կոդը, տարածել պատճենները, տարածել փոփոխված տարբերակները։ «Free»-ն այստեղ նշանակում է ազատություն, ոչ թե անվճար։
 
 **Open source** — Ծրագիր, որի կոդը բաց է, և license-ը թույլ է տալիս այն օգտագործել, փոխել և տարածել։ Գործնականում նույն ծրագրերն են, ինչ free software-ը, բայց շեշտը գործնական օգուտի վրա է, ոչ թե ազատության։
 
@@ -53,9 +53,9 @@
 
 **Tainted kernel** — Kernel, որը նշել է իր մեջ, որ աշխատում է «ոչ մաքուր» վիճակում. օրինակ՝ բեռնված է ոչ GPL module կամ եղել է սխալ։ Kernel-ի ծրագրավորողները նման kernel-ի սխալների հաղորդումները սովորաբար չեն քննարկում։ Վիճակը `/proc/sys/kernel/tainted`-ում է։
 
-**Shell** — Ծրագիր, որը կարդում է մեր գրած հրամանները, մեկնաբանում և գործարկում է դրանք։ Միաժամանակ ծրագրավորման լեզու է՝ փոփոխականներով, պայմաններով և ցիկլերով։ Linux-ում ամենատարածվածը `bash`-ն է։
+**Shell** — Ծրագիր, որը կարդում է մեր գրած հրամանները, մեկնաբանում և գործարկում է դրանք։ Միաժամանակ ծրագրավորման լեզու է՝ variable-ներով, պայմաններով և ցիկլերով։ Linux-ում ամենատարածվածը `bash`-ն է։
 
-**Prompt** — Shell-ի տողը, որը սպասում է հրամանի. `student@ubuntu:~$`։ `$`-ը սովորական օգտատիրոջ նշանն է, `#`-ը՝ `root`-ինը։
+**Prompt** — Shell-ի տողը, որը սպասում է հրամանի. `student@ubuntu:~$`։ `$`-ը սովորական user-ի նշանն է, `#`-ը՝ `root`-ինը։
 
 **Option (switch)** — Հրամանի պարամետր, որը փոխում է նրա վարքը։ Ունի կարճ (`-u`) և երկար (`--universal`) ձև։
 
@@ -68,11 +68,11 @@
 ### Visual
 ![Unix-ի ընտանիքի ժամանակագրություն. Unix 1969, C 1973, BSD 1978, GNU 1983, MINIX 1987, POSIX 1988, GPL 1989, Linux 1991, Debian և Slackware 1993, Linux 1.0 1994, Ubuntu 2004, Git 2005, Android 2008, Raspberry Pi 2012, Rust kernel-ում 2022, PREEMPT_RT 2024](unix_timeline.svg)
 
-Օպերացիոն համակարգը ծրագիր է, որը կանգնած է hardware-ի և մեր ծրագրերի միջև։ Առանց դրա յուրաքանչյուր ծրագիր ինքը պետք է իմանար, թե ինչպես կարդալ սկավառակից, ինչպես կիսել պրոցեսորը մյուս ծրագրերի հետ, ինչպես ուղարկել ցանցային փաթեթ։ OS-ը այդ ամենը վերցնում է իր վրա և ծրագրերին տալիս է պարզ գաղափարներ. **ֆայլ**, **process**, **socket**։
+Operating system-ը ծրագիր է, որը կանգնած է hardware-ի և մեր ծրագրերի միջև։ Առանց դրա յուրաքանչյուր ծրագիր ինքը պետք է իմանար, թե ինչպես կարդալ disk-ից, ինչպես կիսել պրոցեսորը մյուս ծրագրերի հետ, ինչպես ուղարկել network package։ OS-ը այդ ամենը վերցնում է իր վրա և ծրագրերին տալիս է պարզ գաղափարներ. **ֆայլ**, **process**, **socket**։
 
 **Unix** (1969, Bell Labs). Ken Thompson-ը և Dennis Ritchie-ն գրեցին փոքր, multiuser և multitasking համակարգ։ 1973-ին այն վերագրվեց C լեզվով, որը Ritchie-ն ստեղծել էր հենց այդ նպատակով։ Դա առաջին OS-ն էր, որը կարելի էր համեմատաբար հեշտ տեղափոխել մի տեսակի համակարգչից մյուսը։ Unix-ի կոդը տարածվեց համալսարաններով, և Բերքլիում ստեղծվեց նրա ճյուղը՝ **BSD**-ն, որից հետագայում ծագեցին FreeBSD-ն, OpenBSD-ն և macOS-ի հիմքը (Darwin)։ Այդ պատճառով macOS-ի Terminal-ում աշխատում են գրեթե նույն հրամանները, ինչ Linux-ում։
 
-**GNU** (1983). Unix-ը դարձավ առևտրային և փակ։ Richard Stallman-ը հայտարարեց GNU նախագիծը («GNU's Not Unix»)՝ ազատ Unix-անման համակարգ, և գրեց դրա համար **GPL** license-ը։ Մինչև 1990-ականների սկիզբը GNU-ն ուներ գրեթե ամեն ինչ՝ compiler (`gcc`), shell (`bash`), հիմնական հրամաններ, C գրադարան։ Բացակայում էր միայն աշխատող kernel-ը։
+**GNU** (1983). Unix-ը դարձավ առևտրային և փակ։ Richard Stallman-ը հայտարարեց GNU նախագիծը («GNU's Not Unix»)՝ ազատ Unix-անման համակարգ, և գրեց դրա համար **GPL** license-ը։ Մինչև 1990-ականների սկիզբը GNU-ն ուներ գրեթե ամեն ինչ՝ compiler (`gcc`), shell (`bash`), հիմնական հրամաններ, C library։ Բացակայում էր միայն աշխատող kernel-ը։
 
 **MINIX** (1987). Andrew Tanenbaum-ը գրեց փոքր Unix-անման համակարգ՝ OS դասավանդելու համար, իր դասագրքի կոդով։ Այն microkernel էր և ուներ սահմանափակ license։
 
@@ -80,7 +80,7 @@
 
 **POSIX** (1988). Unix-ի շատ տարբերակներ կային, և ծրագրերը մեկից մյուսը տեղափոխելը դժվար էր։ IEEE-ն ստանդարտացրեց ինտերֆեյսը՝ POSIX։ Linux-ը և BSD-ները ձգտում են համապատասխանել POSIX-ին, և այս դասընթացի ծրագրերը մեծ մասամբ կաշխատեն նաև macOS-ում։
 
-Այսօր Linux-ն աշխատում է սերվերների մեծ մասում, 2017-ից ի վեր աշխարհի 500 ամենահզոր սուպերհամակարգիչներից բոլորում, Android հեռախոսներում (Android-ն օգտագործում է Linux kernel, բայց ոչ GNU ծրագրերը), ցանցային սարքերում, մեքենաներում և embedded բորդերում։
+Այսօր Linux-ն աշխատում է server-ների մեծ մասում, 2017-ից ի վեր աշխարհի 500 ամենահզոր սուպերհամակարգիչներից բոլորում, Android հեռախոսներում (Android-ն օգտագործում է Linux kernel, բայց ոչ GNU ծրագրերը), network սարքերում, մեքենաներում և embedded բորդերում։
 
 ## 2. Unix-ի փիլիսոփայությունը
 
@@ -97,33 +97,33 @@ Doug McIlroy-ն, Unix-ի pipe-ի հեղինակը, ամփոփեց Unix-ի ծրա
 | Համակարգի մասին | `whoami`, `hostname`, `date`, `cal`, `free`, `w`, `uptime`, `uname` | 1 |
 | Օգնություն | `man`, `info`, `--help`, `which` | 1 |
 | Shell | `bash`, `echo`, `history`, `alias`, `set`, `env` | 1–2 |
-| Ֆայլային համակարգ | `ls`, `cd`, `pwd`, `mkdir`, `mv`, `cp`, `ln`, `touch`, `cat`, `file`, `find`, `du`, `df` | 2–3 |
+| Filesystem | `ls`, `cd`, `pwd`, `mkdir`, `mv`, `cp`, `ln`, `touch`, `cat`, `file`, `find`, `du`, `df` | 2–3 |
 | Ֆիլտրեր | `grep`, `head`, `tail`, `less`, `sort`, `uniq`, `wc`, `cut` | 4 |
 | Տողերի խմբագրում | `sed`, `awk` | 4 |
-| Արխիվներ | `tar`, `gzip`, `xz`, `zip` | 5 |
-| Իրավունքներ | `chmod`, `chown`, `sudo`, `umask` | 7 |
+| Archive-ներ | `tar`, `gzip`, `xz`, `zip` | 5 |
+| Permission-ներ | `chmod`, `chown`, `sudo`, `umask` | 7 |
 | Process-ներ | `ps`, `top`, `kill`, `fg`, `bg`, `systemctl` | 8 |
-| Ցանց | `ssh`, `scp`, `ping`, `ip`, `ss`, `nc`, `curl` | 1, 11 |
+| Network | `ssh`, `scp`, `ping`, `ip`, `ss`, `nc`, `curl` | 1, 11 |
 
 Մի փորձիր հիշել դրանք միանգամից։ Ամեն օր կավելացնենք մի խումբ։
 
 ## 3. Linux kernel-ի կառուցվածքը
 
 ### Visual
-![Monolithic kernel (Linux) և microkernel (MINIX, QNX) կողք կողքի. Linux-ում process-ների կառավարումը, հիշողությունը, VFS-ը, ցանցը և driver-ները kernel space-ում են, module-ները բեռնվում են աշխատանքի ընթացքում. microkernel-ում driver-ները և ֆայլային համակարգը user space-ում են և խոսում են kernel-ի հետ հաղորդագրություններով](kernel_architecture.svg)
+![Monolithic kernel (Linux) և microkernel (MINIX, QNX) կողք կողքի. Linux-ում process-ների կառավարումը, memory-ն, VFS-ը, network-ը և driver-ները kernel space-ում են, module-ները բեռնվում են աշխատանքի ընթացքում. microkernel-ում driver-ները և filesystem-ը user space-ում են և խոսում են kernel-ի հետ հաղորդագրություններով](kernel_architecture.svg)
 
 Linux kernel-ը **monolithic** է. բոլոր հիմնական ենթահամակարգերը մեկ ծրագիր են և աշխատում են kernel space-ում.
 
 - **System call interface**՝ դուռը user space-ից դեպի kernel (`open`, `read`, `fork`...)
 - **Process management և scheduler**՝ ով, երբ և որ CPU-ի վրա աշխատի (Օր 8, 10)
-- **Memory management**՝ վիրտուալ հիշողություն, page-եր, swap
-- **VFS (Virtual File System)**՝ մեկ ինտերֆեյս բոլոր ֆայլային համակարգերի համար (ext4, FAT, NFS, `/proc`) (Օր 3)
+- **Memory management**՝ վիրտուալ memory, page-եր, swap
+- **VFS (Virtual File System)**՝ մեկ ինտերֆեյս բոլոր filesystem-ների համար (ext4, FAT, NFS, `/proc`) (Օր 3)
 - **Network stack**՝ TCP/IP, socket-ներ (Օր 11)
 - **Device drivers**՝ կոդ կոնկրետ սարքերի համար (Օր 9)
 
 Monolithic լինելու առավելությունը արագությունն է. ենթահամակարգերը կանչում են իրար ուղիղ, ինչպես սովորական ֆունկցիաներ։ Թերությունը. driver-ի մեկ սխալը կարող է կանգնեցնել ամբողջ համակարգը։
 
-**Microkernel**-ում kernel-ը շատ փոքր է, իսկ driver-ները և ֆայլային համակարգերը առանձին process-ներ են։ Driver-ի սխալը կանգնեցնում է միայն այդ process-ը, որը կարելի է վերագործարկել։ Գինը. ամեն գործողություն պահանջում է հաղորդագրություններ process-ների միջև, և դա ավելի դանդաղ է։ QNX-ը (microkernel) լայնորեն օգտագործվում է մեքենաներում և արդյունաբերական սարքերում, որտեղ հուսալիությունն ավելի կարևոր է։ 1992-ին Tanenbaum-ը և Torvalds-ը հայտնի բանավեճ ունեցան այս թեմայով, և դրա փաստարկները արդիական են մինչև այսօր։
+**Microkernel**-ում kernel-ը շատ փոքր է, իսկ driver-ները և filesystem-ները առանձին process-ներ են։ Driver-ի սխալը կանգնեցնում է միայն այդ process-ը, որը կարելի է վերագործարկել։ Գինը. ամեն գործողություն պահանջում է հաղորդագրություններ process-ների միջև, և դա ավելի դանդաղ է։ QNX-ը (microkernel) լայնորեն օգտագործվում է մեքենաներում և արդյունաբերական սարքերում, որտեղ հուսալիությունն ավելի կարևոր է։ 1992-ին Tanenbaum-ը և Torvalds-ը հայտնի բանավեճ ունեցան այս թեմայով, և դրա փաստարկները արդիական են մինչև այսօր։
 
 Linux-ը մասամբ լուծում է monolithic-ի ճկունության խնդիրը **module**-ներով. driver-ը կարելի է բեռնել և հեռացնել առանց վերագործարկման.
 
@@ -134,7 +134,7 @@ modinfo ext4 | head           # module-ի մասին. ֆայլը, license-ը, հ
 
 Linux-ի հիմնական հատկությունները.
 
-- **Multiuser**՝ շատ օգտատերեր միաժամանակ, յուրաքանչյուրն իր իրավունքներով (Օր 7)
+- **Multiuser**՝ շատ user-ներ միաժամանակ, յուրաքանչյուրն իր permission-ներով (Օր 7)
 - **Multitasking, preemptive**՝ kernel-ը կարող է ցանկացած պահի ընդհատել process-ը և CPU-ն տալ մյուսին
 - **Portable**՝ աշխատում է x86, ARM, RISC-V, PowerPC և տասնյակ այլ architecture-ների վրա
 - **«Ամեն ինչ ֆայլ է»**՝ սարքերը, process-ների տեղեկությունը, kernel-ի պարամետրերը երևում են որպես ֆայլեր (Օր 3, 9)
@@ -150,13 +150,13 @@ cat /proc/version             # Linux version 6.8.0-49-generic (buildd@...) (gcc
 
 ## 4. Distribution-ներ
 
-Kernel-ը միայնակ անօգուտ է. պետք են shell, հրամաններ, գրադարաններ, package manager։ Distribution-ը դրանք հավաքում, ստուգում և թարմացնում է։
+Kernel-ը միայնակ անօգուտ է. պետք են shell, հրամաններ, library-ներ, package manager։ Distribution-ը դրանք հավաքում, ստուգում և թարմացնում է։
 
 | Ընտանիք | Distribution-ներ | Package manager | Որտեղ ենք հանդիպում |
 |---|---|---|---|
-| Debian | Debian, **Ubuntu**, Linux Mint, Raspberry Pi OS, NVIDIA L4T | `apt`, `.deb` | Այս դասընթացը, desktop, սերվեր, բորդեր |
-| Red Hat | Fedora, RHEL, Rocky Linux, AlmaLinux, CentOS Stream | `dnf`, `.rpm` | Ընկերությունների սերվերներ, կլաստերներ |
-| Arch | Arch Linux, Manjaro | `pacman` | Փորձառու օգտատերեր |
+| Debian | Debian, **Ubuntu**, Linux Mint, Raspberry Pi OS, NVIDIA L4T | `apt`, `.deb` | Այս դասընթացը, desktop, server, բորդեր |
+| Red Hat | Fedora, RHEL, Rocky Linux, AlmaLinux, CentOS Stream | `dnf`, `.rpm` | Ընկերությունների server-ներ, կլաստերներ |
+| Arch | Arch Linux, Manjaro | `pacman` | Փորձառու user-ներ |
 | Alpine | Alpine Linux | `apk` | Docker container-ներ (շատ փոքր է) |
 | Embedded | Yocto, Buildroot | ինքդ ես հավաքում | Արտադրանքներ, բորդեր |
 | Android | Android | `.apk` | Հեռախոսներ (Linux kernel, առանց GNU-ի) |
@@ -170,14 +170,14 @@ cat /etc/os-release
 # ID_LIKE=debian        ← ընտանիքը
 ```
 
-**LTS (Long Term Support)** տարբերակները թարմացումներ են ստանում 5 տարի և ավելի։ Դրանք են դրվում սերվերներում և բորդերում։
+**LTS (Long Term Support)** տարբերակները թարմացումներ են ստանում 5 տարի և ավելի։ Դրանք են դրվում server-ներում և բորդերում։
 
 ## 5. Open source և license-ներ
 
 ### Visual
 ![License-ների սպեկտրը permissive-ից copyleft. MIT, BSD, Apache 2.0, ապա LGPL և MPL, ապա GPL-2.0, GPL-3.0, AGPL-3.0. ներքևում աղյուսակ. կարելի՞ է օգտագործել փակ ծրագրում, պետք է արդյոք տալ կոդը տարածելիս, ինչ է պետք պահել](license_spectrum.svg)
 
-Կոդը, նույնիսկ GitHub-ում հրապարակված, ավտոմատ «ազատ» չէ։ Հեղինակային իրավունքը պատկանում է հեղինակին, և միայն **license**-ն է թույլ տալիս ուրիշներին այն օգտագործել։ License-ները երկու մեծ խումբ են.
+Կոդը, նույնիսկ GitHub-ում հրապարակված, ավտոմատ «ազատ» չէ։ Copyrightը պատկանում է հեղինակին, և միայն **license**-ն է թույլ տալիս ուրիշներին այն օգտագործել։ License-ները երկու մեծ խումբ են.
 
 **Permissive** (MIT, BSD, Apache 2.0). Կարող ես անել գրեթե ամեն ինչ, այդ թվում՝ օգտագործել փակ, վաճառվող ծրագրում։ Պետք է պահել հեղինակի անունը և license-ի տեքստը։ Apache 2.0-ն բացի դրանից տալիս է patent-ների օգտագործման թույլտվություն։
 
@@ -185,8 +185,8 @@ cat /etc/os-release
 
 - **GPL-2.0** — Linux kernel-ի license-ը։ Kernel-ը `GPL-2.0-only` է, և դրա ֆայլերի գլխին կա `SPDX-License-Identifier: GPL-2.0` տողը։
 - **GPL-3.0** — ավելացնում է պաշտպանություն patent-ներից և այսպես կոչված «tivoization»-ից. սպառողական սարքում GPL-3.0 ծրագիր տեղադրողը պետք է տա նաև փոփոխված տարբերակը սարքում տեղադրելու տեղեկությունները։
-- **LGPL** — «թույլ» copyleft գրադարանների համար։ Փակ ծրագիրը կարող է link անել LGPL գրադարանի հետ (օրինակ՝ `glibc`-ի), պետք է միայն թույլ տալ գրադարանը փոխարինել։
-- **AGPL-3.0** — GPL, որը գործում է նաև այն դեպքում, երբ ծրագիրը տարածվում չէ, այլ աշխատում է սերվերում և հասանելի է ցանցով։
+- **LGPL** — «թույլ» copyleft library-ների համար։ Փակ ծրագիրը կարող է link անել LGPL library-ի հետ (օրինակ՝ `glibc`-ի), պետք է միայն թույլ տալ library-ն փոխարինել։
+- **AGPL-3.0** — GPL, որը գործում է նաև այն դեպքում, երբ ծրագիրը տարածվում չէ, այլ աշխատում է server-ում և հասանելի է network-ով։
 
 **Կարևոր պարզաբանում ծրագրավորողի համար.** Linux kernel-ի GPL-ը **չի** տարածվում այն ծրագրերի վրա, որոնք աշխատում են Linux-ի վրա և կանչում են system call-եր։ Kernel-ի license-ին կցված է հատուկ նշում հենց այդ մասին։ Քո C++ ծրագիրը, որը կարդում է ֆայլեր Linux-ում, կարող է ունենալ ցանկացած license։ GPL-ը կարևոր է դառնում, երբ.
 
@@ -208,19 +208,19 @@ modinfo -F license ext4               # GPL
 
 **Ինչպես ընտրել license քո նախագծի համար.** Եթե ուզում ես, որ բոլորը ազատ օգտագործեն՝ MIT։ Եթե ուզում ես, որ փոփոխությունները նույնպես բաց մնան՝ GPL։ Եթե աշխատում ես ընկերությունում կամ համալսարանի նախագծում՝ հարցրու, թե ինչ է ընդունված, մինչև կոդ հրապարակելը։ Մանրամասն համեմատությունը. [choosealicense.com](https://choosealicense.com/)։
 
-## 6. Աշխատանքային միջավայր
+## 6. Աշխատանքային environment
 
 Դասընթացի համար պետք է Linux համակարգ։ Տարբերակները.
 
 | Տարբերակ | Ինչպես | Առավելություն | Թերություն |
 |---|---|---|---|
 | **WSL2** (Windows) | PowerShell-ում `wsl --install`, ապա Microsoft Store-ից Ubuntu | Արագ, աշխատում է Windows-ի կողքին, իրական Linux kernel | Hardware-ին (USB, GPIO) հասանելիությունը սահմանափակ է |
-| **Virtual machine** | VirtualBox կամ VMware, Ubuntu-ի ISO | Ամբողջական համակարգ, snapshot-ներ | Ավելի շատ հիշողություն է պահանջում |
+| **Virtual machine** | VirtualBox կամ VMware, Ubuntu-ի ISO | Ամբողջական համակարգ, snapshot-ներ | Ավելի շատ memory է պահանջում |
 | **Native / dual boot** | Ubuntu USB flash-ից | Ամենաարագը, ամբողջ hardware-ը | Վտանգ՝ սխալ տեղադրելիս կորցնել տվյալներ |
-| **Հեռավոր սերվեր** | `ssh user@server` | Ոչինչ տեղադրել պետք չէ | Պետք է ցանց և հաշիվ |
+| **Հեռավոր server** | `ssh user@server` | Ոչինչ տեղադրել պետք չէ | Պետք է network և հաշիվ |
 | **Embedded բորդ** | Jetson, Raspberry Pi, HummingBoard | Իրական hardware | Տե՛ս [embedded դասընթացը](../../embedded/README.md) |
 
-macOS-ում Terminal-ը արդեն Unix է (BSD-ից), և հրամանների մեծ մասն աշխատում է, բայց `/proc`-ը և Linux-ի system call-երի մի մասը չկան։ Այս դասընթացի համար օգտագործիր VM կամ հեռավոր սերվեր։
+macOS-ում Terminal-ը արդեն Unix է (BSD-ից), և հրամանների մեծ մասն աշխատում է, բայց `/proc`-ը և Linux-ի system call-երի մի մասը չկան։ Այս դասընթացի համար օգտագործիր VM կամ հեռավոր server։
 
 Առաջին անգամ Ubuntu-ում.
 
@@ -233,28 +233,28 @@ sudo apt install -y build-essential cmake git man-db manpages-dev ncal netcat-op
 
 ### Միանալ այլ Linux համակարգի
 
-Սերվերների և կլաստերների հետ աշխատում ենք **client-server** ձևով. դու նստած ես քո համակարգչի (client) առջև և **SSH**-ով միանում ես սերվերին.
+Server-ների և կլաստերների հետ աշխատում ենք **client-server** ձևով. դու նստած ես քո համակարգչի (client) առջև և **SSH**-ով միանում ես server-ին.
 
 ```bash
-ssh student@192.168.1.10      # առաջին անգամ հաստատիր սերվերի key-ը՝ yes
+ssh student@192.168.1.10      # առաջին անգամ հաստատիր server-ի key-ը՝ yes
 ```
 
 Եթե միանալ չի ստացվում, ստուգիր քայլ առ քայլ.
 
 ```bash
-ping -c 3 192.168.1.10        # սերվերը ցանցում հասանելի՞ է
+ping -c 3 192.168.1.10        # server-ը network-ում հասանելի՞ է
 nc -vz 192.168.1.10 22        # SSH-ի port 22-ը բա՞ց է
 ```
 
 Windows-ում `ssh`-ը կա PowerShell-ում, իսկ գրաֆիկական տարբերակը PuTTY-ն է։
 
-**Փորձ. ձեռքով «զրուցել» web սերվերի հետ։** Շատ ինտերնետային արձանագրություններ պարզ տեքստ են։ `nc`-ով կարող ես ուղարկել նույն տեքստը, ինչ browser-ը.
+**Փորձ. ձեռքով «զրուցել» web server-ի հետ։** Շատ ինտերնետային protocol-ներ պարզ տեքստ են։ `nc`-ով կարող ես ուղարկել նույն տեքստը, ինչ browser-ը.
 
 ```bash
 printf 'GET / HTTP/1.1\r\nHost: example.com\r\nConnection: close\r\n\r\n' | nc example.com 80
 ```
 
-Պատասխանը HTTP header-ներն են և HTML էջը՝ նույնը, ինչ browser-ը ստանում և նկարում է։ Սա ցանցի մասին Օր 11-ի նախաբանն է։
+Պատասխանը HTTP header-ներն են և HTML էջը՝ նույնը, ինչ browser-ը ստանում և նկարում է։ Սա network-ի մասին Օր 11-ի նախաբանն է։
 
 ## 7. Shell. առաջին հրամանները
 
@@ -271,7 +271,7 @@ which bash                    # /usr/bin/bash. որտեղ է ծրագիրը
 Չակերտների տարբերությունը.
 
 ```bash
-echo $SHELL                   # /bin/bash      shell-ը բացում է փոփոխականը
+echo $SHELL                   # /bin/bash      shell-ը բացում է variable-ը
 echo "$SHELL"                 # /bin/bash      կրկնակի չակերտներում նույնպես
 echo '$SHELL'                 # $SHELL         միակ չակերտներում ամեն ինչ բառացի է
 ```
@@ -283,7 +283,7 @@ whoami                        # ով եմ ես
 hostname                      # համակարգչի անունը
 date                          # ամսաթիվը և ժամը
 cal                           # այս ամսվա օրացույցը
-free -h                       # հիշողությունը, մարդու համար հարմար միավորներով
+free -h                       # memory-ն, մարդու համար հարմար միավորներով
 w                             # ով է մուտք գործել և ինչ է անում
 uptime                        # որքան ժամանակ է աշխատում համակարգը
 ```
@@ -351,7 +351,7 @@ Man page-երը բաժանված են **բաժինների**, և նույն ան
 |---|---|---|
 | 1 | Հրամաններ | `man 1 uname`, `man ls` |
 | 2 | System call-եր | `man 2 uname`, `man 2 open` |
-| 3 | C գրադարանի ֆունկցիաներ | `man 3 printf`, `man 3 getenv` |
+| 3 | C library-ի ֆունկցիաներ | `man 3 printf`, `man 3 getenv` |
 | 5 | Ֆայլերի ձևաչափեր | `man 5 passwd`, `man 5 os-release` |
 | 7 | Ընդհանուր նկարագրություններ | `man 7 signal`, `man 7 man-pages` |
 | 8 | Ադմինիստրատորի հրամաններ | `man 8 mount`, `man 8 lsmod` |
@@ -363,7 +363,7 @@ Man page-երը բաժանված են **բաժինների**, և նույն ան
 `|` նշանը մի հրամանի **ելքը** տալիս է մյուսի **մուտքին**։ Ամենապարզ օգտագործումը ֆիլտրելն է.
 
 ```bash
-w                                     # բոլոր օգտատերերը
+w                                     # բոլոր user-ները
 w | grep root                         # միայն root-ի տողերը
 ps -e -o ruser,comm | grep bash       # ով է աշխատեցնում bash
 ```
@@ -386,7 +386,7 @@ cat /proc/sys/kernel/tainted  # 0՝ kernel-ը «մաքուր» է
 
 # Shell
 echo $SHELL ; which bash      # որ shell-ն է, որտեղ է
-echo "$SHELL" ; echo '$SHELL' # "..."-ում փոփոխականը բացվում է, '...'-ում՝ ոչ
+echo "$SHELL" ; echo '$SHELL' # "..."-ում variable-ը բացվում է, '...'-ում՝ ոչ
 
 # Հրամանի կառուցվածքը
 cal -j 3 1999                 # հրաման, option, երկու argument
@@ -444,9 +444,9 @@ SYS_CHECK(call);
 
 ## Hands-On Task · Գործնական առաջադրանք
 
-Պատրաստիր աշխատանքային միջավայրը և քո kernel-ի «անձնագիրը»։
+Պատրաստիր աշխատանքային environment-ը և քո kernel-ի «անձնագիրը»։
 
-1. Տեղադրիր Ubuntu (WSL2, VM կամ native) և կատարիր [§6](#6-աշխատանքային-միջավայր)-ի `apt install` հրամանը։
+1. Տեղադրիր Ubuntu (WSL2, VM կամ native) և կատարիր [§6](#6-աշխատանքային-environment)-ի `apt install` հրամանը։
 2. Կատարիր [Commands](#commands--հրամաններ) բաժնի բոլոր հրամանները և ամեն մեկի համար մեկ նախադասությամբ գրիր, թե ինչ տպեց։
 3. Լրացրու [`template.cpp`](template.cpp)-ի TODO-ները. ծրագիրը պետք է տպի kernel-ի տարբերակը, ով է այն հավաքել, distribution-ը և ընտանիքը, բեռնված module-ների քանակը և taint դրոշները՝ վերծանված։
 4. Համեմատիր ծրագրի ելքը `uname -a`-ի, `cat /proc/version`-ի և `lsmod | wc -l`-ի հետ։
@@ -458,7 +458,7 @@ SYS_CHECK(call);
 4. Գտիր քո համակարգի 5 ամենամեծ module-ները. `lsmod | sort -k2 -n | tail -5`։ Յուրաքանչյուրի համար `modinfo -F description`-ով պարզիր, թե ինչ սարքի համար է։
 5. Գտիր 3 ծրագիր քո համակարգում և պարզիր դրանց license-ը. `ls /usr/share/doc/bash/` և `cat /usr/share/doc/bash/copyright`։ Ի՞նչ license ունեն `bash`-ը, `openssh-client`-ը և `zlib1g`-ը։
 6. Ներբեռնիր Linux kernel-ի կոդի ցանկացած ֆայլ [git.kernel.org](https://git.kernel.org/)-ից և գտիր `SPDX-License-Identifier` տողը։
-7. Գրիր `printf ... | nc example.com 80` փորձը, ապա փոխիր `Host:`-ը գոյություն չունեցող անունով։ Ի՞նչ պատասխան տվեց սերվերը և ինչ HTTP կոդով։
+7. Գրիր `printf ... | nc example.com 80` փորձը, ապա փոխիր `Host:`-ը գոյություն չունեցող անունով։ Ի՞նչ պատասխան տվեց server-ը և ինչ HTTP կոդով։
 8. Տեղադրիր `zsh` և `fish` (`sudo apt install zsh fish`), գործարկիր դրանք և համեմատիր `bash`-ի հետ։ Վերադառնալու համար՝ `exit`։
 
 ## Self-Check · Ինքնաստուգում
@@ -469,7 +469,7 @@ SYS_CHECK(call);
 3. Ինչու՞ macOS-ի Terminal-ում աշխատում են գրեթե նույն հրամանները, ինչ Linux-ում, թեև macOS-ը Linux չէ։
 4. Linux-ի driver-ում սխալը կարող է կանգնեցնել ամբողջ համակարգը, իսկ QNX-ում՝ ոչ։ Ինչու՞։ Ինչու՞ է այդ դեպքում Linux-ն ավելի տարածված։
 5. Ընկերությունը վաճառում է Wi-Fi router, որում Linux է։ Ինչ պարտավորություններ ունի GPL-ի պատճառով։ Իսկ եթե router-ի web ինտերֆեյսը իր սեփական փակ ծրագիրն է, որն աշխատում է user space-ում։
-6. Կարելի՞ է MIT license-ով գրադարանը օգտագործել GPL ծրագրում։ Իսկ GPL գրադարանը՝ MIT ծրագրում։
+6. Կարելի՞ է MIT license-ով library-ն օգտագործել GPL ծրագրում։ Իսկ GPL library-ն՝ MIT ծրագրում։
 7. `/proc/sys/kernel/tainted` = `4097`։ Ի՞նչ դրոշներ են դրված։ Ի՞նչ կարող էր պատահել։
 8. Ինչու՞ `echo '$HOME'`-ը և `echo "$HOME"`-ը տարբեր բան են տպում։
 9. `man uname` և `man 2 uname`. ինչու՞ են տարբեր, և որ մեկն է պետք C ծրագիր գրելիս։
@@ -480,6 +480,6 @@ SYS_CHECK(call);
 
 ```bash
 g++ -std=c++17 -Wall -Wextra -O2 template.cpp -o day01 && ./day01
-# կամ բոլոր օրերը միանգամից, linux/ թղթապանակից.
+# կամ բոլոր օրերը միանգամից, linux/ directory-ից.
 cmake -S . -B build && cmake --build build && ./build/bin/day01
 ```

@@ -8,15 +8,14 @@
 
 | Հրաման | Ինչ է անում | Օր |
 |---|---|---|
-| `ssh lab@192.168.1.50` | Shell բորդի վրա ցանցով | 1 |
+| `ssh lab@192.168.1.50` | Shell բորդի վրա network-ով | 1 |
 | `ssh-keygen -t ed25519` | Ստեղծել SSH key PC-ի վրա (մեկ անգամ) | 1 |
-| `ssh-copy-id lab@192.168.1.50` | Մուտք առանց գաղտնաբառի | 1 |
+| `ssh-copy-id lab@192.168.1.50` | Մուտք առանց password-ի | 1 |
 | `ssh-keygen -R 192.168.1.50` | Մոռանալ բորդի հին մատնահետքը (վերատեղադրումից հետո) | 1 |
 | `scp file lab@IP:~/dir/` | Ֆայլը PC-ից բորդ | 1 |
 | `scp lab@IP:~/file .` | Ֆայլը բորդից PC | 1 |
-| `rsync -av dir/ lab@IP:~/dir/` | Թղթապանակը, միայն փոխված ֆայլերը | 1 |
-| `minicom -D /dev/ttyUSB0 -b 115200` | Serial console (դուրս գալ՝ Ctrl+A, X) | 1 |
-| `sudo minicom -s` | minicom-ի կարգավորումներ. Hardware Flow Control: No | 1 |
+| `rsync -av dir/ lab@IP:~/dir/` | Directory-ն, միայն փոխված ֆայլերը | 1 |
+| `picocom -b 115200 /dev/ttyUSB0` | Serial console (դուրս գալ՝ Ctrl+A, Ctrl+X) | 1 |
 | `exit` կամ Ctrl+D | Փակել shell-ը | 1 |
 
 ## Օգնություն
@@ -27,16 +26,16 @@
 | `ls --help` | Կարճ օգնություն | 1 |
 | `history` | Նախորդ հրամանները | 1 |
 
-## Ֆայլեր և թղթապանակներ
+## Ֆայլեր և directory-ներ
 
 | Հրաման | Ինչ է անում | Օր |
 |---|---|---|
-| `pwd` | Ընթացիկ թղթապանակը | 1 |
+| `pwd` | Ընթացիկ directory-ն | 1 |
 | `ls -la` | Պարունակությունը, մանրամասն, նաև թաքնված ֆայլերը | 1 |
-| `cd dir`, `cd ..`, `cd ~`, `cd -` | Գնալ թղթապանակ / վերև / home / նախորդ | 1 |
-| `mkdir -p a/b/c` | Ստեղծել թղթապանակ՝ ծնողներով | 1 |
+| `cd dir`, `cd ..`, `cd ~`, `cd -` | Գնալ directory / վերև / home / նախորդ | 1 |
+| `mkdir -p a/b/c` | Ստեղծել directory՝ parent-ներով | 1 |
 | `touch f.txt` | Ստեղծել դատարկ ֆայլ | 1 |
-| `cp a b`, `cp -r d1 d2` | Պատճենել ֆայլ / թղթապանակ | 1 |
+| `cp a b`, `cp -r d1 d2` | Պատճենել ֆայլ / directory | 1 |
 | `mv a b` | Տեղափոխել կամ վերանվանել | 1 |
 | `rm f`, `rm -r dir` | Ջնջել (վերջնական, աղբարկղ չկա) | 1 |
 | `find ~ -name "*.c"` | Փնտրել ֆայլ ըստ անվան | 1 |
@@ -57,13 +56,13 @@
 | `grep -i word f` | Տողեր, որոնք պարունակում են բառը | 1 |
 | `cut -d= -f2` | Տողի երկրորդ դաշտը `=`-ով բաժանված | 1 |
 
-## Օգտատերեր և իրավունքներ
+## User-ներ և permission-ներ
 
 | Հրաման | Ինչ է անում | Օր |
 |---|---|---|
 | `whoami`, `id`, `groups` | Ով եմ, որ group-երում եմ | 1 |
-| `sudo cmd` | Կատարել `root`-ի իրավունքներով | 1 |
-| `chmod +x f`, `chmod 750 f` | Փոխել իրավունքները | 1 |
+| `sudo cmd` | Կատարել `root`-ի permission-ներով | 1 |
+| `chmod +x f`, `chmod 750 f` | Փոխել permission-ները | 1 |
 | `sudo usermod -aG dialout,i2c $USER` | Ավելանալ group-ին (հետո նորից մուտք գործել) | 1 |
 
 ## Process-ներ
@@ -79,14 +78,14 @@
 | `tegrastats` | Jetson. CPU, GPU, ջերմաստիճան, հզորություն | 1 |
 | `vcgencmd measure_temp` | Raspberry Pi. ջերմաստիճան | 1 |
 
-## Փաթեթներ
+## Package-ներ
 
 | Հրաման | Ինչ է անում | Օր |
 |---|---|---|
-| `sudo apt update` | Թարմացնել փաթեթների ցանկը | 1 |
-| `apt search name` | Փնտրել փաթեթ | 1 |
+| `sudo apt update` | Թարմացնել package-ների ցանկը | 1 |
+| `apt search name` | Փնտրել package | 1 |
 | `sudo apt install -y name` | Տեղադրել | 1 |
-| `python3 -m venv ~/venv` | Ստեղծել Python-ի վիրտուալ միջավայր | 1 |
+| `python3 -m venv ~/venv` | Ստեղծել Python-ի վիրտուալ environment | 1 |
 | `source ~/venv/bin/activate` | Միացնել այն | 1 |
 
 ## Համակարգի տեղեկություն
@@ -95,13 +94,11 @@
 |---|---|---|
 | `uname -a`, `uname -r`, `uname -m` | Kernel-ը, տարբերակը, architecture-ը | 1 |
 | `cat /etc/os-release` | Distribution-ը | 1 |
-| `cat /proc/device-tree/model` | Բորդի անունը (վերջում `\0` կա, նոր տող չկա) | 1 |
-| `cat -A f`, `od -c f` | Տեսնել անտեսանելի նշանները (`\0`, tab, տողի վերջ) | 1 |
-| `tr -d '\0' < f` | Հեռացնել `\0` նշանները | 1 |
+| `tr -d '\0' < /proc/device-tree/model` | Բորդի անունը | 1 |
 | `nproc`, `lscpu` | CPU core-եր | 1 |
-| `free -h` | Հիշողություն | 1 |
-| `df -h`, `lsblk` | Սկավառակներ | 1 |
-| `ip a`, `hostname -I` | Ցանցային ինտերֆեյսներ, IP հասցե | 1 |
+| `free -h` | Memory | 1 |
+| `df -h`, `lsblk` | Disk-ներ | 1 |
+| `ip a`, `hostname -I` | Network ինտերֆեյսներ, IP հասցե | 1 |
 | `uptime -p` | Որքան ժամանակ է աշխատում | 1 |
 | `dmesg \| tail` | Kernel-ի վերջին հաղորդագրությունները | 1 |
 | `cat /sys/class/thermal/thermal_zone0/temp` | CPU-ի ջերմաստիճանը (millidegree) | 1 |

@@ -1,12 +1,12 @@
-// Day 11: TCP chat server with poll() · TCP չաթ սերվեր poll()-ով
+// Day 11: TCP chat server with poll() · TCP չաթ server poll()-ով
 //
 //   g++ -std=c++17 -Wall -Wextra -O2 template.cpp -o day11
-//   ./day11 5555            # սերվեր
-//   nc localhost 5555       # հաճախորդ (բացիր 2-3 terminal)
+//   ./day11 5555            # server
+//   nc localhost 5555       # client (բացիր 2-3 terminal)
 //   ./day11 --selftest      # ստուգումներ
 //
-// Մեկ thread, մեկ poll(). սերվերը միաժամանակ սպասում է նոր կապերի և
-// բոլոր հաճախորդների հաղորդագրություններին։ Ինչ գրում է մեկը, ստանում են մյուսները։
+// Մեկ thread, մեկ poll(). server-ը միաժամանակ սպասում է նոր կապերի և
+// բոլոր client-ների հաղորդագրություններին։ Ինչ գրում է մեկը, ստանում են մյուսները։
 
 #include <arpa/inet.h>
 #include <netinet/in.h>
@@ -26,7 +26,7 @@
 
 struct Server {
     int                        listen_fd = -1;
-    std::vector<struct pollfd> fds;          // fds[0]՝ listen socket-ը, մնացածը՝ հաճախորդներ
+    std::vector<struct pollfd> fds;          // fds[0]՝ listen socket-ը, մնացածը՝ client-ներ
 };
 
 static volatile sig_atomic_t g_stop = 0;
@@ -35,7 +35,7 @@ static void on_stop(int) { g_stop = 1; }
 // ---------------------------------------------------------------- helpers (ready to use)
 
 // Ուղարկել բոլոր բայթերը. send()-ը կարող է ուղարկել մասնակի։
-// MSG_NOSIGNAL. եթե հաճախորդը փակել է կապը, ստանալ EPIPE, ոչ թե SIGPIPE (Օր 8)։
+// MSG_NOSIGNAL. եթե client-ը փակել է կապը, ստանալ EPIPE, ոչ թե SIGPIPE (Օր 8)։
 [[maybe_unused]] static bool send_all(int fd, std::string const &data)
 {
     auto sent = std::size_t{0};
@@ -69,7 +69,7 @@ static int local_port(int fd)
 
 // ---------------------------------------------------------------- worked example: client side
 
-// Միանալ host:port-ին. հաճախորդի կողմը ամբողջությամբ։
+// Միանալ host:port-ին. client-ի կողմը ամբողջությամբ։
 // socket → լրացնել sockaddr_in (byte order. htons) → connect
 static int connect_to(char const *ip, int port)
 {
@@ -100,7 +100,7 @@ static int make_listener(int port)
     return -1;
 }
 
-// TODO 2. Ուղարկել text-ը բոլոր հաճախորդներին, բացի from_fd-ից (և բացի listen socket-ից)։
+// TODO 2. Ուղարկել text-ը բոլոր client-ներին, բացի from_fd-ից (և բացի listen socket-ից)։
 // Օգտագործիր send_all։
 [[maybe_unused]] static void broadcast(Server &srv, int from_fd, std::string const &text)
 {
@@ -112,19 +112,19 @@ static int make_listener(int port)
 // TODO 3. Նոր կապ.
 //   accept(listen_fd, nullptr, nullptr)
 //   ավելացնել srv.fds-ում {fd, POLLIN, 0}
-//   նոր հաճախորդին ուղարկել  "* welcome, <peer_name>\n"
+//   նոր client-ին ուղարկել  "* welcome, <peer_name>\n"
 //   մյուսներին՝              "* <peer_name> joined\n"
 [[maybe_unused]] static void accept_client(Server &srv)
 {
     (void)srv;
 }
 
-// TODO 4. srv.fds[i] հաճախորդը ունի տվյալներ.
+// TODO 4. srv.fds[i] client-ը ունի տվյալներ.
 //   n = recv(fd, buf, sizeof buf, 0)
-//   n <= 0  → հաճախորդը գնաց. մյուսներին "* <peer_name> left\n", close(fd), հեռացնել srv.fds-ից
+//   n <= 0  → client-ը գնաց. մյուսներին "* <peer_name> left\n", close(fd), հեռացնել srv.fds-ից
 //             (peer_name-ը կանչիր close-ից առաջ)
 //   n > 0   → մյուսներին "[<peer_name>] " + տվյալները
-// Վերադարձնել true, եթե հաճախորդը հեռացվեց (որ կանչողը չավելացնի i-ն)։
+// Վերադարձնել true, եթե client-ը հեռացվեց (որ կանչողը չավելացնի i-ն)։
 [[maybe_unused]] static bool handle_client(Server &srv, std::size_t i)
 {
     (void)srv;
@@ -181,7 +181,7 @@ static int selftest()
 
     std::fflush(stdout);
     auto const pid = SYS_CHECK(fork());
-    if (0 == pid) {                                  // երեխա. սերվեր
+    if (0 == pid) {                                  // child. server
         auto srv = Server{lfd, {{lfd, POLLIN, 0}}};
         serve(srv);
         _exit(0);

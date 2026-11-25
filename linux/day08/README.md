@@ -1,11 +1,11 @@
-# Day 8: Processes, Signals, Services and Packages · Օր 8. Process-ներ, signal-ներ, service-ներ և փաթեթներ
+# Day 8: Processes, Signals, Services and Packages · Օր 8. Process-ներ, signal-ներ, service-ներ և package-ներ
 
 ## Objectives · Նպատակներ
 - Բացատրել, թե ինչ է process-ը OS-ի համար. հասցեային տարածք, PCB, վիճակներ
 - Դիտել և կառավարել process-ները. `ps`, `top`, `/proc/PID`, `nice`, job control (`&`, Ctrl+Z, `fg`, `bg`)
 - Բացատրել signal-ները, ուղարկել դրանք (`kill`) և մշակել ծրագրում (`sigaction`)
 - Ստեղծել և կառավարել systemd service-ներ. `systemctl`, `journalctl`, unit ֆայլեր
-- Տեղադրել, թարմացնել, ջնջել և փնտրել փաթեթներ `apt`-ով և `dpkg`-ով
+- Տեղադրել, թարմացնել, ջնջել և փնտրել package-ներ `apt`-ով և `dpkg`-ով
 
 ## Key Concepts · Հիմնական գաղափարներ
 - Process, program, PID, PPID
@@ -22,17 +22,17 @@
 
 *Այսօր ներմուծվող տերմինները։ Նույն տեքստը կա [GLOSSARY.md](../GLOSSARY.md)-ում։*
 
-**Program / process** — **Program**-ը ֆայլ է սկավառակի վրա։ **Process**-ը նրա աշխատող օրինակն է՝ իր հիշողությամբ, բաց ֆայլերով, վիճակով։ 16 օգտատեր, որոնք գործարկել են նույն `vim`-ը, ունեն 16 process, բայց մեկ ծրագրի կոդը հիշողության մեջ կիսվում է նրանց միջև։
+**Program / process** — **Program**-ը ֆայլ է disk-ի վրա։ **Process**-ը նրա աշխատող օրինակն է՝ իր memory-ով, բաց ֆայլերով, վիճակով։ 16 user, որոնք գործարկել են նույն `vim`-ը, ունեն 16 process, բայց մեկ ծրագրի կոդը memory-ի մեջ կիսվում է նրանց միջև։
 
-**PID / PPID** — Process-ի համարը և նրա ծնողի (parent) համարը։ Բոլոր process-ները ծառ են կազմում, որի արմատը PID 1-ն է (`systemd`)։
+**PID / PPID** — Process-ի համարը և նրա parent-ի (parent) համարը։ Բոլոր process-ները ծառ են կազմում, որի արմատը PID 1-ն է (`systemd`)։
 
-**Process Control Block (PCB)** — Kernel-ի կառուցվածքը, որը նկարագրում է process-ը. PID, վիճակ, register-ներ (այդ թվում program counter), հիշողության տվյալներ, բաց ֆայլեր, priority, UID-եր։ Linux-ում այն կոչվում է `task_struct`։
+**Process Control Block (PCB)** — Kernel-ի կառուցվածքը, որը նկարագրում է process-ը. PID, վիճակ, register-ներ (այդ թվում program counter), memory-ի տվյալներ, բաց ֆայլեր, priority, UID-եր։ Linux-ում այն կոչվում է `task_struct`։
 
-**Address space** — Process-ի վիրտուալ հիշողությունը. **code** (ծրագրի հրամանները), **data** (գլոբալ փոփոխականներ), **heap** (`new`, `malloc`), **stack** (ֆունկցիաների տեղային փոփոխականներ)։ Ամեն process ունի իրենը, և մի process-ը չի կարող կարդալ մյուսինը։
+**Address space** — Process-ի վիրտուալ memory-ն. **code** (ծրագրի հրամանները), **data** (գլոբալ variable-ներ), **heap** (`new`, `malloc`), **stack** (ֆունկցիաների տեղային variable-ներ)։ Ամեն process ունի իրենը, և մի process-ը չի կարող կարդալ մյուսինը։
 
-**Process state** — Linux-ում. **R** (running կամ ready, սպասում է CPU-ի), **S** (sleeping, սպասում է իրադարձության, կարելի է ընդհատել), **D** (uninterruptible sleep, սովորաբար սկավառակի I/O), **T** (stopped), **Z** (zombie)։
+**Process state** — Linux-ում. **R** (running կամ ready, սպասում է CPU-ի), **S** (sleeping, սպասում է իրադարձության, կարելի է ընդհատել), **D** (uninterruptible sleep, սովորաբար disk-ի I/O), **T** (stopped), **Z** (zombie)։
 
-**Zombie** — Ավարտված process, որի exit status-ը ծնողը դեռ չի կարդացել (`wait()`, Օր 10)։ Այն հիշողություն չի զբաղեցնում, միայն տող process-ների աղյուսակում։
+**Zombie** — Ավարտված process, որի exit status-ը parent-ը դեռ չի կարդացել (`wait()`, Օր 10)։ Այն memory չի զբաղեցնում, միայն տող process-ների աղյուսակում։
 
 **Nice value** — Process-ի «քաղաքավարությունը»՝ -20-ից 19։ Մեծ արժեքը նշանակում է ցածր priority։ Լռելյայն 0 է. բարձրացնել կարող է ամեն ոք, իջեցնել (բացասական դարձնել)՝ միայն root-ը։
 
@@ -42,17 +42,17 @@
 
 **Disposition** — Ինչ է անում process-ը signal ստանալիս. լռելյայն գործողությունը (`SIG_DFL`. սովորաբար ավարտ), անտեսել (`SIG_IGN`), կամ կանչել **signal handler** ֆունկցիա։ `SIGKILL`-ի և `SIGSTOP`-ի disposition-ը փոխել հնարավոր չէ։
 
-**`sig_atomic_t`** — Ամբողջ թվի տիպ, որի մեջ գրելը կատարվում է մեկ անբաժանելի հրամանով։ Signal handler-ը պետք է միայն դրոշ դնի այդպիսի `volatile` փոփոխականում, իսկ հիմնական ծրագիրը ստուգում է դրոշը։
+**`sig_atomic_t`** — Ամբողջ թվի տիպ, որի մեջ գրելը կատարվում է մեկ անբաժանելի հրամանով։ Signal handler-ը պետք է միայն դրոշ դնի այդպիսի `volatile` variable-ում, իսկ հիմնական ծրագիրը ստուգում է դրոշը։
 
-**Daemon** — Ֆոնային process, որը կապված չէ terminal-ի հետ և սպասարկում է համակարգը կամ ցանցը. `sshd`, `cron`, `systemd-journald`։ Անունները հաճախ ավարտվում են `d`-ով։
+**Daemon** — Ֆոնային process, որը կապված չէ terminal-ի հետ և սպասարկում է համակարգը կամ network-ը. `sshd`, `cron`, `systemd-journald`։ Անունները հաճախ ավարտվում են `d`-ով։
 
 **systemd** — Linux-ի առաջին process-ը (PID 1). գործարկում է բոլոր service-ները boot-ի ժամանակ, վերագործարկում է ձախողվածները, հավաքում է log-երը (**journal**)։
 
 **Unit** — systemd-ի կառավարվող օբյեկտը, նկարագրված տեքստային ֆայլով. `.service` (ծրագիր), `.timer` (ժամանակացույց), `.mount`, `.socket`։
 
-**Package** — Ծրագիր, պատրաստված տեղադրման համար. ֆայլեր, մետատվյալներ (տարբերակ, նկարագրություն) և **dependency**-ների ցանկ (այլ փաթեթներ, որոնք պետք են)։ Debian/Ubuntu-ում՝ `.deb`։
+**Package** — Ծրագիր, պատրաստված տեղադրման համար. ֆայլեր, մետատվյալներ (տարբերակ, նկարագրություն) և **dependency**-ների ցանկ (այլ package-ներ, որոնք պետք են)։ Debian/Ubuntu-ում՝ `.deb`։
 
-**Repository** — Սերվեր, որտեղ պահվում են փաթեթները և նրանց ցանկը։ `apt update`-ը ներբեռնում է ցանկը, `apt install`-ը՝ փաթեթը և նրա dependency-ները։
+**Repository** — Server, որտեղ պահվում են package-ները և նրանց ցանկը։ `apt update`-ը ներբեռնում է ցանկը, `apt install`-ը՝ package-ը և նրա dependency-ները։
 
 ---
 
@@ -64,17 +64,17 @@
 **Program**-ը ֆայլ է, **process**-ը նրա աշխատող օրինակն է։ Process-ը բաղկացած է.
 
 1. **Կոդից**՝ ծրագրի հրամանները (մի քանի process-ի միջև կիսվում է)
-2. **Տվյալներից**՝ գլոբալ փոփոխականներ, heap (`new`), stack (տեղային փոփոխականներ)
-3. **Կատարման համատեքստից**՝ register-ներ, program counter, stack pointer, բաց ֆայլեր, ընթացիկ թղթապանակ, UID-եր (Օր 7), environment (Օր 2)
+2. **Տվյալներից**՝ գլոբալ variable-ներ, heap (`new`), stack (տեղային variable-ներ)
+3. **Կատարման համատեքստից**՝ register-ներ, program counter, stack pointer, բաց ֆայլեր, ընթացիկ directory, UID-եր (Օր 7), environment (Օր 2)
 
-Kernel-ը յուրաքանչյուր process-ի մասին պահում է **Process Control Block** (Linux-ում՝ `task_struct`). PID, վիճակ, register-ների պատճեն, հիշողության քարտեզ, բաց ֆայլերի ցանկ, priority, ծախսած ժամանակ։ Երբ kernel-ը CPU-ն տալիս է մեկ այլ process-ի (**context switch**), այն պահում է ընթացիկ register-ները PCB-ում և վերականգնում հաջորդինը։
+Kernel-ը յուրաքանչյուր process-ի մասին պահում է **Process Control Block** (Linux-ում՝ `task_struct`). PID, վիճակ, register-ների պատճեն, memory-ի քարտեզ, բաց ֆայլերի ցանկ, priority, ծախսած ժամանակ։ Երբ kernel-ը CPU-ն տալիս է մեկ այլ process-ի (**context switch**), այն պահում է ընթացիկ register-ները PCB-ում և վերականգնում հաջորդինը։
 
 Process-ի ամեն ինչ երևում է `/proc/PID/`-ում (Օր 3).
 
 ```bash
-cat /proc/$$/status | head -12     # Name, State, Pid, PPid, Uid, VmRSS (հիշողություն) ...
+cat /proc/$$/status | head -12     # Name, State, Pid, PPid, Uid, VmRSS (memory) ...
 ls -l /proc/$$/fd                  # բաց ֆայլերը. 0, 1, 2 → /dev/pts/0 (Օր 2)
-cat /proc/$$/maps | head           # հասցեային տարածքը. code, heap, stack, գրադարաններ
+cat /proc/$$/maps | head           # հասցեային տարածքը. code, heap, stack, library-ներ
 tr '\0' ' ' < /proc/$$/cmdline     # հրամանի տողը (argv-ն, '\0'-ներով բաժանված)
 ```
 
@@ -86,20 +86,20 @@ Process-ը իր կյանքի ընթացքում անցնում է վիճակնե
 |---|---|---|
 | Ready | `R` | Պատրաստ է, սպասում է CPU-ի |
 | Running | `R` | Աշխատում է CPU-ի վրա |
-| Waiting | `S` | Սպասում է իրադարձության (ստեղնաշար, ցանց, timer). signal-ը կարթնացնի |
-| Waiting | `D` | Սպասում է սարքին (սկավառակ). չի ընդհատվում նույնիսկ `SIGKILL`-ով |
+| Waiting | `S` | Սպասում է իրադարձության (ստեղնաշար, network, timer). signal-ը կարթնացնի |
+| Waiting | `D` | Սպասում է սարքին (disk). չի ընդհատվում նույնիսկ `SIGKILL`-ով |
 | Suspended | `T` | Կանգնեցված է (Ctrl+Z, `SIGSTOP`, debugger) |
-| Terminated | `Z` | Ավարտված է, բայց ծնողը դեռ չի կարդացել exit status-ը |
+| Terminated | `Z` | Ավարտված է, բայց parent-ը դեռ չի կարդացել exit status-ը |
 
 `ps`-ի STAT սյունակում կարող են լինել լրացուցիչ նշաններ. `s` (session leader), `+` (առաջին պլանում), `<` (բարձր priority), `N` (ցածր priority), `l` (multi-threaded)։
 
 ### Ինչու են process-ները ստեղծվում, ավարտվում և կասեցվում
 
-**Ստեղծում.** օգտատերը մուտք է գործում (`login` → shell), օգտատերը գործարկում է ծրագիր (shell → `fork` + `exec`, Օր 10), OS-ը ստեղծում է service (systemd → `sshd`), ծրագիրը ստեղծում է օգնականներ զուգահեռության համար։
+**Ստեղծում.** user-ը մուտք է գործում (`login` → shell), user-ը գործարկում է ծրագիր (shell → `fork` + `exec`, Օր 10), OS-ը ստեղծում է service (systemd → `sshd`), ծրագիրը ստեղծում է օգնականներ զուգահեռության համար։
 
-**Ավարտ.** նորմալ (`exit`, `return` `main`-ից), սխալ ծրագրում (անթույլատրելի հասցե → `SIGSEGV`, բաժանում զրոյի → `SIGFPE`, անթույլատրելի հրաման → `SIGILL`), հիշողության պակաս (OOM killer), ժամանակի սահմանը անցավ, իրավունքների սխալ, ծնողը կամ օպերատորը ավարտեց այն (`kill`)։
+**Ավարտ.** նորմալ (`exit`, `return` `main`-ից), սխալ ծրագրում (անթույլատրելի հասցե → `SIGSEGV`, բաժանում զրոյի → `SIGFPE`, անթույլատրելի հրաման → `SIGILL`), memory-ի պակաս (OOM killer), ժամանակի սահմանը անցավ, permission-ների սխալ, parent-ը կամ օպերատորը ավարտեց այն (`kill`)։
 
-**Կասեցում.** օգտատիրոջ խնդրանքով (Ctrl+Z, debugger), ծնողի խնդրանքով, OS-ի պատճառով (հիշողության պակաս. swap), պարբերական աշխատանք (սպասում է հաջորդ ժամանակահատվածին)։
+**Կասեցում.** user-ի խնդրանքով (Ctrl+Z, debugger), parent-ի խնդրանքով, OS-ի պատճառով (memory-ի պակաս. swap), պարբերական աշխատանք (սպասում է հաջորդ ժամանակահատվածին)։
 
 ## 2. Process-ների դիտում
 
@@ -110,7 +110,7 @@ ps -ef --forest            # ծառի տեսքով
 ps -o pid,ppid,stat,ni,cmd -p $$
 pstree -p                  # ամբողջ ծառը. systemd(1)─┬─sshd(812)───sshd(1020)───bash(1021)
 pgrep -a python            # PID-ներ ըստ անվան
-top                        # իրական ժամանակում. P՝ ըստ CPU, M՝ ըստ հիշողության, k՝ kill, q՝ դուրս
+top                        # իրական ժամանակում. P՝ ըստ CPU, M՝ ըստ memory-ի, k՝ kill, q՝ դուրս
 ```
 
 `top`-ի վերևում **load average**-ն է. R և D վիճակում process-ների միջին քանակը վերջին 1, 5, 15 րոպեում։ Եթե այն մշտապես մեծ է CPU core-երի քանակից (`nproc`), համակարգը ծանրաբեռնված է։
@@ -143,7 +143,7 @@ Terminal-ը փակելիս shell-ը իր job-երին ուղարկում է `SIG
 ## 3. Signal-ներ
 
 ### Visual
-![Signal-ի ճանապարհը. kill -TERM 1234 → kernel-ը նշում է signal-ը որպես սպասող process 1234-ի համար → երբ process-ը հաջորդ անգամ աշխատում է, kernel-ը ընդհատում է նրա կոդը ցանկացած տեղում և կանչում է handler-ը → handler-ը դնում է դրոշ և վերադառնում → ծրագիրը շարունակում է այնտեղից, որտեղ ընդհատվել էր, և ստուգում է դրոշը. SIGKILL-ը և SIGSTOP-ը չեն հասնում handler-ին](signals.svg)
+![Signal-ի path-ը. kill -TERM 1234 → kernel-ը նշում է signal-ը որպես սպասող process 1234-ի համար → երբ process-ը հաջորդ անգամ աշխատում է, kernel-ը ընդհատում է նրա կոդը ցանկացած տեղում և կանչում է handler-ը → handler-ը դնում է դրոշ և վերադառնում → ծրագիրը շարունակում է այնտեղից, որտեղ ընդհատվել էր, և ստուգում է դրոշը. SIGKILL-ը և SIGSTOP-ը չեն հասնում handler-ին](signals.svg)
 
 **Signal**-ը կարճ հաղորդագրություն է process-ին՝ ընդամենը թիվ։ Այն ասինխրոն է. process-ը ստանում է այն անմիջապես, ընթացիկ ֆունկցիայի կամ նույնիսկ տողի մեջտեղում։
 
@@ -157,7 +157,7 @@ Terminal-ը փակելիս shell-ը իր job-երին ուղարկում է `SIG
 | `SIGSEGV` | 11 | Kernel-ը. անթույլատրելի հասցե (segmentation fault) | Ավարտ + core dump |
 | `SIGPIPE` | 13 | Գրել pipe-ի մեջ, որը ոչ ոք չի կարդում (Օր 4) | Ավարտ |
 | `SIGTERM` | 15 | `kill`, `systemctl stop`. «խնդրում եմ ավարտվիր» | Ավարտ |
-| `SIGCHLD` | 17 | Երեխա process-ը ավարտվեց (Օր 10) | Անտեսել |
+| `SIGCHLD` | 17 | Child process-ը ավարտվեց (Օր 10) | Անտեսել |
 | `SIGCONT` | 18 | `fg`, `bg`, `kill -CONT` | Շարունակել |
 | `SIGSTOP` | 19 | `kill -STOP`. **չի կարելի որսալ** | Կանգնել |
 | `SIGTSTP` | 20 | Ctrl+Z | Կանգնել |
@@ -249,12 +249,12 @@ journalctl -u day08 -f
 
 Ծրագիրը կարիք չունի «դառնալու daemon» (fork, setsid, PID ֆայլ). systemd-ը անում է դա։ Այն պարզապես գրում է stderr (journal-ը կհավաքի), մշակում է `SIGTERM`-ը և `SIGHUP`-ը։ Հենց այդպիսի ծրագիր կգրես լաբորատորիայում։ Պատրաստի unit ֆայլը՝ [`day08.service`](day08.service)։
 
-## 5. Փաթեթներ
+## 5. Package-ներ
 
-Ubuntu-ում և Debian-ում ծրագրերը տեղադրվում են **փաթեթներով** (`.deb`) **repository**-ներից։ `apt`-ը լուծում է **dependency**-ները. եթե `vlc`-ին պետք են 40 գրադարաններ, դրանք կտեղադրվեն ավտոմատ։
+Ubuntu-ում և Debian-ում ծրագրերը տեղադրվում են **package-ներով** (`.deb`) **repository**-ներից։ `apt`-ը լուծում է **dependency**-ները. եթե `vlc`-ին պետք են 40 library-ներ, դրանք կտեղադրվեն ավտոմատ։
 
 ```bash
-sudo apt update                    # ներբեռնել փաթեթների ցանկը (ոչինչ չի տեղադրում)
+sudo apt update                    # ներբեռնել package-ների ցանկը (ոչինչ չի տեղադրում)
 apt list --upgradable              # ինչ կարելի է թարմացնել
 sudo apt upgrade                   # թարմացնել տեղադրվածները
 sudo apt install htop tree         # տեղադրել
@@ -269,13 +269,13 @@ apt policy htop                    # որ տարբերակն է տեղադրվա
 Ցածր մակարդակում աշխատում է `dpkg`-ը.
 
 ```bash
-dpkg -l | grep ssh                 # տեղադրված փաթեթներ
-dpkg -L htop                       # ինչ ֆայլեր է տեղադրել փաթեթը
-dpkg -S /usr/bin/top               # որ փաթեթին է պատկանում ֆայլը
+dpkg -l | grep ssh                 # տեղադրված package-ներ
+dpkg -L htop                       # ինչ ֆայլեր է տեղադրել package-ը
+dpkg -S /usr/bin/top               # որ package-ին է պատկանում ֆայլը
 sudo apt install ./program.deb     # տեղադրել ներբեռնված .deb ֆայլը (dependency-ներով)
 ```
 
-Repository-ների ցանկը `/etc/apt/sources.list`-ում և `/etc/apt/sources.list.d/`-ում է։ Երրորդ կողմի repository ավելացնելը նշանակում է վստահել նրա փաթեթներին root-ի իրավունքներով. ավելացրու միայն հայտնի աղբյուրներ։
+Repository-ների ցանկը `/etc/apt/sources.list`-ում և `/etc/apt/sources.list.d/`-ում է։ Երրորդ կողմի repository ավելացնելը նշանակում է վստահել նրա package-ներին root-ի permission-ներով. ավելացրու միայն հայտնի աղբյուրներ։
 
 Այլ distribution-ներում նույն գաղափարն է՝ այլ անուններով. `dnf` (Fedora, RHEL), `pacman` (Arch), `apk` (Alpine)։ Կան նաև distribution-ից անկախ ձևաչափեր՝ `snap`, `flatpak`, `AppImage`, իսկ Python-ի համար՝ `pip` `venv`-ում (Օր 1)։
 
@@ -315,7 +315,7 @@ systemctl cat ssh ; sudo systemctl edit myapp ; sudo systemctl daemon-reload
 journalctl -u ssh -f ; journalctl -b -p err ; journalctl --since "10 min ago"
 systemd-analyze blame
 
-# Փաթեթներ
+# Package-ներ
 sudo apt update ; apt list --upgradable ; sudo apt upgrade
 sudo apt install htop ; sudo apt remove htop ; sudo apt purge htop ; sudo apt autoremove
 apt search json ; apt show htop ; apt policy htop
@@ -330,7 +330,7 @@ sudo apt install ./package.deb
 ```c
 #include <unistd.h>
 pid_t getpid(void);                // իմ PID-ը
-pid_t getppid(void);               // ծնողի PID-ը
+pid_t getppid(void);               // parent-ի PID-ը
 int nice(int inc);                 // ավելացնել nice-ին inc (դրական՝ ցածր priority)
 int pause(void);                   // քնել մինչև signal
 
@@ -376,7 +376,7 @@ wait $! ; echo $?                    # 0
 5. Template-ում handler-ի մեջ ավելացրու `printf`։ Ինչու է սա վտանգավոր, եթե ծրագիրը շատ է տպում, և signal-ները հաճախ են գալիս։ Կարդա `man 7 signal-safety`։
 6. Գրիր systemd **timer**, որը ամեն 5 րոպեն մեկ գործարկում է Օր 5-ի backup script-ը։ Ստուգիր `systemctl list-timers`-ով։
 7. Template-ի service-ում դիտավորյալ սխալ ավելացրու (`abort()` 10 tick-ից հետո)։ Ինչ է անում `Restart=on-failure`-ը։ Գտիր սա `journalctl`-ում։
-8. Գտիր, թե որ փաթեթն է տեղադրել `/usr/bin/ssh`-ը, ինչ dependency-ներ ունի այն (`apt-cache depends`), և ինչ ֆայլեր է տեղադրել։
+8. Գտիր, թե որ package-ը է տեղադրել `/usr/bin/ssh`-ը, ինչ dependency-ներ ունի այն (`apt-cache depends`), և ինչ ֆայլեր է տեղադրել։
 
 ## Self-Check · Ինքնաստուգում
 Պատասխաններ չկան։ Մտածիր ինքնուրույն։

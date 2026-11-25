@@ -92,13 +92,13 @@ static long resize_capacity(long request)
     return -1;
 }
 
-// TODO 3. Երեխան գրում է, ծնողը կարդում է.
+// TODO 3. Child-ը գրում է, parent-ը կարդում է.
 //   pipe(fds), fork()
-//   երեխա. close(fds[0]), write_all(fds[1], n բայթ 'x'), close(fds[1]), _exit(0)
-//   ծնող.  close(fds[1])   ← ԿԱՐԵՎՈՐ. այլապես read-ը երբեք չի ստանա EOF
+//   child. close(fds[0]), write_all(fds[1], n բայթ 'x'), close(fds[1]), _exit(0)
+//   parent.  close(fds[1])   ← ԿԱՐԵՎՈՐ. այլապես read-ը երբեք չի ստանա EOF
 //          total = read_all(fds[0]).size(), close(fds[0]), waitpid
 //   վերադարձնել total
-// n-ը կարող է լինել buffer-ից մեծ. երեխան կսպասի write-ում, մինչև ծնողը կարդա։
+// n-ը կարող է լինել buffer-ից մեծ. child-ը կսպասի write-ում, մինչև parent-ը կարդա։
 static long child_to_parent(long n)
 {
     (void)n;
@@ -117,9 +117,9 @@ static int write_without_reader()
 
 // TODO 5. Անցկացնել input-ը արտաքին ծրագրով և ստանալ նրա ելքը (ինչպես popen, բայց երկու ուղղությամբ).
 //   pipe(to_child), pipe(from_child), fork()
-//   երեխա. dup2(to_child[0], 0), dup2(from_child[1], 1), փակել բոլոր չորս fd-երը, execvp, _exit(127)
-//   ծնող.  փակել to_child[0] և from_child[1]
-//          write_all(to_child[1], input), close(to_child[1])   ← երեխան կստանա EOF
+//   child. dup2(to_child[0], 0), dup2(from_child[1], 1), փակել բոլոր չորս fd-երը, execvp, _exit(127)
+//   parent.  փակել to_child[0] և from_child[1]
+//          write_all(to_child[1], input), close(to_child[1])   ← child-ը կստանա EOF
 //          output = read_all(from_child[0]), close(from_child[0]), waitpid
 //   վերադարձնել output
 // Ուշադրություն. input-ը պետք է տեղավորվի buffer-ում (տես Self-Learning 4. deadlock)։

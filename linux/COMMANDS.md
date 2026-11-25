@@ -8,11 +8,11 @@
 
 | Հրաման | Ինչ է անում | Օր |
 |---|---|---|
-| `whoami` | Ընթացիկ օգտատերը | 1 |
+| `whoami` | Ընթացիկ user-ը | 1 |
 | `hostname` | Համակարգչի անունը | 1 |
 | `date`, `date -u` | Ամսաթիվը և ժամը, UTC-ով | 1 |
 | `cal`, `cal -j 3 1999` | Օրացույց | 1 |
-| `free -h` | Հիշողություն | 1 |
+| `free -h` | Memory | 1 |
 | `w`, `uptime` | Ով է մուտք գործել, որքան է աշխատում համակարգը | 1 |
 | `uname -a`, `uname -r` | Kernel-ը, տարբերակը, architecture-ը | 1 |
 | `cat /proc/version` | Ինչով և երբ է հավաքվել kernel-ը | 1 |
@@ -23,8 +23,8 @@
 | `who`, `tty`, `last` | Ով է մուտք գործել, իմ terminal-ը, մուտքերի պատմությունը | 2 |
 | `write user pts/N`, `mesg n` | Գրել ուրիշի terminal-ում / արգելել | 2 |
 | `stat file` | Ֆայլի մանրամասները | 2 |
-| `du -sh dir`, `df -h` | Թղթապանակի չափը, սկավառակների ազատ տեղը | 2 |
-| `vmstat 1 5` | Հիշողություն, CPU, I/O | 2 |
+| `du -sh dir`, `df -h` | Directory-ի չափը, disk-ների ազատ տեղը | 2 |
+| `vmstat 1 5` | Memory, CPU, I/O | 2 |
 | `lsof -p PID` | Process-ի բաց ֆայլերը | 2 |
 | `dmesg` | Kernel-ի հաղորդագրությունները | 2 |
 | `strace -c cmd`, `strace -e trace=openat cmd` | Ծրագրի system call-երը | 2 |
@@ -56,18 +56,18 @@
 | `a && b`, `a \|\| b`, `! a` | Պայմանական կատարում | 2 |
 | `true`, `false` | Միշտ 0 / միշտ 1 | 2 |
 
-## Փոփոխականներ
+## Variable-ներ
 
 | Հրաման | Ինչ է անում | Օր |
 |---|---|---|
 | `x=10`, `echo $x` | Shell variable | 2 |
 | `export x`, `export X=1` | Environment variable | 2 |
 | `env`, `printenv NAME` | Environment-ը | 2 |
-| `set` | Բոլոր փոփոխականները | 2 |
+| `set` | Բոլոր variable-ները | 2 |
 | `unset x` | Ջնջել | 2 |
-| `X=1 cmd` | Փոփոխական միայն մեկ հրամանի համար | 2 |
+| `X=1 cmd` | Variable միայն մեկ հրամանի համար | 2 |
 | `source ~/.bashrc` | Կատարել ֆայլը ընթացիկ shell-ում | 2 |
-| `mktemp`, `mktemp -d` | Ժամանակավոր ֆայլ / թղթապանակ | 2 |
+| `mktemp`, `mktemp -d` | Ժամանակավոր ֆայլ / directory | 2 |
 
 ## Օգնություն
 
@@ -78,7 +78,7 @@
 | `man -k word`, `apropos word` | Փնտրել բոլոր man page-երում | 1 |
 | `info cmd` | GNU-ի ձեռնարկը | 1 |
 
-## Ցանց
+## Network
 
 | Հրաման | Ինչ է անում | Օր |
 |---|---|---|
@@ -87,14 +87,14 @@
 | `nc -vz host 22` | Բա՞ց է port-ը | 1 |
 | `printf 'GET / ...' \| nc host 80` | Ձեռքով HTTP հարցում | 1 |
 
-## Ֆայլեր և թղթապանակներ
+## Ֆայլեր և directory-ներ
 
 | Հրաման | Ինչ է անում | Օր |
 |---|---|---|
 | `pwd`, `cd dir`, `cd ..`, `cd -` | Որտեղ եմ, շարժվել | 3 |
 | `ls -a`, `-l`, `-h`, `-S`, `-t`, `-d`, `-F`, `-i`, `-R` | Ցանկ. թաքնված, մանրամասն, չափեր, դասավորում, տեսակ, inode | 3 |
 | `tree -L 2 -d` | Ծառը | 3 |
-| `mkdir -p a/b`, `rmdir dir` | Ստեղծել / ջնջել դատարկ թղթապանակ | 3 |
+| `mkdir -p a/b`, `rmdir dir` | Ստեղծել / ջնջել դատարկ directory | 3 |
 | `touch f` | Ստեղծել դատարկ ֆայլ, թարմացնել ժամը | 3 |
 | `cp a b`, `cp -r`, `cp -a` | Պատճենել | 3 |
 | `mv a b` | Տեղափոխել / վերանվանել | 3 |
@@ -107,16 +107,16 @@
 | `mkfifo p` | Named pipe | 3 |
 | `truncate -s 1G f` | Փոխել չափը, sparse ֆայլ | 3 |
 
-## Ֆայլային համակարգեր
+## Filesystem-ներ
 
 | Հրաման | Ինչ է անում | Օր |
 |---|---|---|
 | `df -h`, `df -i` | Ազատ տեղ, ազատ inode-ներ | 3 |
-| `du -h f` | Սկավառակի վրա զբաղեցրած տեղը | 3 |
-| `lsblk -f` | Սկավառակներ, partition-ներ, ֆայլային համակարգեր | 3 |
-| `mount dev dir`, `umount dir` | Միացնել / անջատել ֆայլային համակարգ | 3 |
+| `du -h f` | Disk-ի վրա զբաղեցրած տեղը | 3 |
+| `lsblk -f` | Disk-ներ, partition-ներ, filesystem-ներ | 3 |
+| `mount dev dir`, `umount dir` | Միացնել / անջատել filesystem | 3 |
 | `findmnt`, `cat /etc/fstab` | Ինչ է mount արված / ինչ է mount արվում boot-ին | 3 |
-| `cat /proc/filesystems` | Kernel-ի աջակցած ֆայլային համակարգերը | 3 |
+| `cat /proc/filesystems` | Kernel-ի աջակցած filesystem-ները | 3 |
 | `mkfs.ext4 img` | Ստեղծել ext4 | 3 |
 | `dumpe2fs -h img`, `debugfs -R 'stat <2>' img` | Superblock-ը, inode-ը | 3 |
 | `e2fsck -b 32768 dev` | Ստուգել, պահուստային superblock-ով | 3 |
@@ -154,14 +154,14 @@
 | `sed 's/a/b/g'`, `sed -i.bak`, `sed -n '5,10p'`, `sed '/re/d'` | Stream editor | 4 |
 | `awk '{print $1}'`, `awk -F:`, `BEGIN{} {} END{}` | Սյունակներով մշակում | 4 |
 
-## Արխիվներ և սեղմում
+## Archive-ներ և compression
 
 | Հրաման | Ինչ է անում | Օր |
 |---|---|---|
-| `tar -cvf a.tar dir` | Ստեղծել արխիվ | 5 |
+| `tar -cvf a.tar dir` | Ստեղծել archive | 5 |
 | `tar -tvf a.tar` | Դիտել պարունակությունը | 5 |
 | `tar -xvf a.tar -C dir` | Բացել | 5 |
-| `tar -czf`, `-cjf`, `-cJf`, `--zstd -cf` | Արխիվ + gzip / bzip2 / xz / zstd | 5 |
+| `tar -czf`, `-cjf`, `-cJf`, `--zstd -cf` | Archive + gzip / bzip2 / xz / zstd | 5 |
 | `tar --exclude='*.o'` | Բաց թողնել ֆայլեր | 5 |
 | `gzip -k -9 f`, `gunzip f.gz`, `gzip -l f.gz` | gzip | 5 |
 | `bzip2`, `xz -T0`, `zstd` | Այլ սեղմիչներ | 5 |
@@ -169,7 +169,7 @@
 | `zip -r a.zip dir`, `unzip -l a.zip`, `unzip a.zip -d dir` | zip | 5 |
 | `sha256sum f`, `sha256sum -c f.sha256` | Checksum, ստուգում | 5 |
 | `split -b 100M f part_` | Բաժանել մասերի | 5 |
-| `tar -czf - dir \| ssh host 'tar -xzf - -C dest'` | Պատճենել ցանցով | 5 |
+| `tar -czf - dir \| ssh host 'tar -xzf - -C dest'` | Պատճենել network-ով | 5 |
 | `xxd f \| head` | Ֆայլի բայթերը | 5 |
 
 ## Bash script-եր
@@ -190,26 +190,26 @@
 | `set -euo pipefail`, `trap '...' EXIT` | Հուսալի script | 6 |
 | `read -r -p "prompt" var` | Կարդալ մուտքը | 6 |
 
-## Օգտատերեր և իրավունքներ (մանրամասն)
+## User-ներ և permission-ներ (մանրամասն)
 
 | Հրաման | Ինչ է անում | Օր |
 |---|---|---|
-| `id user`, `getent passwd user`, `getent group g` | Օգտատիրոջ և group-ի տվյալները | 7 |
-| `sudo adduser u`, `sudo useradd -m -s /bin/bash u` | Ստեղծել օգտատեր | 7 |
-| `sudo passwd u`, `sudo usermod -L u`, `sudo deluser --remove-home u` | Գաղտնաբառ, արգելափակել, ջնջել | 7 |
+| `id user`, `getent passwd user`, `getent group g` | User-ի և group-ի տվյալները | 7 |
+| `sudo adduser u`, `sudo useradd -m -s /bin/bash u` | Ստեղծել user | 7 |
+| `sudo passwd u`, `sudo usermod -L u`, `sudo deluser --remove-home u` | Password, արգելափակել, ջնջել | 7 |
 | `sudo groupadd g`, `sudo usermod -aG g u`, `sudo gpasswd -d u g` | Group-եր | 7 |
-| `sudo -i`, `sudo -u u cmd`, `su - u`, `sudo -l`, `sudo visudo` | Ուրիշի իրավունքներով | 7 |
-| `chmod u+x,g-w,o-r f`, `chmod 640 f`, `chmod -R g+rX d` | Իրավունքներ | 7 |
+| `sudo -i`, `sudo -u u cmd`, `su - u`, `sudo -l`, `sudo visudo` | Ուրիշի permission-ներով | 7 |
+| `chmod u+x,g-w,o-r f`, `chmod 640 f`, `chmod -R g+rX d` | Permission-ներ | 7 |
 | `chmod u+s`, `g+s`, `+t`, `chmod 2775 d` | Հատուկ բիթեր | 7 |
 | `sudo chown u:g f`, `chgrp g f` | Owner, group | 7 |
-| `umask`, `umask 027` | Նոր ֆայլերի իրավունքները | 7 |
-| `stat -c '%A %a %U %G' f` | Իրավունքները երկու ձևով | 7 |
+| `umask`, `umask 027` | Նոր ֆայլերի permission-ները | 7 |
+| `stat -c '%A %a %U %G' f` | Permission-ները երկու ձևով | 7 |
 | `find / -perm -4000 -type f`, `find -perm -o+w` | Setuid / բոլորի համար գրելի ֆայլեր | 7 |
 | `getfacl f`, `setfacl -m u:anna:r f` | ACL | 7 |
 | `getcap /usr/bin/ping` | Capabilities | 7 |
 | `last`, `lastlog`, `/var/log/auth.log` | Մուտքերի պատմություն | 7 |
 
-## Process-ներ, signal-ներ, service-ներ, փաթեթներ
+## Process-ներ, signal-ներ, service-ներ, package-ներ
 
 | Հրաման | Ինչ է անում | Օր |
 |---|---|---|
@@ -230,14 +230,14 @@
 | `apt update`, `apt upgrade`, `apt list --upgradable` | Թարմացում | 8 |
 | `apt install`, `remove`, `purge`, `autoremove` | Տեղադրել / ջնջել | 8 |
 | `apt search`, `apt show`, `apt policy` | Փնտրել, տեղեկություն | 8 |
-| `dpkg -l`, `dpkg -L pkg`, `dpkg -S file` | Տեղադրված փաթեթներ և ֆայլեր | 8 |
+| `dpkg -l`, `dpkg -L pkg`, `dpkg -S file` | Տեղադրված package-ներ և ֆայլեր | 8 |
 
 ## Hardware և driver-ներ
 
 | Հրաման | Ինչ է անում | Օր |
 |---|---|---|
 | `lscpu`, `cat /proc/cpuinfo` | CPU | 9 |
-| `lsblk -o NAME,SIZE,TYPE,MOUNTPOINT,MODEL`, `cat /proc/partitions` | Սկավառակներ | 9 |
+| `lsblk -o NAME,SIZE,TYPE,MOUNTPOINT,MODEL`, `cat /proc/partitions` | Disk-ներ | 9 |
 | `lspci -k` | PCI սարքեր և driver-ներ | 9 |
 | `lsusb`, `lsusb -t` | USB սարքեր | 9 |
 | `sudo lshw -short`, `sudo dmidecode`, `inxi -F` | Ամբողջ hardware-ը | 9 |
@@ -263,7 +263,7 @@
 | `g++ -pthread`, `g++ -fsanitize=thread` | Thread-երով ծրագիր, ThreadSanitizer | 10 |
 | `valgrind --tool=helgrind ./prog` | Race condition-ների որոնում | 10 |
 
-## Ցանց
+## Network
 
 | Հրաման | Ինչ է անում | Օր |
 |---|---|---|
@@ -274,4 +274,4 @@
 | `nc -l 5555`, `nc host 5555`, `nc -u` | TCP/UDP սերվեր և հաճախորդ terminal-ից | 11 |
 | `nmap -p 1-1024 host` | Բաց port-եր (միայն քո սարքերի վրա) | 11 |
 | `curl -v url` | HTTP հարցում | 11 |
-| `sudo tcpdump -i lo port 5555 -A` | Փաթեթների դիտում | 11 |
+| `sudo tcpdump -i lo port 5555 -A` | Package-ների դիտում | 11 |

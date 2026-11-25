@@ -24,7 +24,7 @@
 
 *Այսօր ներմուծվող տերմինները։ Նույն տեքստը կա [GLOSSARY.md](../GLOSSARY.md)-ում։*
 
-**Pipe** — Kernel-ի օբյեկտ. հիշողության buffer, որն ունի երկու ծայր։ Մեկ ծայրից գրում են, մյուսից կարդում, նույն հերթականությամբ (FIFO)։ Ծրագրի համար երկու ծայրերն էլ սովորական file descriptor-ներ են. աշխատում են `read`-ը, `write`-ը, `close`-ը։ Pipe-ը չունի անուն և ֆայլ սկավառակի վրա։
+**Pipe** — Kernel-ի օբյեկտ. memory-ի buffer, որն ունի երկու ծայր։ Մեկ ծայրից գրում են, մյուսից կարդում, նույն հերթականությամբ (FIFO)։ Ծրագրի համար երկու ծայրերն էլ սովորական file descriptor-ներ են. աշխատում են `read`-ը, `write`-ը, `close`-ը։ Pipe-ը չունի անուն և ֆայլ disk-ի վրա։
 
 **Pipe buffer (capacity)** — Որքան տվյալ կարող է պահել pipe-ը, քանի դեռ ոչ ոք չի կարդացել։ Linux-ում լռելյայն 16 էջ է (64 KiB 4 KiB էջերով)։ Երբ buffer-ը լիքն է, գրողը սպասում է։
 
@@ -36,7 +36,7 @@
 
 **Backpressure** — Երբ կարդացողը դանդաղ է, buffer-ը լցվում է, և գրողը ավտոմատ կանգնում է։ Արագ ծրագիրը չի կարող «խեղդել» դանդաղին. pipeline-ը աշխատում է ամենադանդաղ մասի արագությամբ։
 
-**FIFO (named pipe)** — Pipe, որն ունի անուն ֆայլային համակարգում (`mkfifo`)։ `ls -l`-ում նրա տեսակը `p` է (Օր 3)։ Թույլ է տալիս միացնել process-ներ, որոնք ծնող-երեխա չեն։
+**FIFO (named pipe)** — Pipe, որն ունի անուն filesystem-ում (`mkfifo`)։ `ls -l`-ում նրա տեսակը `p` է (Օր 3)։ Թույլ է տալիս միացնել process-ներ, որոնք parent-child չեն։
 
 **Filter** — Ծրագիր, որը կարդում է stdin-ը, ինչ-որ բան է անում տվյալների հետ և գրում stdout. `grep`, `sort`, `uniq`, `wc`, `cut`, `tr`, `sed`, `awk`։
 
@@ -71,12 +71,12 @@
 
 Օր 2-ում տեսանք, որ ամեն process ունի file descriptor-ներ. 0՝ stdin, 1՝ stdout, 2՝ stderr, և որ `>`-ը ու `<`-ը պարզապես փոխում են, թե ուր են դրանք ցույց տալիս։ Իսկ Օր 3-ում՝ որ file descriptor-ը kernel-ի օբյեկտի «բռնակ» է, որը կարող է լինել ֆայլ, terminal կամ սարք։
 
-**Pipe**-ը ևս մեկ այդպիսի օբյեկտ է. kernel-ի հիշողության մեջ գտնվող buffer, որն ունի երկու ծայր.
+**Pipe**-ը ևս մեկ այդպիսի օբյեկտ է. kernel-ի memory-ի մեջ գտնվող buffer, որն ունի երկու ծայր.
 
 - **գրելու ծայր**. ինչ գրվում է այստեղ, ավելանում է buffer-ի վերջում
 - **կարդալու ծայր**. `read`-ը վերցնում է տվյալները buffer-ի սկզբից, և դրանք անհետանում են buffer-ից
 
-Pipe-ը ֆայլ չէ. տվյալները չեն հասնում սկավառակին, և `lseek`-ը չի աշխատում։ Կարդալ կարելի է միայն մեկ անգամ և միայն հերթականությամբ։
+Pipe-ը ֆայլ չէ. տվյալները չեն հասնում disk-ին, և `lseek`-ը չի աշխատում։ Կարդալ կարելի է միայն մեկ անգամ և միայն հերթականությամբ։
 
 Pipe ստեղծվում է մեկ system call-ով.
 
@@ -120,25 +120,25 @@ ls -l /proc/$(pgrep -n sleep)/fd
 
 ## 2. Pipe երկու process-ի միջև
 
-Մեկ process-ում pipe-ը անիմաստ է։ Այն օգտակար է, երբ մի process-ը գրում է, մյուսը կարդում։ Դրա համար օգտագործվում է `fork()`. այն ստեղծում է ընթացիկ process-ի պատճենը (մանրամասն՝ Օր 10)։ Կարևորն այստեղ այն է, որ երեխան **ժառանգում է ծնողի բոլոր բաց file descriptor-ները**, այդ թվում pipe-ի երկու ծայրերը։ `fork`-ից հետո երկու process-ն էլ ունեն և՛ `fds[0]`, և՛ `fds[1]`։
+Մեկ process-ում pipe-ը անիմաստ է։ Այն օգտակար է, երբ մի process-ը գրում է, մյուսը կարդում։ Դրա համար օգտագործվում է `fork()`. այն ստեղծում է ընթացիկ process-ի պատճենը (մանրամասն՝ Օր 10)։ Կարևորն այստեղ այն է, որ child-ը **ժառանգում է parent-ի բոլոր բաց file descriptor-ները**, այդ թվում pipe-ի երկու ծայրերը։ `fork`-ից հետո երկու process-ն էլ ունեն և՛ `fds[0]`, և՛ `fds[1]`։
 
 ### Visual
-![fork-ից հետո ծնողը և երեխան ունեն pipe-ի երկու ծայրերն էլ. երեխան փակում է կարդալու ծայրը, ծնողը՝ գրելու ծայրը. մնում է մեկ ուղղությամբ կապուղի երեխայից ծնող. աղյուսակ. read-ը դատարկ pipe-ից, երբ գրող կա՝ սպասում է, երբ գրող չկա՝ վերադարձնում է 0 (EOF). write-ը լիքը pipe-ում՝ սպասում է, երբ կարդացող չկա՝ SIGPIPE](pipe_fork.svg)
+![fork-ից հետո parent-ը և child-ը ունեն pipe-ի երկու ծայրերն էլ. child-ը փակում է կարդալու ծայրը, parent-ը՝ գրելու ծայրը. մնում է մեկ ուղղությամբ կապուղի child-ից parent. աղյուսակ. read-ը դատարկ pipe-ից, երբ գրող կա՝ սպասում է, երբ գրող չկա՝ վերադարձնում է 0 (EOF). write-ը լիքը pipe-ում՝ սպասում է, երբ կարդացող չկա՝ SIGPIPE](pipe_fork.svg)
 
 ```c
 int fds[2];
 pipe(fds);
 
 pid_t pid = fork();
-if (0 == pid) {                          // երեխա. գրող
-    close(fds[0]);                       // կարդալու ծայրը երեխային պետք չէ
+if (0 == pid) {                          // child. գրող
+    close(fds[0]);                       // կարդալու ծայրը child-ին պետք չէ
     const char *msg = "data from child\n";
     write(fds[1], msg, strlen(msg));
-    close(fds[1]);                       // վերջ. ծնողը կստանա EOF
+    close(fds[1]);                       // վերջ. parent-ը կստանա EOF
     _exit(0);
 }
 
-close(fds[1]);                           // ծնող. կարդացող. ԳՐԵԼՈՒ ԾԱՅՐԸ ՓԱԿԵԼ
+close(fds[1]);                           // parent. կարդացող. ԳՐԵԼՈՒ ԾԱՅՐԸ ՓԱԿԵԼ
 char buf[256];
 ssize_t n;
 while (0 < (n = read(fds[0], buf, sizeof buf)))
@@ -149,7 +149,7 @@ waitpid(pid, NULL, 0);
 
 **Ամենակարևոր կանոնը. ամեն process փակում է այն ծայրը, որը չի օգտագործում։**
 
-Ինչու. EOF-ը գալիս է միայն այն ժամանակ, երբ գրելու ծայրը փակված է **բոլոր** process-ներում։ Եթե ծնողը մոռանա `close(fds[1])`-ը, ապա երեխան կավարտվի, բայց ծնողը ինքն է պահում գրելու ծայրը բաց, և նրա `read`-ը կսպասի հավերժ։ Ծրագիրը «կախվում է» առանց որևէ սխալի հաղորդագրության։ Սա pipe-երով աշխատելիս ամենատարածված սխալն է։ Փորձիր (Self-Learning 1)։
+Ինչու. EOF-ը գալիս է միայն այն ժամանակ, երբ գրելու ծայրը փակված է **բոլոր** process-ներում։ Եթե parent-ը մոռանա `close(fds[1])`-ը, ապա child-ը կավարտվի, բայց parent-ը ինքն է պահում գրելու ծայրը բաց, և նրա `read`-ը կսպասի հավերժ։ Ծրագիրը «կախվում է» առանց որևէ սխալի հաղորդագրության։ Սա pipe-երով աշխատելիս ամենատարածված սխալն է։ Փորձիր (Self-Learning 1)։
 
 ## 3. `read`-ի և `write`-ի կանոնները
 
@@ -166,7 +166,7 @@ Pipe-ի ամբողջ վարքը նկարագրվում է չորս իրավիճ�
 
 Երկու կարևոր հետևանք.
 
-1. **`read`-ը կարող է վերադարձնել ավելի քիչ, քան սպասում ես։** Եթե գրողը գրել է 1000 բայթ, կարդացողը կարող է ստանալ 300 + 700։ Pipe-ը բայթերի հոսք է, ոչ թե հաղորդագրություններ. ճիշտ ծրագիրը միշտ կարդում է ցիկլով, մինչև 0 (այդպես է աշխատում `read_all`-ը template-ում)։ Նույնը կտեսնենք TCP-ում (Օր 11)։
+1. **`read`-ը կարող է վերադարձնել ավելի քիչ, քան սպասում ես։** Եթե գրողը գրել է 1000 բայթ, կարդացողը կարող է ստանալ 300 + 700։ Pipe-ը բայթերի stream է, ոչ թե հաղորդագրություններ. ճիշտ ծրագիրը միշտ կարդում է ցիկլով, մինչև 0 (այդպես է աշխատում `read_all`-ը template-ում)։ Նույնը կտեսնենք TCP-ում (Օր 11)։
 2. **Մեծ `write`-ը կարող է սպասել։** 1 MB գրելը 64 KiB pipe-ում արգելափակում է գրողին, մինչև կարդացողը վերցնի տվյալները։ Դա սխալ չէ, այլ հենց այն մեխանիզմը, որ թույլ է տալիս pipe-ով փոխանցել ցանկացած չափի տվյալ։
 
 `O_NONBLOCK` դրոշով (`fcntl(fd, F_SETFL, O_NONBLOCK)`) «սպասում է»-ի փոխարեն `read`-ը և `write`-ը անմիջապես վերադարձնում են -1 և `errno = EAGAIN`։ Template-ում այսպես ենք չափում buffer-ը։
@@ -199,7 +199,7 @@ size = fcntl(fds[1], F_GETPIPE_SZ);               // 1048576
 ```
 
 - Kernel-ը կլորացնում է խնդրված չափը մինչև էջերի 2-ի աստիճան. 100000 → 131072։
-- Սովորական օգտատերը չի կարող խնդրել ավելի, քան `/proc/sys/fs/pipe-max-size` (լռելյայն 1 MiB)։ root-ը կարող է։
+- Սովորական user-ը չի կարող խնդրել ավելի, քան `/proc/sys/fs/pipe-max-size` (լռելյայն 1 MiB)։ root-ը կարող է։
 
 ```bash
 getconf PIPE_BUF /                    # 4096
@@ -209,7 +209,7 @@ getconf PAGESIZE                      # 4096 (կամ 16384 Raspberry Pi 5-ի վ�
 
 **Ինչու է չափը կարևոր.**
 
-- **Backpressure**. `fast_producer | slow_consumer` pipeline-ում buffer-ը լցվում է, և արագ ծրագիրը ավտոմատ կանգնում է։ Հիշողությունը չի աճում անվերջ։ Embedded համակարգում (օրինակ՝ տեսախցիկ → մշակում) սա պաշտպանում է RAM-ը։
+- **Backpressure**. `fast_producer | slow_consumer` pipeline-ում buffer-ը լցվում է, և արագ ծրագիրը ավտոմատ կանգնում է։ Memory-ն չի աճում անվերջ։ Embedded համակարգում (օրինակ՝ տեսախցիկ → մշակում) սա պաշտպանում է RAM-ը։
 - **Deadlock**. եթե ծրագիրը երկու pipe-ով կապված է մեկ այլ ծրագրի հետ (գրում է նրա stdin-ը, կարդում նրա stdout-ը), և երկուսն էլ գրում են առանց կարդալու, երկու buffer-ն էլ լցվում են, և երկուսն էլ սպասում են հավերժ։ Template-ի TODO 5-ը և Self-Learning 4-ը սրա մասին են։
 - **Արագություն**. մեծ buffer-ը նշանակում է ավելի քիչ context switch գրողի և կարդացողի միջև։ Մեծ տվյալների համար (video, sensor stream) `F_SETPIPE_SZ`-ը կարող է նկատելի արագացում տալ։
 
@@ -254,12 +254,12 @@ strace -f -e trace=write -e signal=SIGPIPE bash -c 'yes | head -1' 2>&1 | grep P
 int fds[2];
 pipe(fds);
 
-if (0 == fork()) {                  // առաջին երեխա. ls
+if (0 == fork()) {                  // առաջին child. ls
     dup2(fds[1], 1);                // fd 1-ը (stdout) հիմա pipe-ի գրելու ծայրն է
     close(fds[0]); close(fds[1]);   // բնօրինակներն այլևս պետք չեն
     execlp("ls", "ls", NULL);       // ls-ը գրում է fd 1-ում և չգիտի, որ դա pipe է
 }
-if (0 == fork()) {                  // երկրորդ երեխա. wc
+if (0 == fork()) {                  // երկրորդ child. wc
     dup2(fds[0], 0);                // fd 0-ն (stdin) հիմա կարդալու ծայրն է
     close(fds[0]); close(fds[1]);
     execlp("wc", "wc", "-l", NULL);
@@ -274,7 +274,7 @@ wait(NULL); wait(NULL);
 
 `ls`-ը և `wc`-ը աշխատում են **միաժամանակ**։ `wc`-ը սկսում է հաշվել, երբ `ls`-ը դեռ տպում է։ Ծրագիրը չգիտի, որ իր stdout-ը pipe է. սա Unix-ի փիլիսոփայության երկրորդ կանոնն է (Օր 1). ամեն ծրագրի ելքը կարող է դառնալ ուրիշի մուտք։ Օր 10-ում այս կոդը կդառնա մեր shell-ի մաս։
 
-Մեկ ուղղությամբ դեպքի համար C գրադարանն ունի պատրաստի ֆունկցիա. `popen`-ը անում է `pipe` + `fork` + `exec` մեկ կանչով.
+Մեկ ուղղությամբ դեպքի համար C library-ն ունի պատրաստի ֆունկցիա. `popen`-ը անում է `pipe` + `fork` + `exec` մեկ կանչով.
 
 ```c
 FILE *p = popen("ls /etc | wc -l", "r");    // "r"՝ կարդալ հրամանի stdout-ը, "w"՝ գրել նրա stdin-ը
@@ -285,7 +285,7 @@ int status = pclose(p);                     // սպասում է և վերադա
 
 ## 8. Անվանված pipe (FIFO)
 
-Սովորական pipe-ը հասանելի է միայն ծնողին և նրա երեխաներին (`fork`-ով ժառանգված fd-ներ)։ Իսկ եթե պետք է միացնել երկու անկախ ծրագիր, օրինակ՝ երկու terminal-ում. **FIFO**-ն pipe է, որն ունի անուն ֆայլային համակարգում.
+Սովորական pipe-ը հասանելի է միայն parent-ին և նրա child-ներին (`fork`-ով ժառանգված fd-ներ)։ Իսկ եթե պետք է միացնել երկու անկախ ծրագիր, օրինակ՝ երկու terminal-ում. **FIFO**-ն pipe է, որն ունի անուն filesystem-ում.
 
 ```bash
 mkfifo /tmp/chan
@@ -300,7 +300,7 @@ echo "hello" > /tmp/chan # terminal 1-ում կհայտնվի hello, և cat-ը �
 
 - `open`-ը FIFO-ի վրա **սպասում է**, մինչև բացվի մյուս ծայրը։ Կարդացողը սպասում է գրողին, և հակառակը։
 - Բացվելուց հետո FIFO-ն աշխատում է ճիշտ ինչպես pipe-ը. նույն buffer-ը, նույն կանոնները։
-- Տվյալները չեն գրվում սկավառակին. ֆայլային համակարգում պահվում է միայն անունը և իրավունքները (Օր 7)։
+- Տվյալները չեն գրվում disk-ին. filesystem-ում պահվում է միայն անունը և permission-ները (Օր 7)։
 
 C-ում.
 
@@ -311,7 +311,7 @@ write(fd, "hello\n", 6);
 close(fd);
 ```
 
-Embedded համակարգերում FIFO-ն պարզ ձև է կապելու, օրինակ, sensor կարդացող daemon-ը և մշակող ծրագիրը առանց ցանցի։
+Embedded համակարգերում FIFO-ն պարզ ձև է կապելու, օրինակ, sensor կարդացող daemon-ը և մշակող ծրագիրը առանց network-ի։
 
 ## 9. Pipeline-ներ shell-ում
 
@@ -393,9 +393,9 @@ history | awk '{print $2}' | sort | uniq -c | sort -rn | head
 `ls -l`-ի ելքի վրա սրանք շատ օգտակար են.
 
 ```bash
-ls -l | grep '^d'          # միայն թղթապանակները
+ls -l | grep '^d'          # միայն directory-ները
 ls -l | grep '^-'          # միայն սովորական ֆայլերը
-ls -l ~ | grep '^.....w'   # ֆայլեր, որոնց group-ը գրելու իրավունք ունի (6-րդ նիշը w է)
+ls -l ~ | grep '^.....w'   # ֆայլեր, որոնց group-ը գրելու permission ունի (6-րդ նիշը w է)
 grep -v '^#' /etc/fstab | grep -v '^$'   # առանց մեկնաբանությունների և դատարկ տողերի
 ```
 
@@ -455,7 +455,7 @@ grep -q root /etc/passwd && echo yes # լուռ. միայն exit status
 
 ```bash
 find ~ -name '*.cpp'                       # ըստ անվան (glob, ոչ regex)
-find /etc -type d -name 'ssh*'             # միայն թղթապանակներ
+find /etc -type d -name 'ssh*'             # միայն directory-ներ
 find / -size +100M 2>/dev/null             # 100 MB-ից մեծ
 find . -mtime -1                           # վերջին 24 ժամում փոխված
 find . -user student -perm -o+w            # owner-ը student է, բոլորը կարող են գրել
@@ -489,7 +489,7 @@ cat easy_sed.txt.bak                                          # սկզբնակա
 | `-E 's/(\w+) (\w+)/\2 \1/'` | Փոխել երկու բառերի տեղերը |
 | `-i` / `-i.bak` | Փոխել ֆայլը տեղում / պահուստով |
 
-`/`-ի փոխարեն կարելի է օգտագործել ցանկացած նիշ, ինչը հարմար է ճանապարհների համար. `sed 's|/usr/local|/opt|g'`։
+`/`-ի փոխարեն կարելի է օգտագործել ցանկացած նիշ, ինչը հարմար է path-ների համար. `sed 's|/usr/local|/opt|g'`։
 
 ## 14. `awk`
 
@@ -505,7 +505,7 @@ END { վերջում, մեկ անգամ }
 ls -l /usr | awk '{print $9 "\t" $5}'                  # անուն և չափ
 ls -lh /lib | awk '{printf "%20s\t%s\n", $9, $5}'      # հավասարեցված սյունակներ
 ls -l /usr/lib | awk 'BEGIN {sum = 0} {sum += $5} END {printf "Total: %.1f MB\n", sum / 1e6}'
-awk -F: '$3 >= 1000 {print $1, $6}' /etc/passwd       # սովորական օգտատերեր և նրանց home-երը
+awk -F: '$3 >= 1000 {print $1, $6}' /etc/passwd       # սովորական user-ներ և նրանց home-երը
 awk 'length($0) > 80 {print FILENAME ": " NR}' *.cpp   # 80 նիշից երկար տողեր
 ```
 
@@ -518,7 +518,7 @@ ls -l /lib | awk '{printf "%s\t%s\n", $9, $5}' | sed -E 's/\.so(\.[0-9]+)*//' | 
 ## 15. Ամեն ինչ միասին
 
 ```bash
-# Ո՞ր IP հասցեներից են ամենաշատ հարցումները web սերվերի log-ում
+# Ո՞ր IP հասցեներից են ամենաշատ հարցումները web server-ի log-ում
 awk '{print $1}' access.log | sort | uniq -c | sort -rn | head -5
 
 # Քանի՞ անգամ է հանդիպում յուրաքանչյուր բառը ֆայլում
@@ -555,7 +555,7 @@ ssize_t read(int fd, void *buf, size_t n);         // 0 → EOF (գրողներ 
 ssize_t write(int fd, const void *buf, size_t n);  // կարող է սպասել. -1/EPIPE, եթե կարդացող չկա
 int close(int fd);
 int dup2(int oldfd, int newfd);          // newfd-ն դառնում է oldfd-ի պատճեն (§7)
-pid_t fork(void);                        // երեխան ժառանգում է բոլոր fd-ները (մանրամասն՝ Օր 10)
+pid_t fork(void);                        // child-ը ժառանգում է բոլոր fd-ները (մանրամասն՝ Օր 10)
 
 #include <fcntl.h>
 int fcntl(int fd, int cmd, ...);         // F_GETFL/F_SETFL + O_NONBLOCK, F_GETPIPE_SZ, F_SETPIPE_SZ
@@ -578,10 +578,10 @@ void regfree(regex_t *preg);
 ```
 
 ## Resources · Աղբյուրներ
-- *Advanced Linux Programming*, Chapter 5.4 «Pipes» (pipe-ի ստեղծում, ծնող-երեխա կապ, `dup2`, `popen`, FIFO-ներ). [`docs/linux_book.pdf`](../docs/linux_book.pdf)
+- *Advanced Linux Programming*, Chapter 5.4 «Pipes» (pipe-ի ստեղծում, parent-child կապ, `dup2`, `popen`, FIFO-ներ). [`docs/linux_book.pdf`](../docs/linux_book.pdf)
 - [`pipe(7)`](https://man7.org/linux/man-pages/man7/pipe.7.html). buffer-ի չափը և նրա պատմությունը, `F_GETPIPE_SZ`/`F_SETPIPE_SZ`, `pipe-max-size`, `PIPE_BUF`-ի ատոմարությունը, `SIGPIPE`/`EPIPE`, `O_NONBLOCK`
 - [`pipe(2)`](https://man7.org/linux/man-pages/man2/pipe.2.html), [`fifo(7)`](https://man7.org/linux/man-pages/man7/fifo.7.html), [`mkfifo(3)`](https://man7.org/linux/man-pages/man3/mkfifo.3.html), [`popen(3)`](https://man7.org/linux/man-pages/man3/popen.3.html), [`fcntl(2)`](https://man7.org/linux/man-pages/man2/fcntl.2.html)
-- [Piping and Redirection](http://ryanstutorials.net/linuxtutorial/piping.php), Ryan's Tutorials. հոսքեր, redirection, pipeline-ներ քայլ առ քայլ
+- [Piping and Redirection](http://ryanstutorials.net/linuxtutorial/piping.php), Ryan's Tutorials. stream-ներ, redirection, pipeline-ներ քայլ առ քայլ
 - [GNU grep manual: Regular Expressions](https://www.gnu.org/software/grep/manual/html_node/Regular-Expressions.html), [Basic vs Extended](https://www.gnu.org/software/grep/manual/html_node/Basic-vs-Extended.html), [Exit Status](https://www.gnu.org/software/grep/manual/html_node/Exit-Status.html)
 - [Regular expressions in Linux](http://www.linuxnix.com/regular-expressions-linux-i/), LinuxNix
 - [Using grep and regular expressions](https://www.digitalocean.com/community/tutorials/using-grep-regular-expressions-to-search-for-text-patterns-in-linux), DigitalOcean
@@ -597,7 +597,7 @@ Pipe-երի լաբորատորիա. [`template.cpp`](template.cpp)։ Ամեն TO
 |---|---|---|
 | 1 | Գրել `O_NONBLOCK`-ով մինչև `EAGAIN` | Buffer-ը 16 էջ է (65536) |
 | 2 | `F_SETPIPE_SZ` 1 MiB և 100000 | 1048576 և 131072 |
-| 3 | Երեխան գրում է 1 MB, ծնողը կարդում է | Բոլոր բայթերը հասնում են 64 KiB buffer-ով |
+| 3 | Child-ը գրում է 1 MB, parent-ը կարդում է | Բոլոր բայթերը հասնում են 64 KiB buffer-ով |
 | 4 | Գրել, երբ կարդացող չկա | `EPIPE` |
 | 5 | `sort`, `wc -l`, `tr`-ին տալ input և կարդալ ելքը | Երկու pipe, `dup2`, `exec` |
 
@@ -608,26 +608,26 @@ g++ -std=c++17 -Wall -Wextra -O2 template.cpp -o day04 && ./day04
 Գործարկիր նույն ծրագիրը laptop-ի, Jetson-ի և Raspberry Pi-ի վրա։ Համեմատիր TODO 1-ի արդյունքը և բացատրիր տարբերությունը (`getconf PAGESIZE`)։
 
 ## Self-Learning · Ինքնուրույն աշխատանք
-1. TODO 3-ում հեռացրու ծնողի `close(fds[1])`-ը։ Ինչ է պատահում։ Ծրագիրը կախված ժամանակ մեկ այլ terminal-ում գտիր նրա PID-ը, նայիր `ls -l /proc/PID/fd`-ը և `cat /proc/PID/wchan`-ը, և բացատրիր, թե ինչու է այն սպասում։
-2. TODO 3-ում երեխան թող գրի 1 MB առանց `write_all`-ի, մեկ `write`-ով։ Ինչ է վերադարձնում `write`-ը։ Իսկ եթե pipe-ը `O_NONBLOCK` է։
-3. Գրիր ծրագիր, որտեղ 4 երեխա միաժամանակ գրում են նույն pipe-ում 1000-ական տող, իսկ ծնողը ստուգում է, որ ամեն տող ամբողջական է։ Փորձիր տողի երկարությունը 100, 4096 և 5000 բայթ։ Երբ են տողերը սկսում խառնվել։ Կապիր `PIPE_BUF`-ի հետ։
-4. TODO 5-ում փոխանցիր `cat`-ին 1 MB input։ Ծրագիրը կախվում է (deadlock)։ Բացատրիր, թե ինչու `sort`-ի հետ նույն չափը կարող է աշխատել, իսկ `cat`-ի հետ՝ ոչ։ Ուղղիր երկու ձևով. (ա) գրողը թող լինի առանձին thread կամ երեխա, (բ) `poll()`-ով սպասիր, թե որ ծայրն է պատրաստ (Օր 11)։
+1. TODO 3-ում հեռացրու parent-ի `close(fds[1])`-ը։ Ինչ է պատահում։ Ծրագիրը կախված ժամանակ մեկ այլ terminal-ում գտիր նրա PID-ը, նայիր `ls -l /proc/PID/fd`-ը և `cat /proc/PID/wchan`-ը, և բացատրիր, թե ինչու է այն սպասում։
+2. TODO 3-ում child-ը թող գրի 1 MB առանց `write_all`-ի, մեկ `write`-ով։ Ինչ է վերադարձնում `write`-ը։ Իսկ եթե pipe-ը `O_NONBLOCK` է։
+3. Գրիր ծրագիր, որտեղ 4 child միաժամանակ գրում են նույն pipe-ում 1000-ական տող, իսկ parent-ը ստուգում է, որ ամեն տող ամբողջական է։ Փորձիր տողի երկարությունը 100, 4096 և 5000 բայթ։ Երբ են տողերը սկսում խառնվել։ Կապիր `PIPE_BUF`-ի հետ։
+4. TODO 5-ում փոխանցիր `cat`-ին 1 MB input։ Ծրագիրը կախվում է (deadlock)։ Բացատրիր, թե ինչու `sort`-ի հետ նույն չափը կարող է աշխատել, իսկ `cat`-ի հետ՝ ոչ։ Ուղղիր երկու ձևով. (ա) գրողը թող լինի առանձին thread կամ child, (բ) `poll()`-ով սպասիր, թե որ ծայրն է պատրաստ (Օր 11)։
 5. Չափիր 1 GB-ի փոխանցման ժամանակը pipe-ով (`dd if=/dev/zero bs=1M count=1024 | cat > /dev/null`), ապա քո ծրագրով 64 KiB և 1 MiB buffer-ով։ Կա տարբերություն։
 6. Ստեղծիր FIFO և կազմակերպիր «չաթ» երկու terminal-ի միջև. մեկ FIFO յուրաքանչյուր ուղղության համար։ Ինչու է պետք երկու FIFO, և ինչ կլինի, եթե երկու կողմն էլ նախ բացեն գրելու համար։
 7. Գրիր `grep`-ի փոքր տարբերակ POSIX regex-ով (`regcomp`, `regexec`) `-i`, `-v`, `-n`, `-c`, `-E` option-ներով, և համեմատիր իրական `grep`-ի հետ. `diff <(./mygrep -n -i root /etc/passwd) <(grep -n -i root /etc/passwd)`։ Exit status-ը պետք է լինի նույնը. 0, 1, 2։
 8. Տպիր միայն `/etc`-ի վերջից 20-րդ ֆայլը՝ մեկ pipeline-ով։
-9. `/etc/passwd`-ից տպիր օգտատերերի անունները և shell-երը, դասավորված ըստ shell-ի, և հաշվիր, քանի օգտատեր ունի յուրաքանչյուր shell։
+9. `/etc/passwd`-ից տպիր user-ների անունները և shell-երը, դասավորված ըստ shell-ի, և հաշվիր, քանի user ունի յուրաքանչյուր shell։
 10. Գրիր regex, որը համընկնում է միայն վավեր IPv4 հասցեների հետ (յուրաքանչյուր թիվ 0–255)։ Ստուգիր `grep -E -x`-ով `0.0.0.0`, `192.168.1.1`, `256.1.1.1`, `1.2.3`, `01.2.3.4` տողերի վրա։
 11. `sed`-ով CSV ֆայլում փոխիր ամսաթվերը `DD.MM.YYYY`-ից `YYYY-MM-DD` ձևաչափի։
-12. Գրիր `awk` ծրագիր, որը `ps aux`-ի ելքից հաշվում է հիշողության ընդհանուր օգտագործումը (`%MEM` սյունակ) ըստ օգտատիրոջ։
+12. Գրիր `awk` ծրագիր, որը `ps aux`-ի ելքից հաշվում է memory-ի ընդհանուր օգտագործումը (`%MEM` սյունակ) ըստ user-ի։
 
 ## Self-Check · Ինքնաստուգում
 Պատասխաններ չկան։ Մտածիր ինքնուրույն։
 
 1. Ինչով է pipe-ը տարբերվում ֆայլից։ Կարելի՞ է pipe-ից նույն տվյալները կարդալ երկու անգամ։
 2. `pipe(fds)`-ից հետո ո՞ր ծայրն է `fds[0]`-ն, և ինչու է հեշտ հիշել։
-3. `fork`-ից հետո քանի՞ file descriptor է ցույց տալիս pipe-ի գրելու ծայրը։ Ինչ պետք է անեն ծնողը և երեխան։
-4. Ծնողը կարդում է pipe-ից, երեխան ավարտվել է, բայց `read`-ը չի վերադառնում։ Որն է ամենահավանական պատճառը։
+3. `fork`-ից հետո քանի՞ file descriptor է ցույց տալիս pipe-ի գրելու ծայրը։ Ինչ պետք է անեն parent-ը և child-ը։
+4. Parent-ը կարդում է pipe-ից, child-ը ավարտվել է, բայց `read`-ը չի վերադառնում։ Որն է ամենահավանական պատճառը։
 5. `read`-ը խնդրել է 4096 բայթ և ստացել 17։ Սա սխալ է։ Ինչ պետք է անի ծրագիրը։
 6. Ինչ է պատահում, երբ գրողը արագ է, իսկ կարդացողը դանդաղ։ Ինչու դա լավ է։
 7. Ինչու է `yes | head -3`-ը ավարտվում։ Ինչ exit status ունի `yes`-ը և ինչու։

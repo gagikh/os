@@ -9,13 +9,13 @@
 ⌨️ [Commands](COMMANDS.md). բոլոր հրամանները՝ խմբերով։  
 📐 [API Index](API.md). C/C++ և Python ֆունկցիաները՝ ըստ օրերի։
 
-Դասընթացը չի ենթադրում Linux-ի նախնական գիտելիք։ Օր 1-ը սկսվում է զրոյից։ Shell-ի, ֆայլային համակարգի, process-ների և system programming-ի ամբողջական դասընթացը [Linux course](../linux/README.md)-ն է. այստեղ դրանք տրված են այնքանով, որքան պետք է բորդի հետ աշխատելու համար։
+Դասընթացը չի ենթադրում Linux-ի նախնական գիտելիք։ Օր 1-ը սկսվում է զրոյից։
 
 ---
 
 ## 💻 What you need · Ինչ է պետք
 
-- **Բորդ**՝ երեքից որևէ մեկը, հոսանքի աղբյուրով և ցանցային կապով (Ethernet կամ Wi-Fi), արդեն տեղադրված OS-ով։
+- **Բորդ**՝ երեքից որևէ մեկը, հոսանքի աղբյուրով և network կապով (Ethernet կամ Wi-Fi), արդեն տեղադրված OS-ով։
 - **PC**՝ Linux (Ubuntu), կամ Windows **WSL2**-ով (Ubuntu), կամ macOS։ Windows-ում WSL2-ը տեղադրվում է PowerShell-ից՝ `wsl --install`։
 - Ցանկալի է. **USB-to-UART մալուխ** (3.3 V) serial console-ի համար և **VS Code**՝ Remote-SSH extension-ով։
 
@@ -23,7 +23,7 @@ PC-ի վրա մեկ անգամ (Ubuntu / WSL2).
 
 ```bash
 sudo apt update
-sudo apt install -y build-essential cmake git g++-aarch64-linux-gnu qemu-user minicom
+sudo apt install -y build-essential cmake git g++-aarch64-linux-gnu qemu-user picocom
 ```
 
 Բորդ չկա՞։ Օր 1-ի ամբողջ նյութը աշխատում է PC-ի Ubuntu-ի կամ WSL2-ի վրա, իսկ ARM binary-ները կարելի է գործարկել `qemu-aarch64`-ով։
@@ -48,7 +48,7 @@ Binary-ները հայտնվում են `build*/bin/`-ում։ Python ծրագր
 - Միանալ բորդին. SSH, serial console, `scp`
 - Shell, ֆայլային ծառ, pipe և redirection
 - Users, groups, permissions, `sudo`
-- Process-ներ և փաթեթներ
+- Process-ներ և package-ներ
 - Առաջին ծրագրերը C, C++, Python լեզուներով. native և cross build
 
 ### Day 2: How the Board Starts, and Talking to Hardware *(պատրաստվում է)*

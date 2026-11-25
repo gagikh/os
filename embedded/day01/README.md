@@ -2,10 +2,10 @@
 
 ## Objectives · Նպատակներ
 - Բացատրել, թե ինչ է Linux-ը. **kernel**-ի և **distribution**-ի տարբերությունը, և ինչու են embedded սարքերը գրեթե միշտ Linux օգտագործում
-- Միանալ բորդին PC-ից՝ **SSH**-ով ցանցով և **serial console**-ով, ֆայլեր պատճենել `scp`-ով
+- Միանալ բորդին PC-ից՝ **SSH**-ով network-ով և **serial console**-ով, ֆայլեր պատճենել `scp`-ով
 - Ազատ աշխատել **shell**-ում. շարժվել ֆայլային ծառով, ստեղծել, պատճենել, ջնջել, կարդալ ֆայլեր, օգտագործել `|` և `>`
-- Կարդալ `ls -l`-ի տողը և փոխել **permission**-ները, հասկանալ, թե ինչու է բորդի վրա կարևոր օգտատիրոջ **group**-ը
-- Դիտել և կանգնեցնել **process**-ներ, տեղադրել փաթեթներ `apt`-ով
+- Կարդալ `ls -l`-ի տողը և փոխել **permission**-ները, հասկանալ, թե ինչու է բորդի վրա կարևոր user-ի **group**-ը
+- Դիտել և կանգնեցնել **process**-ներ, տեղադրել package-ներ `apt`-ով
 - Հավաքել նույն ծրագիրը C-ով, C++-ով և Python-ով, **native** (բորդի վրա) և **cross** (PC-ի վրա) եղանակով, և ստուգել արդյունքը `file`-ով
 
 ## Key Concepts · Հիմնական գաղափարներ
@@ -22,35 +22,35 @@
 
 *Այսօր ներմուծվող տերմինները։ Նույն տեքստը կա [GLOSSARY.md](../GLOSSARY.md)-ում։*
 
-**Linux kernel (միջուկ)** — Օպերացիոն համակարգի այն մասը, որն ուղիղ աշխատում է hardware-ի հետ. բաշխում է CPU-ի ժամանակը process-ների միջև, կառավարում է հիշողությունը, ֆայլային համակարգերը, ցանցը և driver-ների միջոցով սարքերը։ Բառի խիստ իմաստով «Linux»-ը միայն kernel-ն է։
+**Linux kernel** — Operating system-ի այն մասը, որն ուղիղ աշխատում է hardware-ի հետ. բաշխում է CPU-ի ժամանակը process-ների միջև, կառավարում է memory-ն, filesystem-ները, network-ը և driver-ների միջոցով սարքերը։ Բառի խիստ իմաստով «Linux»-ը միայն kernel-ն է։
 
-**Distribution (դիստրիբուտիվ)** — Kernel-ը՝ գրադարանների, ծրագրերի և package manager-ի հետ միասին, պատրաստ տեղադրման համար։ Օրինակներ՝ Ubuntu, Debian, Raspberry Pi OS։ Jetson-ի վրա NVIDIA-ի Ubuntu-ն է (L4T), Raspberry Pi-ի վրա՝ Raspberry Pi OS-ը։
+**Distribution** — Kernel-ը՝ library-ների, ծրագրերի և package manager-ի հետ միասին, պատրաստ տեղադրման համար։ Օրինակներ՝ Ubuntu, Debian, Raspberry Pi OS։ Jetson-ի վրա NVIDIA-ի Ubuntu-ն է (L4T), Raspberry Pi-ի վրա՝ Raspberry Pi OS-ը։
 
-**User space և kernel space** — Սովորական ծրագրերն աշխատում են user space-ում և hardware-ին ուղիղ դիմել չեն կարող։ Ամեն ինչ, ինչ պահանջում է hardware (ֆայլ կարդալ, ցանցով տվյալ ուղարկել, GPIO փոխել), անցնում է kernel-ով՝ **system call**-ի միջոցով։
+**User space և kernel space** — Սովորական ծրագրերն աշխատում են user space-ում և hardware-ին ուղիղ դիմել չեն կարող։ Ամեն ինչ, ինչ պահանջում է hardware (ֆայլ կարդալ, network-ով տվյալ ուղարկել, GPIO փոխել), անցնում է kernel-ով՝ **system call**-ի միջոցով։
 
 **System call** — Ծրագրի խնդրանքը kernel-ին. `open`, `read`, `write`, `fork` և այլն։ C-ի `printf`-ը, Python-ի `print`-ը վերջում կանչում են `write` system call-ը։
 
-**Headless** — Առանց մոնիտորի և ստեղնաշարի աշխատող սարք։ Embedded բորդերի մեծ մասն այդպես են աշխատում, և նրանց հետ աշխատում ենք PC-ից՝ ցանցով կամ serial կապով։
+**Headless** — Առանց մոնիտորի և ստեղնաշարի աշխատող սարք։ Embedded բորդերի մեծ մասն այդպես են աշխատում, և նրանց հետ աշխատում ենք PC-ից՝ network-ով կամ serial կապով։
 
-**SSH (Secure Shell)** — Արձանագրություն, որով PC-ից ցանցով բացում ենք shell բորդի վրա։ Կապը կոդավորված է։ Բորդի վրա աշխատում է `sshd` server-ը (port 22), PC-ից միանում ենք `ssh user@IP` հրամանով։
+**SSH (Secure Shell)** — Protocol, որով PC-ից network-ով բացում ենք shell բորդի վրա։ Կապը կոդավորված է։ Բորդի վրա աշխատում է `sshd` server-ը (port 22), PC-ից միանում ենք `ssh user@IP` հրամանով։
 
-**Serial console** — Shell կամ boot-ի հաղորդագրություններ UART-ի միջոցով, սովորաբար USB-to-UART մալուխով։ Աշխատում է ցանցից անկախ, boot-ի առաջին վայրկյանից, այդ պատճառով այն «փրկության» ճանապարհն է, երբ SSH-ը չի աշխատում։
+**Serial console** — Shell կամ boot-ի հաղորդագրություններ UART-ի միջոցով, սովորաբար USB-to-UART մալուխով։ Աշխատում է network-ից անկախ, boot-ի առաջին վայրկյանից, այդ պատճառով այն «փրկության» path-ը է, երբ SSH-ը չի աշխատում։
 
 **Shell** — Ծրագիր, որը կարդում է մեր գրած հրամանները և կատարում դրանք։ Linux-ում ամենատարածվածը `bash`-ն է։ **Terminal**-ը պատուհանն է, որում shell-ն աշխատում է։
 
-**Prompt** — Shell-ի տողը, որը սպասում է հրամանի. `lab@jetson:~$`։ Ցույց է տալիս օգտատիրոջը (`lab`), համակարգչի անունը (`jetson`), ընթացիկ թղթապանակը (`~`) և իրավունքները (`$`՝ սովորական օգտատեր, `#`՝ `root`)։
+**Prompt** — Shell-ի տողը, որը սպասում է հրամանի. `lab@jetson:~$`։ Ցույց է տալիս user-ին (`lab`), համակարգչի անունը (`jetson`), ընթացիկ directory-ն (`~`) և permission-ները (`$`՝ սովորական user, `#`՝ `root`)։
 
-**Path (ճանապարհ)** — Ֆայլի հասցեն ծառում։ **Absolute** path-ը սկսվում է `/`-ով (`/home/lab/day01`), **relative**-ը հաշվվում է ընթացիկ թղթապանակից (`day01/hello.c`)։ `~`-ը օգտատիրոջ home թղթապանակն է, `.`-ը՝ ընթացիկը, `..`-ը՝ վերևինը։
+**Path** — Ֆայլի հասցեն ծառում։ **Absolute** path-ը սկսվում է `/`-ով (`/home/lab/day01`), **relative**-ը հաշվվում է ընթացիկ directory-ից (`day01/hello.c`)։ `~`-ը user-ի home directory-ն է, `.`-ը՝ ընթացիկը, `..`-ը՝ վերևինը։
 
-**Root** — Երկու իմաստ ունի. ֆայլային ծառի սկիզբը `/`, և գերօգտատերը `root`, որին ամեն ինչ թույլատրված է։
+**Root** — Երկու իմաստ ունի. ֆայլային ծառի սկիզբը `/`, և գերuser-ը `root`, որին ամեն ինչ թույլատրված է։
 
-**Permission (իրավունք)** — Ֆայլի վրա թույլատրված գործողությունները. `r` (կարդալ), `w` (գրել), `x` (կատարել), առանձին owner-ի, group-ի և մնացած բոլորի համար։
+**Permission** — Ֆայլի վրա թույլատրված գործողությունները. `r` (կարդալ), `w` (գրել), `x` (կատարել), առանձին owner-ի, group-ի և մնացած բոլորի համար։
 
-**Group** — Օգտատերերի խումբ։ Բորդի վրա սարքերի ֆայլերը (`/dev/ttyUSB0`, `/dev/i2c-1`) պատկանում են որոշակի group-ի (`dialout`, `i2c`), և դրանց հետ աշխատելու համար օգտատերը պետք է լինի այդ group-ում։
+**Group** — User-ների խումբ։ Բորդի վրա սարքերի ֆայլերը (`/dev/ttyUSB0`, `/dev/i2c-1`) պատկանում են որոշակի group-ի (`dialout`, `i2c`), և դրանց հետ աշխատելու համար user-ը պետք է լինի այդ group-ում։
 
-**`sudo`** — Մեկ հրամանը կատարում է `root`-ի իրավունքներով։ Պահանջում է քո գաղտնաբառը։
+**`sudo`** — Մեկ հրամանը կատարում է `root`-ի permission-ներով։ Պահանջում է քո password-ը։
 
-**Process** — Աշխատող ծրագիր։ Ունի իր համարը՝ **PID**-ը, իր հիշողությունը և իր owner-ը։ Նույն ծրագիրը երկու անգամ գործարկելով ստանում ենք երկու process։
+**Process** — Աշխատող ծրագիր։ Ունի իր համարը՝ **PID**-ը, իր memory-ն և իր owner-ը։ Նույն ծրագիրը երկու անգամ գործարկելով ստանում ենք երկու process։
 
 **Exit status** — Թիվ, որը ծրագիրը վերադարձնում է ավարտվելիս. `0`՝ հաջող, այլ թիվ՝ սխալ։ Վերջին հրամանի exit status-ը `$?`-ն է։
 
@@ -73,8 +73,8 @@
 ```bash
 # Միանալ և ֆայլեր փոխանցել
 ssh lab@192.168.1.50            # shell բորդի վրա
-scp hello lab@192.168.1.50:~    # ֆայլը PC-ից բորդի home թղթապանակ
-ssh-keygen && ssh-copy-id lab@192.168.1.50   # մուտք առանց գաղտնաբառի
+scp hello lab@192.168.1.50:~    # ֆայլը PC-ից բորդի home directory
+ssh-keygen && ssh-copy-id lab@192.168.1.50   # մուտք առանց password-ի
 exit                             # դուրս գալ (կամ Ctrl+D)
 
 # Օգնություն
@@ -85,12 +85,12 @@ ls --help       # կարճ օգնություն
 pwd             # որտեղ եմ
 ls -la          # ինչ կա այստեղ, ներառյալ թաքնված ֆայլերը
 cd /etc         # գնալ /etc
-cd ~  ;  cd ..  ;  cd -     # home, վերև, նախորդ թղթապանակ
+cd ~  ;  cd ..  ;  cd -     # home, վերև, նախորդ directory
 
-# Ֆայլեր և թղթապանակներ
-mkdir -p lab/day01          # ստեղծել թղթապանակ (ծնողներով)
+# Ֆայլեր և directory-ներ
+mkdir -p lab/day01          # ստեղծել directory (parent-ներով)
 touch notes.txt             # ստեղծել դատարկ ֆայլ
-cp a.txt b.txt ; cp -r dir1 dir2   # պատճենել ֆայլ / թղթապանակ
+cp a.txt b.txt ; cp -r dir1 dir2   # պատճենել ֆայլ / directory
 mv a.txt docs/              # տեղափոխել կամ վերանվանել
 rm file.txt ; rm -r dir     # ջնջել. Աղբարկղ չկա։
 find ~ -name "*.c"          # փնտրել ֆայլ ըստ անվան
@@ -103,9 +103,9 @@ echo "hi" > f.txt ; echo "again" >> f.txt   # գրել / ավելացնել
 grep -i error /var/log/syslog               # տողեր, որոնք պարունակում են բառը
 dmesg | tail -n 20                          # pipe. մի հրամանի ելքը՝ մյուսի մուտք
 
-# Օգտատերեր և իրավունքներ
+# User-ներ և permission-ներ
 whoami ; id ; groups
-sudo apt update             # մեկ հրաման root-ի իրավունքներով
+sudo apt update             # մեկ հրաման root-ի permission-ներով
 chmod +x run.sh ; chmod 750 run.sh
 sudo usermod -aG dialout $USER   # ավելանալ group-ին (հետո նորից մուտք գործել)
 
@@ -115,12 +115,12 @@ kill 1234 ; pkill -f hello
 ./long_task &               # գործարկել ֆոնում
 echo $?                     # վերջին հրամանի exit status-ը
 
-# Փաթեթներ
+# Package-ներ
 sudo apt update && sudo apt install -y htop build-essential
 python3 -m venv ~/venv && source ~/venv/bin/activate && pip install numpy
 
 # Համակարգի տեղեկություն
-uname -a ; cat /etc/os-release ; cat -A /proc/device-tree/model
+uname -a ; cat /etc/os-release ; tr -d '\0' < /proc/device-tree/model
 nproc ; lscpu ; free -h ; df -h ; lsblk
 ip a ; hostname -I ; uptime ; date
 cat /sys/class/thermal/thermal_zone0/temp
@@ -166,8 +166,8 @@ Python-ում նույնը տալիս են `platform.uname()`, `os.getpid()` և 
 
 Երբ ասում ենք «բորդի վրա Linux է», իրականում նկատի ունենք երեք բան միասին.
 
-1. **Kernel**-ը՝ ամենացածր ծրագրային շերտը։ Միայն այն իրավունք ունի ուղիղ դիմելու hardware-ին։ Այն որոշում է, թե որ process-ը երբ աշխատի, ով որքան հիշողություն ստանա, և driver-ների միջոցով «խոսում» է սարքերի հետ։
-2. **Գրադարանները**՝ `glibc`, `libstdc++` և այլն։ Երբ C-ում գրում ենք `printf`, գրադարանը պատրաստում է տեքստը, իսկ էկրանին հանելու համար կանչում է kernel-ի `write` system call-ը։
+1. **Kernel**-ը՝ ամենացածր ծրագրային շերտը։ Միայն այն permission ունի ուղիղ դիմելու hardware-ին։ Այն որոշում է, թե որ process-ը երբ աշխատի, ով որքան memory ստանա, և driver-ների միջոցով «խոսում» է սարքերի հետ։
+2. **Library-ները**՝ `glibc`, `libstdc++` և այլն։ Երբ C-ում գրում ենք `printf`, library-ն պատրաստում է տեքստը, իսկ էկրանին հանելու համար կանչում է kernel-ի `write` system call-ը։
 3. **Ծրագրերը**՝ `bash`, `python3`, `sshd`, `apt`, և մեր սեփական ծրագրերը։
 
 Kernel-ը գումարած մնացած երկու շերտը և package manager-ը կազմում են **distribution**։ Մեր երեք բորդը տարբեր distribution-ներ ունեն, բայց բոլորն էլ Debian-ի ընտանիքից են (Yocto-ն բացառություն է, տե՛ս ստորև), այնպես որ այսօրվա հրամանները բոլորի վրա նույնն են։
@@ -175,11 +175,11 @@ Kernel-ը գումարած մնացած երկու շերտը և package manager
 ### Ինչու՞ Linux embedded սարքերում
 
 - **Driver-ները պատրաստ են.** տեսախցիկներ, Wi-Fi, USB, GPU. Ամենը, ինչ կա PC-ում, կա նաև բորդի վրա։
-- **Ցանցը պատրաստ է.** SSH, TCP/IP, Wi-Fi. Կարիք չկա ամեն ինչ զրոյից գրել, ինչպես microcontroller-ի վրա։
+- **Network-ը պատրաստ է.** SSH, TCP/IP, Wi-Fi. Կարիք չկա ամեն ինչ զրոյից գրել, ինչպես microcontroller-ի վրա։
 - **Նույն գործիքները, ինչ PC-ում.** `gcc`, `python3`, OpenCV, PyTorch, ROS։ Ծրագիրը PC-ի վրա գրում ենք, բորդի վրա գործարկում։
 - **Անվճար է և բաց.** Կարող ենք կարդալ և փոխել kernel-ի կոդը (Օր 3)։
 
-Գինը. Linux-ը microcontroller չէ։ Այն boot է լինում վայրկյաններով, ոչ թե միլիվայրկյաններով, պահանջում է հարյուրավոր MB հիշողություն, և ամեն process չէ, որ աշխատում է ճշգրիտ ժամանակին։ Վերջինիս մասին կխոսենք Օր 3-ում (real-time)։
+Գինը. Linux-ը microcontroller չէ։ Այն boot է լինում վայրկյաններով, ոչ թե միլիվայրկյաններով, պահանջում է հարյուրավոր MB memory, և ամեն process չէ, որ աշխատում է ճշգրիտ ժամանակին։ Վերջինիս մասին կխոսենք Օր 3-ում (real-time)։
 
 ### Մեր բորդերը
 
@@ -195,47 +195,31 @@ Kernel-ը գումարած մնացած երկու շերտը և package manager
 Ստուգել, թե ինչի վրա ես.
 
 ```bash
-cat /proc/device-tree/model     # բորդի անունը
-cat /etc/os-release             # distribution-ը
-uname -m                        # architecture-ը
+tr -d '\0' < /proc/device-tree/model ; echo     # բորդի անունը
+cat /etc/os-release                             # distribution-ը
+uname -m                                        # architecture-ը
 ```
 
-Առաջին հրամանից հետո prompt-ը կհայտնվի նույն տողում՝ բորդի անվան կողքին.
-
-```
-lab@jetson:~$ cat /proc/device-tree/model
-NVIDIA Jetson Orin Nano Developer Kitlab@jetson:~$
-```
-
-Պատճառն այն է, որ device tree-ում տողերը պահվում են C-ի ձևով՝ վերջում `\0` (null byte) նշանով և առանց նոր տողի (`\n`)։ `cat`-ը տպում է ֆայլը ճիշտ այնպես, ինչպես կա, իսկ `\0`-ն էկրանին չի երևում։ Տեսնելու համար.
-
-```bash
-cat -A /proc/device-tree/model     # ...Developer Kit^@   (^@-ը \0-ն է)
-od -c /proc/device-tree/model      # յուրաքանչյուր բայթ առանձին. վերջում \0
-```
-
-Shell script-ում այս `\0`-ն խանգարում է (`bash`-ը տպում է *warning: command substitution: ignored null byte*), այդ պատճառով այնտեղ այն հեռացնում ենք `tr`-ով. `tr -d '\0' < /proc/device-tree/model`։ C++ ծրագրում նույնը կանենք `pop_back()`-ով (լաբորատորիայի TODO 1)։
-
-> **Yocto-ի մասին.** Yocto-ն distribution չէ, այլ գործիք, որով յուրաքանչյուր արտադրանքի համար հավաքում են իր սեփական փոքր Linux-ը։ Yocto image-ը ճանաչվում է `cat /etc/os-release`-ով (օրինակ՝ `ID=poky` կամ արտադրողի անունը՝ Ubuntu/Debian-ի փոխարեն)։ Այդպիսի image-ում կարող է չլինել `apt`, իսկ որոշ հրամաններ (`htop`, `nano`) կարող են բացակայել։ Ստուգիր, թե ինչ package manager կա. `which apt opkg dnf rpm`։ Եթե ոչ մեկը չկա, նոր ծրագիր ավելացնելու միակ ճանապարհը image-ը նորից հավաքելն է, իսկ մինչ այդ ֆայլերը խմբագրիր `vi`-ով, որը կա գրեթե ամենուր։
+> **Yocto-ի մասին.** Եթե HummingBoard-ի image-ը Yocto-ով է հավաքված, այնտեղ կարող է չլինել `apt`, իսկ որոշ հրամաններ (`htop`, `nano`) կարող են բացակայել։ Yocto-ն distribution չէ, այլ գործիք, որով յուրաքանչյուր արտադրանքի համար հավաքում են իր սեփական փոքր Linux-ը։ Այդ դեպքում հարցրու դասախոսին, թե ինչպես է այդ image-ում ծրագրեր ավելացվում։
 
 ## 2. Միանալ բորդին
 
 ### Visual
-![Երկու ճանապարհ PC-ից դեպի բորդ. SSH ցանցով (ամենօրյա աշխատանք) և serial console USB-to-UART մալուխով (փրկություն, աշխատում է նաև առանց ցանցի)](connect_ssh_serial.svg)
+![Երկու path PC-ից դեպի բորդ. SSH network-ով (ամենօրյա աշխատանք) և serial console USB-to-UART մալուխով (փրկություն, աշխատում է նաև առանց network-ի)](connect_ssh_serial.svg)
 
-### SSH՝ ամենօրյա ճանապարհը
+### SSH՝ ամենօրյա path-ը
 
-1. Բորդը և PC-ն պետք է լինեն նույն ցանցում (նույն router-ը, Wi-Fi-ը կամ ուղիղ Ethernet մալուխ)։
+1. Բորդը և PC-ն պետք է լինեն նույն network-ում (նույն router-ը, Wi-Fi-ը կամ ուղիղ Ethernet մալուխ)։
 2. Իմանալ բորդի IP հասցեն։ Եթե բորդին արդեն միացված է էկրան՝ `hostname -I`։ Եթե ոչ՝ router-ի client-ների ցանկից, կամ serial console-ով։
 3. PC-ից (Linux, macOS, Windows PowerShell).
 
 ```bash
-ssh lab@192.168.1.50          # lab-ը օգտատերն է բորդի վրա, IP-ն՝ քո բորդինը
+ssh lab@192.168.1.50          # lab-ը user-ը է բորդի վրա, IP-ն՝ քո բորդինը
 ```
 
 Առաջին անգամ SSH-ը կհարցնի. *"Are you sure you want to continue connecting?"*։ Սա բորդի «մատնահետքն» է։ Գրիր `yes`։ Եթե հետո նույն IP-ի համար մատնահետքը փոխվի (օրինակ՝ բորդը վերատեղադրեցինք), SSH-ը կհրաժարվի միանալ. դա պաշտպանություն է, ոչ թե սխալ։ Լուծումը՝ `ssh-keygen -R 192.168.1.50`։
 
-Գաղտնաբառը ամեն անգամ չգրելու համար ստեղծիր key PC-ի վրա և պատճենիր բորդին.
+Password-ը ամեն անգամ չգրելու համար ստեղծիր key PC-ի վրա և պատճենիր բորդին.
 
 ```bash
 ssh-keygen -t ed25519          # մեկ անգամ, PC-ի վրա. Enter-ով ընդունիր լռելյայն արժեքները
@@ -248,8 +232,8 @@ Windows-ում `ssh-copy-id` չկա. ֆայլը կարելի է պատճենել
 
 ```bash
 scp hello.c lab@192.168.1.50:~/day01/        # PC → բորդ
-scp lab@192.168.1.50:~/day01/report.txt .    # բորդ → PC (կետը՝ ընթացիկ թղթապանակը)
-rsync -av day01/ lab@192.168.1.50:~/day01/   # ամբողջ թղթապանակ, միայն փոխվածները
+scp lab@192.168.1.50:~/day01/report.txt .    # բորդ → PC (կետը՝ ընթացիկ directory-ն)
+rsync -av day01/ lab@192.168.1.50:~/day01/   # ամբողջ directory, միայն փոխվածները
 ```
 
 ### Serial console՝ երբ SSH-ը չի աշխատում
@@ -265,14 +249,9 @@ USB-to-UART մալուխը միացնում ենք բորդի debug UART-ին (T
 ```bash
 # Linux PC-ի վրա
 ls /dev/ttyUSB* /dev/ttyACM*       # ո՞ր անունով երևաց մալուխը
-sudo apt install minicom
-sudo usermod -aG dialout $USER     # մեկ անգամ, որ sudo պետք չլինի (տե՛ս մաս 6)
-minicom -D /dev/ttyUSB0 -b 115200  # դուրս գալ՝ Ctrl+A, ապա X
+sudo apt install picocom
+picocom -b 115200 /dev/ttyUSB0     # դուրս գալ՝ Ctrl+A, ապա Ctrl+X
 ```
-
-minicom-ի ստեղները սկսվում են **Ctrl+A**-ով. `Ctrl+A Z`՝ օգնություն, `Ctrl+A X`՝ դուրս գալ, `Ctrl+A O`՝ կարգավորումներ։
-
-> **Ոչինչ չի տպվում, երբ գրում ես.** minicom-ը լռելյայն միացնում է **hardware flow control**-ը, իսկ debug UART-ը ունի միայն TX, RX, GND և այդ ազդանշանները չունի։ Անջատիր այն. `Ctrl+A O` → *Serial port setup* → `F` (*Hardware Flow Control: No*) → Enter → *Save setup as dfl* → *Exit*։ Կամ մեկ անգամ գործարկիր `sudo minicom -s` և պահիր այս կարգավորումները որպես լռելյայն։
 
 Windows-ում՝ Device Manager → Ports-ում նայիր COM համարը (օրինակ COM3) և միացիր PuTTY-ով (Connection type: Serial, Speed: 115200)։
 
@@ -313,7 +292,7 @@ man ls               # ամբողջական ձեռնարկ. Space՝ հաջորդ
 
 ```bash
 ls /etc > /dev/null ; echo $?          # 0
-ls /nothing-here     ; echo $?          # 2. ls-ը չգտավ թղթապանակը
+ls /nothing-here     ; echo $?          # 2. ls-ը չգտավ directory-ն
 ```
 
 Սա shell script-երում պայմանների հիմքն է. `cmd1 && cmd2` կատարում է `cmd2`-ը միայն եթե `cmd1`-ը վերադարձրեց `0`, իսկ `cmd1 || cmd2`՝ միայն եթե չվերադարձրեց։
@@ -321,15 +300,15 @@ ls /nothing-here     ; echo $?          # 2. ls-ը չգտավ թղթապանակ
 ## 4. Ֆայլային ծառը
 
 ### Visual
-![Linux-ի ֆայլային ծառը / արմատից. /home, /etc, /boot, /usr, /var պահվում են սկավառակի վրա, իսկ /dev, /proc, /sys վիրտուալ են և ստեղծվում են kernel-ի կողմից](filesystem_tree.svg)
+![Linux-ի ֆայլային ծառը / արմատից. /home, /etc, /boot, /usr, /var պահվում են disk-ի վրա, իսկ /dev, /proc, /sys վիրտուալ են և ստեղծվում են kernel-ի կողմից](filesystem_tree.svg)
 
-Windows-ում յուրաքանչյուր սկավառակ ունի իր տառը (`C:\`, `D:\`)։ Linux-ում ամեն ինչ մեկ ծառ է՝ `/`-ից սկսած։ Նոր սկավառակը կամ USB flash-ը «կախվում» է այդ ծառի որևէ ճյուղից (**mount**), օրինակ `/media/lab/USB`։
+Windows-ում յուրաքանչյուր disk ունի իր տառը (`C:\`, `D:\`)։ Linux-ում ամեն ինչ մեկ ծառ է՝ `/`-ից սկսած։ Նոր disk-ը կամ USB flash-ը «կախվում» է այդ ծառի որևէ ճյուղից (**mount**), օրինակ `/media/lab/USB`։
 
-Երեք թղթապանակ առանձնահատուկ են. նրանք սկավառակի վրա չկան։ Kernel-ը դրանք ստեղծում է հիշողության մեջ, և ամեն անգամ կարդալիս ֆայլի պարունակությունը հաշվվում է նորից.
+Երեք directory առանձնահատուկ են. նրանք disk-ի վրա չկան։ Kernel-ը դրանք ստեղծում է memory-ի մեջ, և ամեն անգամ կարդալիս ֆայլի պարունակությունը հաշվվում է նորից.
 
-- **`/proc`**՝ process-ների և kernel-ի վիճակը. `/proc/cpuinfo`, `/proc/meminfo`, `/proc/uptime`, և յուրաքանչյուր process-ի համար թղթապանակ իր PID-ով։
-- **`/sys`**՝ hardware-ի պարամետրերը. ջերմաստիճան, LED-ներ, ցանցային ինտերֆեյսներ, GPIO։
-- **`/dev`**՝ սարքերը որպես ֆայլեր. serial port, I2C bus, GPIO chip, սկավառակներ։
+- **`/proc`**՝ process-ների և kernel-ի վիճակը. `/proc/cpuinfo`, `/proc/meminfo`, `/proc/uptime`, և յուրաքանչյուր process-ի համար directory իր PID-ով։
+- **`/sys`**՝ hardware-ի պարամետրերը. ջերմաստիճան, LED-ներ, network ինտերֆեյսներ, GPIO։
+- **`/dev`**՝ սարքերը որպես ֆայլեր. serial port, I2C bus, GPIO chip, disk-ներ։
 
 Սա Linux-ի գլխավոր գաղափարն է. **«ամեն ինչ ֆայլ է»**։ Սենսորից կարդալը, LED վառելը, port-ով տվյալ ուղարկելը նույն `open` / `read` / `write` գործողություններն են, ինչ սովորական ֆայլի հետ։ Օր 2-ն ամբողջությամբ սրա մասին է։ Այսօր փորձիր.
 
@@ -347,7 +326,7 @@ cd /etc              # absolute path
 cd ssh               # relative path. հիմա /etc/ssh
 cd ..                # մեկ մակարդակ վերև. /etc
 cd ~                 # home. /home/lab
-cd -                 # նախորդ թղթապանակը
+cd -                 # նախորդ directory-ն
 ls -la               # -l՝ մանրամասն, -a՝ նաև թաքնված ֆայլերը (որոնց անունը սկսվում է կետով)
 ```
 
@@ -363,7 +342,7 @@ ls *.txt                                 # * նշանակում է «ցանկա�
 rm old_notes.txt
 ```
 
-> **`rm`-ը վերջնական է.** Linux-ի shell-ում աղբարկղ չկա։ `rm -r` ջնջում է ամբողջ թղթապանակը՝ առանց հարցնելու։ Երբեք մի գրիր `sudo rm -rf /` կամ նման հրամաններ, նույնիսկ «կատակի համար» ինտերնետից պատճենված։ Ջնջելուց առաջ ստուգիր `ls`-ով, թե ինչ է ջնջվելու։
+> **`rm`-ը վերջնական է.** Linux-ի shell-ում աղբարկղ չկա։ `rm -r` ջնջում է ամբողջ directory-ն՝ առանց հարցնելու։ Երբեք մի գրիր `sudo rm -rf /` կամ նման հրամաններ, նույնիսկ «կատակի համար» ինտերնետից պատճենված։ Ջնջելուց առաջ ստուգիր `ls`-ով, թե ինչ է ջնջվելու։
 
 ## 5. Տեքստ, pipe և redirection
 
@@ -383,7 +362,7 @@ nano notes.txt                       # խմբագրել. Ctrl+O՝ պահել, Ct
 ```bash
 uname -a > info.txt         # > ստեղծում կամ վերագրում է ֆայլը
 date >> info.txt            # >> ավելացնում է վերջում
-ls /nothing 2> errors.txt   # 2> գրում է սխալների հոսքը
+ls /nothing 2> errors.txt   # 2> գրում է սխալների stream-ը
 ls /nothing 2> /dev/null    # /dev/null-ը «սև անցք» է. սխալները պարզապես անհետանում են
 ```
 
@@ -401,7 +380,7 @@ grep PRETTY_NAME /etc/os-release | cut -d= -f2    # միայն distribution-ի �
 ## 6. Users, groups և permissions
 
 ### Visual
-![ls -l տողի վերծանումը. ֆայլի տեսակը, owner-ի, group-ի և մնացածի rwx իրավունքները, owner, group, չափ, ամսաթիվ, անուն. ներքևում rwx-ը որպես թիվ (750) և ինչու է dialout group-ը պետք serial port-ի համար](permissions.svg)
+![ls -l տողի վերծանումը. ֆայլի տեսակը, owner-ի, group-ի և մնացածի rwx permission-ները, owner, group, չափ, ամսաթիվ, անուն. ներքևում rwx-ը որպես թիվ (750) և ինչու է dialout group-ը պետք serial port-ի համար](permissions.svg)
 
 ```bash
 whoami          # lab
@@ -417,7 +396,7 @@ chmod 750 sysinfo.sh     # owner՝ rwx, group՝ r-x, others՝ ոչինչ
 chmod 644 notes.txt      # owner՝ rw-, մնացածը՝ r--. սովորական տեքստային ֆայլի համար
 ```
 
-**`sudo`** կատարում է մեկ հրամանը `root`-ի իրավունքներով։ Այն պետք է փաթեթներ տեղադրելու, համակարգային ֆայլեր փոխելու, ցանցը կարգավորելու համար։ Մի գործարկիր ամեն ինչ `sudo`-ով «որ աշխատի». `root`-ով ստեղծված ֆայլերը հետո չես կարողանա փոխել առանց `sudo`-ի, իսկ սխալ հրամանը `root`-ով կարող է վնասել համակարգը։
+**`sudo`** կատարում է մեկ հրամանը `root`-ի permission-ներով։ Այն պետք է package-ներ տեղադրելու, համակարգային ֆայլեր փոխելու, network-ը կարգավորելու համար։ Մի գործարկիր ամեն ինչ `sudo`-ով «որ աշխատի». `root`-ով ստեղծված ֆայլերը հետո չես կարողանա փոխել առանց `sudo`-ի, իսկ սխալ հրամանը `root`-ով կարող է վնասել համակարգը։
 
 **Ինչու է սա կարևոր բորդի վրա.** սարքերը `/dev`-ում ֆայլեր են, և նրանք նույնպես owner և group ունեն.
 
@@ -427,7 +406,7 @@ ls -l /dev/ttyUSB0 /dev/i2c-1
 # crw-rw---- 1 root i2c     ... /dev/i2c-1
 ```
 
-Սովորական օգտատերը այս սարքերը կարող է կարդալ և գրել միայն եթե `dialout` կամ `i2c` group-ում է։ Ավելանալ group-ին (մեկ անգամ).
+Սովորական user-ը այս սարքերը կարող է կարդալ և գրել միայն եթե `dialout` կամ `i2c` group-ում է։ Ավելանալ group-ին (մեկ անգամ).
 
 ```bash
 sudo usermod -aG dialout,i2c $USER   # -a՝ ավելացնել, ոչ թե փոխարինել. -a-ն առանց մի՛ գրիր
@@ -456,24 +435,24 @@ pkill -f sysinfo            # կանգնեցնել ըստ անվան
 Բորդի բեռնվածությունը դիտելու հատուկ գործիքներ.
 
 ```bash
-tegrastats                  # Jetson. CPU, GPU, հիշողություն, ջերմաստիճան, հզորություն
+tegrastats                  # Jetson. CPU, GPU, memory, ջերմաստիճան, հզորություն
 vcgencmd measure_temp       # Raspberry Pi. ջերմաստիճան
 ```
 
 Process-ների ստեղծման և կառավարման մանրամասները (`fork`, `exec`, thread-եր, scheduling) Օր 3-ում են։
 
-## 8. Փաթեթներ
+## 8. Package-ներ
 
 ```bash
-sudo apt update                  # թարմացնել հասանելի փաթեթների ցանկը (ոչինչ չի տեղադրում)
-apt search minicom               # փնտրել
-sudo apt install -y htop build-essential cmake minicom   # տեղադրել
+sudo apt update                  # թարմացնել հասանելի package-ների ցանկը (ոչինչ չի տեղադրում)
+apt search picocom               # փնտրել
+sudo apt install -y htop build-essential cmake picocom   # տեղադրել
 sudo apt upgrade                 # թարմացնել տեղադրվածները. Jetson-ի վրա զգույշ, տե՛ս ստորև
 ```
 
 `build-essential`-ը բերում է `gcc`, `g++`, `make`. Այն պետք է այսօրվա լաբորատորիայի համար։
 
-**Python փաթեթներ.** Նոր distribution-ներում (Raspberry Pi OS Bookworm, Ubuntu 23.04 և նոր) `pip install`-ը համակարգային Python-ի մեջ արգելված է և տալիս է `externally-managed-environment` սխալը։ Ճիշտ ձևը վիրտուալ միջավայրն է.
+**Python package-ներ.** Նոր distribution-ներում (Raspberry Pi OS Bookworm, Ubuntu 23.04 և նոր) `pip install`-ը համակարգային Python-ի մեջ արգելված է և տալիս է `externally-managed-environment` սխալը։ Ճիշտ ձևը վիրտուալ environment-ը է.
 
 ```bash
 python3 -m venv ~/venv           # մեկ անգամ
@@ -482,7 +461,7 @@ pip install numpy
 deactivate                       # դուրս գալ venv-ից
 ```
 
-> **Jetson-ի վրա** `sudo apt upgrade`-ը մի՛ գործարկիր ամեն անգամ։ JetPack-ի փաթեթները (kernel, CUDA, driver-ներ) կապված են իրար, և պատահական թարմացումը կարող է խախտել այդ կապը կամ բորդը թողնել առանց boot-ի։ Նոր ծրագրեր տեղադրելու համար բավական է `sudo apt install <փաթեթ>`, որը թարմացնում է միայն այն, ինչ անհրաժեշտ է։ JetPack-ի տարբերակը տես `cat /etc/nv_tegra_release`-ով։
+> **Jetson-ի վրա** `sudo apt upgrade`-ից առաջ ստուգիր դասախոսի հետ։ JetPack-ի package-ները (kernel, CUDA, driver-ներ) կապված են իրար, և պատահական թարմացումը կարող է խախտել այդ կապը։
 
 ## 9. Համակարգի մասին տեղեկություն
 
@@ -490,13 +469,13 @@ deactivate                       # դուրս գալ venv-ից
 
 | Ինչ | Հրաման | Որտեղից է գալիս տեղեկությունը |
 |---|---|---|
-| Բորդի անունը | `cat /proc/device-tree/model` | device tree |
+| Բորդի անունը | `tr -d '\0' < /proc/device-tree/model` | device tree |
 | Distribution | `cat /etc/os-release` | սովորական ֆայլ |
 | Kernel և architecture | `uname -r`, `uname -m` | `uname()` system call |
 | CPU core-երի քանակը | `nproc`, `lscpu` | `/proc/cpuinfo`, `/sys/devices/system/cpu` |
-| Հիշողություն | `free -h` | `/proc/meminfo` |
-| Սկավառակ | `df -h /`, `lsblk` | kernel-ի ֆայլային համակարգեր |
-| Ցանց | `ip a`, `hostname -I` | kernel-ի ցանցային stack |
+| Memory | `free -h` | `/proc/meminfo` |
+| Disk | `df -h /`, `lsblk` | kernel-ի filesystem-ներ |
+| Network | `ip a`, `hostname -I` | kernel-ի network stack |
 | Աշխատանքի ժամանակը | `uptime -p` | `/proc/uptime` |
 | Ջերմաստիճան | `cat /sys/class/thermal/thermal_zone0/temp` | thermal driver |
 | Kernel-ի հաղորդագրություններ | `dmesg \| tail` (կարող է պահանջել `sudo`) | kernel log buffer |
@@ -521,7 +500,7 @@ python3 hello.py
 file hello_cpp        # ELF 64-bit LSB pie executable, ARM aarch64, ...
 ```
 
-`./`-ը պարտադիր է. shell-ը ծրագրերը փնտրում է միայն `$PATH`-ում նշված թղթապանակներում (`echo $PATH`), և ընթացիկ թղթապանակը այնտեղ չէ։ `./hello_c`-ը նշանակում է «`hello_c`-ը հենց այս թղթապանակից»։
+`./`-ը պարտադիր է. shell-ը ծրագրերը փնտրում է միայն `$PATH`-ում նշված directory-ներում (`echo $PATH`), և ընթացիկ directory-ն այնտեղ չէ։ `./hello_c`-ը նշանակում է «`hello_c`-ը հենց այս directory-ից»։
 
 Python-ը հավաքում չի պահանջում. `python3` interpreter-ը կարդում է `.py` ֆայլը և կատարում։ Եթե ֆայլի առաջին տողը `#!/usr/bin/env python3` է (**shebang**), այն կարելի է գործարկել ուղիղ.
 
@@ -554,11 +533,11 @@ cmake --build build-arm64                                     # cross
 ls build-arm64/bin
 ```
 
-**Ե՞րբ որը.** Փոքր ծրագրերի համար native-ը ամենապարզն է։ Cross-ը պետք է, երբ նախագիծը մեծ է (OpenCV-ն Raspberry Pi-ի վրա հավաքվում է ժամերով) կամ երբ բորդը շատ թույլ է։ Cross-ի գլխավոր թակարդը գրադարաններն են. եթե PC-ի cross compiler-ը բորդի OS-ից նոր է, բորդի վրա կստանաս `GLIBC_2.xx not found`։ Այդ դեպքում հավաքիր բորդի վրա կամ օգտագործիր բորդի **sysroot**-ը (Օր 2)։
+**Ե՞րբ որը.** Փոքր ծրագրերի համար native-ը ամենապարզն է։ Cross-ը պետք է, երբ նախագիծը մեծ է (OpenCV-ն Raspberry Pi-ի վրա հավաքվում է ժամերով) կամ երբ բորդը շատ թույլ է։ Cross-ի գլխավոր թակարդը library-ներն են. եթե PC-ի cross compiler-ը բորդի OS-ից նոր է, բորդի վրա կստանաս `GLIBC_2.xx not found`։ Այդ դեպքում հավաքիր բորդի վրա կամ օգտագործիր բորդի **sysroot**-ը (Օր 2)։
 
 ## 11. Անջատել ճիշտ ձևով
 
-Բորդի սկավառակը SD քարտ կամ eMMC է։ Եթե հոսանքն անջատես, երբ համակարգը ֆայլ է գրում, ֆայլային համակարգը կարող է վնասվել, և բորդը հաջորդ անգամ չի boot լինի։
+Բորդի disk-ը SD քարտ կամ eMMC է։ Եթե հոսանքն անջատես, երբ համակարգը ֆայլ է գրում, filesystem-ը կարող է վնասվել, և բորդը հաջորդ անգամ չի boot լինի։
 
 ```bash
 sudo poweroff        # անջատել. սպասիր, մինչև LED-ները դադարեն թարթել
@@ -579,7 +558,7 @@ sudo reboot          # վերագործարկել
 
 Պատրաստիր քո բորդի «անձնագիրը»։
 
-1. **Միացում.** Միացիր բորդին SSH-ով, կարգավորիր key-ով մուտքը (`ssh-copy-id`), ստեղծիր `~/lab/day01` թղթապանակը և պատճենիր այնտեղ այս թղթապանակի ֆայլերը (`scp` կամ `rsync`)։
+1. **Միացում.** Միացիր բորդին SSH-ով, կարգավորիր key-ով մուտքը (`ssh-copy-id`), ստեղծիր `~/lab/day01` directory-ն և պատճենիր այնտեղ այս directory-ի ֆայլերը (`scp` կամ `rsync`)։
 2. **Shell script.** Լրացրու [`sysinfo.sh`](sysinfo.sh)-ի TODO-ները։ Գործարկիր `bash sysinfo.sh > report-<board>.txt` և ֆայլը պատճենիր PC-ին։
 3. **C++.** Լրացրու [`template.cpp`](template.cpp)-ի TODO-ները։ Հավաքիր **երկու ձևով**. բորդի վրա (native) և PC-ի վրա (cross)։ Երկու binary-ների վրա գործարկիր `file` և `ls -l`. համեմատիր։ Գործարկիր cross binary-ն բորդի վրա։
 4. **Python.** Լրացրու [`template.py`](template.py)-ը։ Ստուգիր, որ երեք տարբերակների արդյունքները համընկնում են։
@@ -597,7 +576,7 @@ sudo reboot          # վերագործարկել
 8. Raspberry Pi-ի կամ Jetson-ի վրա գործարկիր `stress` կամ `yes > /dev/null &` բոլոր core-երի վրա և հետևիր ջերմաստիճանին ամեն վայրկյան. `watch -n 1 cat /sys/class/thermal/thermal_zone0/temp`։ Չմոռանաս կանգնեցնել (`pkill yes`)։
 
 ## Self-Check · Ինքնաստուգում
-Պատասխաններ չկան։ Մտածիր ինքնուրույն։
+Պատասխաններ չկան։ Մտածիր ինքնուրույն կամ քննարկիր ընկերոջ կամ դասախոսի հետ։
 
 1. Ի՞նչ տարբերություն կա «Linux»-ի և «Ubuntu»-ի միջև։ Կարո՞ղ են երկու բորդ ունենալ նույն kernel-ը և տարբեր distribution-ներ։
 2. Ինչու՞ սովորական ծրագիրը չի կարող ուղիղ փոխել GPIO pin-ի վիճակը։ Ո՞վ է դա անում նրա փոխարեն։

@@ -15,49 +15,49 @@
 - `pipe`, `dup2`. ինչպես են աշխատում pipe-երը և redirection-ը
 - Thread, `pthread_create`, `pthread_join`, `std::thread`
 - Race condition, critical section, mutex, deadlock, condition variable
-- `clone`. thread-ը Linux-ում process է, որը կիսում է հիշողությունը
+- `clone`. thread-ը Linux-ում process է, որը կիսում է memory-ն
 
 ## Definitions · Սահմանումներ
 
 *Այսօր ներմուծվող տերմինները։ Նույն տեքստը կա [GLOSSARY.md](../GLOSSARY.md)-ում։*
 
-**`fork`** — System call, որը ստեղծում է ընթացիկ process-ի **պատճենը**։ Երկուսն էլ շարունակում են նույն տեղից. ծնողում `fork`-ը վերադարձնում է երեխայի PID-ը, երեխայում՝ 0։
+**`fork`** — System call, որը ստեղծում է ընթացիկ process-ի **պատճենը**։ Երկուսն էլ շարունակում են նույն տեղից. parent-ում `fork`-ը վերադարձնում է child-ի PID-ը, child-ում՝ 0։
 
-**`exec`** — System call-երի ընտանիք (`execvp`, `execl` ...), որը ընթացիկ process-ի ծրագիրը **փոխարինում** է նորով։ PID-ը, բաց ֆայլերը և environment-ը մնում են, կոդը և հիշողությունը՝ նոր։ Հաջողության դեպքում `exec`-ը չի վերադառնում։
+**`exec`** — System call-երի ընտանիք (`execvp`, `execl` ...), որը ընթացիկ process-ի ծրագիրը **փոխարինում** է նորով։ PID-ը, բաց ֆայլերը և environment-ը մնում են, կոդը և memory-ն՝ նոր։ Հաջողության դեպքում `exec`-ը չի վերադառնում։
 
-**`waitpid`** — Սպասել երեխա process-ի ավարտին և ստանալ նրա **status**-ը։ Միաժամանակ մաքրում է zombie-ն։
+**`waitpid`** — Սպասել child process-ի ավարտին և ստանալ նրա **status**-ը։ Միաժամանակ մաքրում է zombie-ն։
 
-**Orphan** — Process, որի ծնողը ավարտվել է։ Նրան «որդեգրում» է PID 1-ը (կամ subreaper-ը), որը կմաքրի այն ավարտվելիս։
+**Orphan** — Process, որի parent-ը ավարտվել է։ Նրան «որդեգրում» է PID 1-ը (կամ subreaper-ը), որը կմաքրի այն ավարտվելիս։
 
-**Copy-on-write** — `fork`-ը իրականում չի պատճենում հիշողությունը. ծնողը և երեխան կիսում են նույն էջերը, մինչև նրանցից մեկը փոխի էջը. միայն այդ պահին էջը պատճենվում է։ Այդ պատճառով `fork`-ը արագ է նույնիսկ մեծ process-ների համար։
+**Copy-on-write** — `fork`-ը իրականում չի պատճենում memory-ն. parent-ը և child-ը կիսում են նույն էջերը, մինչև նրանցից մեկը փոխի էջը. միայն այդ պահին էջը պատճենվում է։ Այդ պատճառով `fork`-ը արագ է նույնիսկ մեծ process-ների համար։
 
 **`dup2`** — Պատճենել file descriptor-ը որոշակի համարի վրա. `dup2(fd, 1)`-ից հետո stdout-ը գնում է այնտեղ, ուր `fd`-ն։ Այսպես է shell-ը իրականացնում `>`-ը և `|`-ը (Օր 2, 4)։
 
-**Thread** — Կատարման հոսք process-ի ներսում։ Մեկ process-ի thread-երը կիսում են հիշողությունը, բաց ֆայլերը և այլ ռեսուրսները, բայց ամեն մեկն ունի իր stack-ը և register-ները։
+**Thread** — Կատարման stream process-ի ներսում։ Մեկ process-ի thread-երը կիսում են memory-ն, բաց ֆայլերը և այլ ռեսուրսները, բայց ամեն մեկն ունի իր stack-ը և register-ները։
 
 **Race condition** — Սխալ, որի արդյունքը կախված է նրանից, թե thread-երը (կամ process-ները) ինչ հերթականությամբ են աշխատում։ Օրինակ՝ երկու thread միաժամանակ անում են `counter++`. գործողությունը երեք քայլ է (կարդալ, ավելացնել, գրել), և մեկ ավելացումը կորչում է։
 
 **Critical section** — Կոդի հատված, որը միաժամանակ պետք է կատարի միայն մեկ thread, քանի որ այն աշխատում է ընդհանուր տվյալների հետ։
 
-**Mutex (mutual exclusion)** — Կողպեք critical section-ի համար. `lock()`-ը սպասում է, մինչև կողպեքը ազատվի, `unlock()`-ը ազատում է այն։ Միաժամանակ այն պահում է միայն մեկ thread։
+**Mutex (mutual exclusion)** — Lock critical section-ի համար. `lock()`-ը սպասում է, մինչև lock-ը ազատվի, `unlock()`-ը ազատում է այն։ Միաժամանակ այն պահում է միայն մեկ thread։
 
-**Deadlock** — Վիճակ, երբ երկու կամ ավելի thread սպասում են միմյանց կողպեքներին, և ոչ մեկը չի կարող շարունակել։ Դասական օրինակը՝ «ճաշող փիլիսոփաները»։
+**Deadlock** — Վիճակ, երբ երկու կամ ավելի thread սպասում են միմյանց lock-ներին, և ոչ մեկը չի կարող շարունակել։ Դասական օրինակը՝ «ճաշող փիլիսոփաները»։
 
 **Condition variable** — Մեխանիզմ, որով thread-ը քնում է, մինչև մեկ այլ thread ազդարարի, որ պայմանը փոխվել է (օրինակ՝ հերթում տվյալներ հայտնվեցին)։ Միշտ օգտագործվում է mutex-ի հետ։
 
-**`clone`** — Linux-ի system call, որը ստեղծում է նոր process՝ ընտրելով, թե ինչ է կիսում ծնողի հետ (հիշողություն, ֆայլեր, signal handler-ներ)։ `fork`-ը և `pthread_create`-ը երկուսն էլ իրականացված են `clone`-ով։
+**`clone`** — Linux-ի system call, որը ստեղծում է նոր process՝ ընտրելով, թե ինչ է կիսում parent-ի հետ (memory, ֆայլեր, signal handler-ներ)։ `fork`-ը և `pthread_create`-ը երկուսն էլ իրականացված են `clone`-ով։
 
 ---
 
 ## 1. `fork`, `exec`, `wait`
 
 ### Visual
-![fork-ը ստեղծում է process-ի պատճեն. ծնողում fork-ը վերադարձնում է երեխայի PID-ը, երեխայում՝ 0. երեխան կանչում է execvp, և նրա ծրագիրը փոխարինվում է ls-ով (PID-ը նույնն է). ծնողը կանչում է waitpid և ստանում exit status-ը. եթե ծնողը չի կանչում waitpid, ավարտված երեխան դառնում է zombie](fork_exec.svg)
+![fork-ը ստեղծում է process-ի պատճեն. parent-ում fork-ը վերադարձնում է child-ի PID-ը, child-ում՝ 0. child-ը կանչում է execvp, և նրա ծրագիրը փոխարինվում է ls-ով (PID-ը նույնն է). parent-ը կանչում է waitpid և ստանում exit status-ը. եթե parent-ը չի կանչում waitpid, ավարտված child-ը դառնում է zombie](fork_exec.svg)
 
 Windows-ում նոր ծրագիր գործարկվում է մեկ ֆունկցիայով (`CreateProcess`)։ Unix-ում դա երկու քայլ է.
 
-1. **`fork`**-ը ստեղծում է ընթացիկ process-ի ճշգրիտ պատճենը։ Երկու process-ն էլ շարունակում են `fork`-ից հետո։ Ինչպես տարբերել. `fork`-ը ծնողին վերադարձնում է երեխայի PID-ը, իսկ երեխային՝ 0։
-2. **`exec`**-ը երեխայի ծրագիրը փոխարինում է նորով։
+1. **`fork`**-ը ստեղծում է ընթացիկ process-ի ճշգրիտ պատճենը։ Երկու process-ն էլ շարունակում են `fork`-ից հետո։ Ինչպես տարբերել. `fork`-ը parent-ին վերադարձնում է child-ի PID-ը, իսկ child-ին՝ 0։
+2. **`exec`**-ը child-ի ծրագիրը փոխարինում է նորով։
 
 ```cpp
 #include <sys/wait.h>
@@ -69,14 +69,14 @@ int main()
     auto const pid = fork();
     if (-1 == pid) { std::perror("fork"); return 1; }
 
-    if (0 == pid) {                                   // երեխա
+    if (0 == pid) {                                   // child
         char *argv[] = {(char *)"ls", (char *)"-l", (char *)"/", nullptr};
         execvp("ls", argv);                           // հաջողության դեպքում չի վերադառնում
         std::perror("execvp");                        // եթե այստեղ ենք, exec-ը ձախողվեց
         _exit(127);                                   // «command not found», ինչպես shell-ում (Օր 2)
     }
 
-    auto status = 0;                                  // ծնող
+    auto status = 0;                                  // parent
     waitpid(pid, &status, 0);
     if (WIFEXITED(status))
         std::printf("child %d exited with %d\n", pid, WEXITSTATUS(status));
@@ -85,15 +85,15 @@ int main()
 }
 ```
 
-Ինչու է երկու քայլը օգտակար. `fork`-ի և `exec`-ի **միջև** երեխան կարող է պատրաստել միջավայրը նոր ծրագրի համար՝ փոխել թղթապանակը, environment-ը (Օր 2), ուղղորդել file descriptor-ները (§3), իջեցնել իրավունքները (Օր 7)։ Նոր ծրագիրը կժառանգի այդ ամենը։
+Ինչու է երկու քայլը օգտակար. `fork`-ի և `exec`-ի **միջև** child-ը կարող է պատրաստել environment-ը նոր ծրագրի համար՝ փոխել directory-ն, environment-ը (Օր 2), ուղղորդել file descriptor-ները (§3), իջեցնել permission-ները (Օր 7)։ Նոր ծրագիրը կժառանգի այդ ամենը։
 
-`fork`-ը արագ է նույնիսկ մեծ process-ների համար **copy-on-write**-ի շնորհիվ. kernel-ը չի պատճենում հիշողությունը, այլ երկու process-ին էլ տալիս է նույն էջերը «միայն կարդալու» համար, և էջը պատճենվում է միայն այն պահին, երբ նրանցից մեկը փորձում է փոխել այն։
+`fork`-ը արագ է նույնիսկ մեծ process-ների համար **copy-on-write**-ի շնորհիվ. kernel-ը չի պատճենում memory-ն, այլ երկու process-ին էլ տալիս է նույն էջերը «միայն կարդալու» համար, և էջը պատճենվում է միայն այն պահին, երբ նրանցից մեկը փորձում է փոխել այն։
 
-**Կարևոր թակարդ**. `fork`-ից առաջ `printf`-ով տպված, բայց դեռ buffer-ում մնացած տեքստը (Օր 2) պատճենվում է երկու process-ների մեջ և կտպվի **երկու անգամ**։ Լուծումը՝ `fflush(stdout)` `fork`-ից առաջ, և երեխայում `_exit`, ոչ թե `exit`։
+**Կարևոր թակարդ**. `fork`-ից առաջ `printf`-ով տպված, բայց դեռ buffer-ում մնացած տեքստը (Օր 2) պատճենվում է երկու process-ների մեջ և կտպվի **երկու անգամ**։ Լուծումը՝ `fflush(stdout)` `fork`-ից առաջ, և child-ում `_exit`, ոչ թե `exit`։
 
 ### Exit status-ը և `$?`
 
-`waitpid`-ի `status`-ը թիվ է, որի մեջ կոդավորված է, թե ինչպես է ավարտվել երեխան։ Shell-ը նույն տեղեկությունից է կազմում `$?`-ը (Օր 2).
+`waitpid`-ի `status`-ը թիվ է, որի մեջ կոդավորված է, թե ինչպես է ավարտվել child-ը։ Shell-ը նույն տեղեկությունից է կազմում `$?`-ը (Օր 2).
 
 | Ինչպես ավարտվեց | Macro | Shell-ի `$?` |
 |---|---|---|
@@ -103,7 +103,7 @@ int main()
 
 ### Zombie-ներ և orphan-ներ
 
-Ավարտված երեխան մնում է **zombie** (`Z`, Օր 8), մինչև ծնողը կարդա նրա status-ը `wait`-ով։ Եթե ծնողը երբեք չի կանչում `wait`, zombie-ները կուտակվում են։ Երկու լուծում.
+Ավարտված child-ը մնում է **zombie** (`Z`, Օր 8), մինչև parent-ը կարդա նրա status-ը `wait`-ով։ Եթե parent-ը երբեք չի կանչում `wait`, zombie-ները կուտակվում են։ Երկու լուծում.
 
 ```cpp
 while (0 < waitpid(-1, &status, WNOHANG)) { /* մաքրել բոլոր ավարտվածներին, առանց սպասելու */ }
@@ -111,7 +111,7 @@ while (0 < waitpid(-1, &status, WNOHANG)) { /* մաքրել բոլոր ավար�
 
 կամ `SIGCHLD`-ի handler, որը նույնն է անում (Օր 8)։
 
-Եթե **ծնողն** է ավարտվում առաջինը, երեխան դառնում է **orphan**, և նրան որդեգրում է PID 1-ը (`systemd`), որը կմաքրի նրան։
+Եթե **parent-ը** է ավարտվում առաջինը, child-ը դառնում է **orphan**, և նրան որդեգրում է PID 1-ը (`systemd`), որը կմաքրի նրան։
 
 ## 2. Ինչ է անում shell-ը
 
@@ -122,8 +122,8 @@ while (կարդալ տող):
     բաժանել բառերի               (Օր 2)
     եթե built-in է (cd, exit)  → կատարել ինքը
     pid = fork()
-    երեխա. execvp(բառեր)        → եթե չստացվեց՝ _exit(127)
-    ծնող. եթե & չկա՝ waitpid(pid) → $?
+    child. execvp(բառեր)        → եթե չստացվեց՝ _exit(127)
+    parent. եթե & չկա՝ waitpid(pid) → $?
 ```
 
 Լաբորատորիայում հենց այս ցիկլը կգրես։ Տես, թե ինչ է անում իրական `bash`-ը.
@@ -140,32 +140,32 @@ strace -f -e trace=clone,clone3,execve,wait4,pipe2,dup2 bash -c 'ls / | wc -l'
 int fds[2];
 pipe(fds);                                   // fds[0]՝ կարդալու, fds[1]՝ գրելու ծայր
 
-if (0 == fork()) {                           // առաջին երեխա. a
+if (0 == fork()) {                           // առաջին child. a
     dup2(fds[1], STDOUT_FILENO);             // stdout-ը → pipe
     close(fds[0]); close(fds[1]);
     execvp(a[0], a);
     _exit(127);
 }
-if (0 == fork()) {                           // երկրորդ երեխա. b
+if (0 == fork()) {                           // երկրորդ child. b
     dup2(fds[0], STDIN_FILENO);              // stdin-ը ← pipe
     close(fds[0]); close(fds[1]);
     execvp(b[0], b);
     _exit(127);
 }
-close(fds[0]); close(fds[1]);                // ծնողը պետք է փակի երկու ծայրն էլ
+close(fds[0]); close(fds[1]);                // parent-ը պետք է փակի երկու ծայրն էլ
 waitpid(-1, nullptr, 0); waitpid(-1, nullptr, 0);
 ```
 
-Եթե ծնողը չփակի `fds[1]`-ը, `b`-ն երբեք չի ստանա EOF (pipe-ի գրելու ծայրը դեռ բաց է), և pipeline-ը կկախվի։ Սա pipe-երով աշխատելու ամենատարածված սխալն է։
+Եթե parent-ը չփակի `fds[1]`-ը, `b`-ն երբեք չի ստանա EOF (pipe-ի գրելու ծայրը դեռ բաց է), և pipeline-ը կկախվի։ Սա pipe-երով աշխատելու ամենատարածված սխալն է։
 
-`cmd > file`-ը նույն ձևով է. երեխան `exec`-ից առաջ անում է `open("file", O_WRONLY | O_CREAT | O_TRUNC, 0644)` և `dup2(fd, 1)`։
+`cmd > file`-ը նույն ձևով է. child-ը `exec`-ից առաջ անում է `open("file", O_WRONLY | O_CREAT | O_TRUNC, 0644)` և `dup2(fd, 1)`։
 
 ## 4. Thread-եր
 
 ### Visual
-![Երկու process ունեն առանձին հիշողություն, իսկ մեկ process-ի երկու thread կիսում են code, data, heap, բաց ֆայլերը, բայց ամեն մեկն ունի իր stack-ը և register-ները. ներքևում race condition-ը. երկու thread կարդում են counter = 5, երկուսն էլ ավելացնում են, երկուսն էլ գրում են 6, մեկ ավելացում կորավ. mutex-ով երկրորդը սպասում է](threads_race.svg)
+![Երկու process ունեն առանձին memory, իսկ մեկ process-ի երկու thread կիսում են code, data, heap, բաց ֆայլերը, բայց ամեն մեկն ունի իր stack-ը և register-ները. ներքևում race condition-ը. երկու thread կարդում են counter = 5, երկուսն էլ ավելացնում են, երկուսն էլ գրում են 6, մեկ ավելացում կորավ. mutex-ով երկրորդը սպասում է](threads_race.svg)
 
-**Thread**-ը կատարման հոսք է process-ի ներսում։ Thread-երը կիսում են process-ի ամբողջ հիշողությունը (գլոբալ փոփոխականներ, heap) և բաց ֆայլերը, բայց ամեն մեկն ունի իր **stack**-ը և **register**-ները։
+**Thread**-ը execution stream է process-ի ներսում։ Thread-երը կիսում են process-ի ամբողջ memory-ն (գլոբալ variable-ներ, heap) և բաց ֆայլերը, բայց ամեն մեկն ունի իր **stack**-ը և **register**-ները։
 
 ```cpp
 #include <iostream>
@@ -188,18 +188,18 @@ g++ -std=c++17 -pthread threads.cpp -o threads && ./threads
 
 Տողերը կտպվեն ամեն անգամ տարբեր հերթականությամբ, երբեմն նույնիսկ խառնված. thread-երը աշխատում են միաժամանակ, և ոչ ոք չի խոստանում հերթականություն։
 
-C-ում նույնը անում է POSIX threads գրադարանը (`pthread_create`, `pthread_join`), որի վրա կառուցված է `std::thread`-ը։
+C-ում նույնը անում է POSIX threads library-ն (`pthread_create`, `pthread_join`), որի վրա կառուցված է `std::thread`-ը։
 
 ### Linux-ում thread-ը process է
 
-Linux kernel-ի համար thread-ը առանձին տեսակ չէ. և՛ `fork`-ը, և՛ `pthread_create`-ը կանչում են **`clone`** system call-ը, պարզապես տարբեր դրոշներով. thread-ի դեպքում նոր «process»-ը կիսում է ծնողի հիշողությունը (`CLONE_VM`), ֆայլերը (`CLONE_FILES`), signal handler-ները։ Ամեն thread ունի իր ID-ն (TID), որը երևում է `ps -eLf`-ում և `/proc/PID/task/`-ում։
+Linux kernel-ի համար thread-ը առանձին տեսակ չէ. և՛ `fork`-ը, և՛ `pthread_create`-ը կանչում են **`clone`** system call-ը, պարզապես տարբեր դրոշներով. thread-ի դեպքում նոր «process»-ը կիսում է parent-ի memory-ն (`CLONE_VM`), ֆայլերը (`CLONE_FILES`), signal handler-ները։ Ամեն thread ունի իր ID-ն (TID), որը երևում է `ps -eLf`-ում և `/proc/PID/task/`-ում։
 
 Տես ինքդ.
 
 ```bash
 ps -eLf | head               # LWP սյունակը thread-ի ID-ն է, NLWP-ն՝ thread-ների քանակը process-ում
 top -H -p PID                # -H. ցույց տալ thread-երը առանձին տողերով
-ls /proc/PID/task            # ամեն thread-ի համար թղթապանակ
+ls /proc/PID/task            # ամեն thread-ի համար directory
 cat /proc/sys/kernel/threads-max ; ulimit -u    # քանի thread/process է թույլատրված համակարգում և քեզ
 ```
 
@@ -218,7 +218,7 @@ int main()
 }
 ```
 
-`++counter`-ը մեկ հրաման չէ, այլ երեք. **կարդալ** հիշողությունից register, **ավելացնել**, **գրել** հետ։ Եթե երկու thread-ը կարդում են նույն արժեքը մինչև մյուսի գրելը, մեկ ավելացումը կորչում է։ Սա **race condition** է. արդյունքը կախված է պատահական հերթականությունից, ամեն անգամ տարբեր է, և սխալը կարող է չերևալ փորձարկման ժամանակ։
+`++counter`-ը մեկ հրաման չէ, այլ երեք. **կարդալ** memory-ից register, **ավելացնել**, **գրել** հետ։ Եթե երկու thread-ը կարդում են նույն արժեքը մինչև մյուսի գրելը, մեկ ավելացումը կորչում է։ Սա **race condition** է. արդյունքը կախված է պատահական հերթականությունից, ամեն անգամ տարբեր է, և սխալը կարող է չերևալ փորձարկման ժամանակ։
 
 Լուծումը՝ **mutex**-ով պաշտպանված **critical section**.
 
@@ -242,7 +242,7 @@ Race condition-ներ գտնելու գործիքներ. `g++ -fsanitize=thread`
 
 Եթե thread A-ն վերցրել է mutex 1-ը և սպասում է 2-ին, իսկ B-ն վերցրել է 2-ը և սպասում է 1-ին, երկուսն էլ կսպասեն հավերժ (**deadlock**)։ Դասական խնդիրը՝ հինգ փիլիսոփա կլոր սեղանի շուրջ, հինգ պատառաքաղ, ամեն մեկին պետք է երկուսը։ Եթե բոլորը միաժամանակ վերցնեն ձախը, ոչ ոք չի կարող վերցնել աջը։ (Windows դասընթացում այն արդեն իրականացրել ենք. [`windows/day2`](../../windows/day2/), [`windows/day3`](../../windows/day3/)։)
 
-Լուծումներ. միշտ վերցնել կողպեքները **նույն հերթականությամբ** (օրինակ՝ նախ փոքր համարով պատառաքաղը), կամ `std::scoped_lock(m1, m2)`, որը վերցնում է մի քանի mutex առանց deadlock-ի։
+Լուծումներ. միշտ վերցնել lock-ները **նույն հերթականությամբ** (օրինակ՝ նախ փոքր համարով պատառաքաղը), կամ `std::scoped_lock(m1, m2)`, որը վերցնում է մի քանի mutex առանց deadlock-ի։
 
 ### Condition variable
 
@@ -267,10 +267,10 @@ cv.notify_one();
 
 | | Process-ներ | Thread-եր |
 |---|---|---|
-| Հիշողություն | Առանձին. մեկի սխալը չի վնասում մյուսին | Ընդհանուր. մեկ thread-ի սխալը ավարտում է ամբողջ process-ը |
-| Տվյալների փոխանակում | Pipe, socket, shared memory, ֆայլեր | Ուղիղ, ընդհանուր փոփոխականներով (mutex-ով) |
+| Memory | Առանձին. մեկի սխալը չի վնասում մյուսին | Ընդհանուր. մեկ thread-ի սխալը ավարտում է ամբողջ process-ը |
+| Տվյալների փոխանակում | Pipe, socket, shared memory, ֆայլեր | Ուղիղ, ընդհանուր variable-ներով (mutex-ով) |
 | Ստեղծման արժեք | Ավելի մեծ | Ավելի փոքր |
-| Անվտանգություն | Կարելի է տալ տարբեր իրավունքներ (Օր 7) | Նույն իրավունքները |
+| Անվտանգություն | Կարելի է տալ տարբեր permission-ներ (Օր 7) | Նույն permission-ները |
 | Տարբեր ծրագրեր | Այո (`exec`) | Ոչ |
 | Օրինակներ | Shell, Chrome-ի tab-եր, `sshd`, web server-ի worker-ներ | Խաղի շարժիչ, պատկերի մշակում, GUI + ֆոնային աշխատանք |
 
@@ -283,10 +283,10 @@ cv.notify_one();
 *Ամփոփում. այս օրվա հրամանները, որոնք բացատրված են վերևում։ Անգիր անել պետք չէ. վերադարձիր այստեղ, երբ մոռանաս գրելաձևը։ Բոլոր օրերի հրամանների ցանկը [COMMANDS.md](../COMMANDS.md)-ում է։*
 
 ```bash
-ps -o pid,ppid,stat,cmd --forest          # ծառը. ծնող-երեխա
+ps -o pid,ppid,stat,cmd --forest          # ծառը. parent-child
 ps -eLf | head ; ps -o pid,nlwp,cmd -p PID # thread-երը. LWP, NLWP՝ thread-ների քանակը
 top -H -p PID                              # process-ի thread-երը top-ում
-ls /proc/PID/task                          # ամեն thread-ի համար թղթապանակ
+ls /proc/PID/task                          # ամեն thread-ի համար directory
 strace -f -e trace=clone,clone3,execve,wait4 bash -c 'ls | wc -l'   # ինչ է անում shell-ը
 cat /proc/sys/kernel/threads-max ; ulimit -u
 g++ -std=c++17 -pthread prog.cpp -o prog   # thread-երով ծրագիր
@@ -300,15 +300,15 @@ g++ -fsanitize=thread -g prog.cpp -o prog  # ThreadSanitizer
 
 ```c
 #include <unistd.h>
-pid_t fork(void);                         // ծնողում՝ երեխայի PID, երեխայում՝ 0, սխալի դեպքում՝ -1
+pid_t fork(void);                         // parent-ում՝ child-ի PID, child-ում՝ 0, սխալի դեպքում՝ -1
 int execvp(const char *file, char *const argv[]);   // փնտրում է PATH-ում (Օր 2). argv-ի վերջում NULL
-void _exit(int status);                   // ավարտ առանց stdio buffer-ների դատարկման. երեխայում exec-ի սխալից հետո
+void _exit(int status);                   // ավարտ առանց stdio buffer-ների դատարկման. child-ում exec-ի սխալից հետո
 int pipe(int fds[2]);                     // fds[0]՝ կարդալու ծայր, fds[1]՝ գրելու ծայր
 int dup2(int oldfd, int newfd);           // newfd-ն դառնում է oldfd-ի պատճեն
-int chdir(const char *path);              // փոխել ընթացիկ թղթապանակը. cd-ն built-in է (Օր 2)
+int chdir(const char *path);              // փոխել ընթացիկ directory-ն. cd-ն built-in է (Օր 2)
 
 #include <sys/wait.h>
-// Սպասել երեխային. pid = -1՝ ցանկացածին. options = WNOHANG՝ չսպասել, եթե ոչ մեկը չի ավարտվել
+// Սպասել child-ին. pid = -1՝ ցանկացածին. options = WNOHANG՝ չսպասել, եթե ոչ մեկը չի ավարտվել
 pid_t waitpid(pid_t pid, int *status, int options);
 // status-ի վերծանում. WIFEXITED(s) → WEXITSTATUS(s), WIFSIGNALED(s) → WTERMSIG(s)
 
@@ -358,11 +358,11 @@ day10:/tmp$ exit
 
 ## Self-Learning · Ինքնուրույն աշխատանք
 1. Գրիր ծրագիր, որը `printf("hello")` (առանց `\n`), ապա `fork()`։ Քանի անգամ է տպվում hello։ Ինչու։ Ուղղիր `fflush`-ով։
-2. Ստեղծիր zombie C++-ում և տես այն `ps`-ով։ Ապա ավելացրու `SIGCHLD` handler, որը մաքրում է երեխաներին (Օր 8)։
+2. Ստեղծիր zombie C++-ում և տես այն `ps`-ով։ Ապա ավելացրու `SIGCHLD` handler, որը մաքրում է child-ներին (Օր 8)։
 3. Հաշվիր Fibonacci-ի թվերը կամ պարզ թվերը մինչև 10⁷ մեկ, երկու, չորս և ութ thread-ով։ Չափիր ժամանակը (`std::chrono`)։ Ինչու արագացումը `nproc`-ից հետո չի աճում։ (Համեմատիր [`windows/day6`](../../windows/day6/)-ի Fibonacci-ի հետ։)
 4. Գործարկիր `counter++` օրինակը առանց mutex-ի 10 անգամ և գրիր արդյունքները։ Ապա `-fsanitize=thread`-ով։ Ինչ է հաղորդում ThreadSanitizer-ը։
 5. Համեմատիր երեք տարբերակի արագությունը. mutex ամեն `++`-ի համար, `std::atomic<long>`, տեղային գումար + մեկ lock։
-6. Իրականացրու ճաշող փիլիսոփաներին `std::thread`-ով և `std::mutex`-ով։ Նախ ստացիր deadlock, ապա ուղղիր այն կողպեքների հերթականությամբ։
+6. Իրականացրու ճաշող փիլիսոփաներին `std::thread`-ով և `std::mutex`-ով։ Նախ ստացիր deadlock, ապա ուղղիր այն lock-ների հերթականությամբ։
 7. Գրիր պարզ heap manager (հին `docs/tasks.txt`-ի #4 առաջադրանքը). `my_malloc(size)` և `my_free(ptr)` 1 MB ստատիկ զանգվածի վրա՝ ազատ block-երի ցուցակով։ Ինչ է fragmentation-ը, և ինչպես է այն երևում քո ալոկատորում։
 8. Ընդլայնիր template-ի shell-ը `>` և `<` redirection-ով (`open` + `dup2`)։
 
@@ -372,14 +372,14 @@ day10:/tmp$ exit
 1. `fork()`-ը վերադառնում է երկու անգամ։ Ինչ է նշանակում սա, և ինչպես է ծրագիրը իմանում, որ process-ում է։
 2. Ինչու Unix-ը բաժանում է նոր ծրագրի գործարկումը երկու քայլի (`fork` և `exec`)։ Ինչ կարելի է անել նրանց միջև։
 3. `execvp`-ից հետո ինչ է մնում նույնը process-ում, և ինչ է փոխվում։
-4. Ինչու է երեխայում `exec`-ի սխալից հետո պետք կանչել `_exit`, ոչ թե `exit`։
+4. Ինչու է child-ում `exec`-ի սխալից հետո պետք կանչել `_exit`, ոչ թե `exit`։
 5. Ինչ է zombie-ն, և ով է պատասխանատու այն մաքրելու համար։ Ինչ է պատահում orphan-ի հետ։
 6. `a | b` pipeline-ը կախվում է և երբեք չի ավարտվում։ Որն է ամենահավանական պատճառը։
 7. Ինչու է `counter++`-ը երկու thread-ից անվտանգ չէ, եթե այն մեկ տող է։
 8. Ինչու mutex-ը ամեն `++`-ի համար ճիշտ է, բայց դանդաղ։ Ինչպես կարելի է ավելի լավ։
-9. Ինչ պայմաններում է առաջանում deadlock։ Ինչպես է կողպեքների ֆիքսված հերթականությունը կանխում այն։
+9. Ինչ պայմաններում է առաջանում deadlock։ Ինչպես է lock-ների ֆիքսված հերթականությունը կանխում այն։
 10. Linux-ում ինչ տարբերություն կա process-ի և thread-ի միջև kernel-ի տեսանկյունից։
-11. Web server-ը պետք է սպասարկի 1000 միաժամանակյա հաճախորդ։ Ինչ առավելություններ և թերություններ ունի յուրաքանչյուր հաճախորդի համար առանձին process-ը և առանձին thread-ը։
+11. Web server-ը պետք է սպասարկի 1000 միաժամանակյա client։ Ինչ առավելություններ և թերություններ ունի յուրաքանչյուր client-ի համար առանձին process-ը և առանձին thread-ը։
 
 ## Code Template · Կոդի ձևանմուշ
 Տե՛ս [`template.cpp`](template.cpp)-ը։
