@@ -66,91 +66,6 @@
 
 **EOF (end of file)** — Ֆայլի վերջին հասնելու **պայմանը**, ոչ թե նիշ։ Linux-ում ֆայլը չունի հատուկ «վերջի նշան». `read()`-ը վերադարձնում է 0, երբ կարդալու բան չկա։
 
-## Commands · Հրամաններ
-
-*Այսօրվա հրամանները։ Բոլոր օրերի հրամանների ցանկը [COMMANDS.md](../COMMANDS.md)-ում է։*
-
-```bash
-# Շարժվել
-pwd ; cd /usr/local/lib ; cd .. ; cd ~ ; cd -
-ls -d */                         # միայն թղթապանակները
-tree -L 2 -d /usr | less         # ծառը, 2 մակարդակ (sudo apt install tree)
-
-# ls-ի option-ներ
-ls -a        # նաև թաքնված ֆայլերը (կետով սկսվող)
-ls -l        # մանրամասն
-ls -lh       # չափերը KB/MB/GB-ով
-ls -lS       # դասավորել ըստ չափի
-ls -lt       # դասավորել ըստ փոփոխման ժամի
-ls -ld dir   # թղթապանակն ինքը, ոչ թե պարունակությունը
-ls -F        # նշան անվան վերջում. / թղթապանակ, * կատարվող, @ link, | pipe, = socket
-ls -i        # inode number-ները
-
-# Ստեղծել, տեղափոխել, ջնջել
-mkdir -p a/b/c ; rmdir a/b/c     # rmdir-ը ջնջում է միայն դատարկ թղթապանակ
-touch f.txt                      # ստեղծել դատարկ ֆայլ կամ թարմացնել ժամը
-cp f.txt g.txt ; cp -r a a2 ; cp -a a a3    # -a՝ պահպանել ամեն ինչ (իրավունքներ, ժամեր, link-եր)
-mv g.txt a/ ; mv a2 b2           # տեղափոխել / վերանվանել
-rm f.txt ; rm -r a3 ; rm -i *.txt          # -i՝ հարցնել ամեն ֆայլի համար
-
-# Ֆայլի մասին
-file /bin/ls /etc/passwd /dev/sda       # տեսակը ըստ պարունակության
-stat f.txt                              # inode-ի բոլոր դաշտերը
-ls -li f.txt                            # inode number + link count
-
-# Link-եր
-ln f.txt hard.txt                       # hard link
-ln -s f.txt soft.txt                    # symbolic link
-readlink -f soft.txt                    # ուր է ցույց տալիս
-find . -samefile f.txt                  # բոլոր hard link-երը
-find / -inum 1234 2>/dev/null           # ֆայլը ըստ inode number-ի
-
-# Ֆայլային համակարգեր
-df -h ; df -i                           # ազատ տեղ / ազատ inode-ներ
-lsblk -f                                # սկավառակներ, partition-ներ, ֆայլային համակարգեր
-findmnt ; mount | column -t             # ինչ է mount արված և ուր
-cat /etc/fstab                          # ինչ է mount արվում boot-ի ժամանակ
-cat /proc/filesystems                   # kernel-ի աջակցած ֆայլային համակարգերը
-sudo dumpe2fs -h image.ext4             # superblock-ը
-sudo debugfs -R 'stat <2>' image.ext4   # root inode-ը
-
-# Sparse ֆայլեր
-truncate -s 1G sparse.img ; ls -lh sparse.img ; du -h sparse.img
-mkfifo mypipe                           # named pipe
-```
-
-## Functions · Ֆունկցիաներ
-
-*Ֆայլային համակարգի C ֆունկցիաները, որոնք պետք են Self-Learning առաջադրանքների համար։ Ամբողջական ցանկը [API.md](../API.md)-ում է։*
-
-```c
-#include <sys/stat.h>
-// Inode-ի տվյալները. st_ino, st_mode (տեսակ + իրավունքներ), st_nlink, st_size,
-// st_blocks (512-բայթանոց միավորներով), st_atime/st_mtime/st_ctime. 0 կամ -1
-int stat(const char *path, struct stat *st);
-// Նույնը, բայց symlink-ի համար տալիս է link-ի, ոչ թե թիրախի տվյալները
-int lstat(const char *path, struct stat *st);
-// Տեսակը ստուգող macro-ներ. S_ISREG(m), S_ISDIR(m), S_ISLNK(m), S_ISCHR(m), S_ISBLK(m), S_ISFIFO(m), S_ISSOCK(m)
-int mkdir(const char *path, mode_t mode);
-
-#include <dirent.h>
-// Կարդալ directory-ն entry առ entry. readdir-ը վերադարձնում է NULL, երբ entry-ները վերջացան
-DIR *opendir(const char *path);
-struct dirent *readdir(DIR *dir);       // d_ino՝ inode number, d_name՝ անուն, d_type՝ տեսակ
-int closedir(DIR *dir);
-
-#include <unistd.h>
-int link(const char *target, const char *new_path);      // hard link
-int symlink(const char *target, const char *link_path);  // symbolic link
-ssize_t readlink(const char *path, char *buf, size_t size);  // symlink-ի պարունակությունը, առանց '\0'-ի
-int unlink(const char *path);                            // ջնջել անունը
-int rmdir(const char *path);                             // ջնջել դատարկ թղթապանակ
-int truncate(const char *path, off_t length);            // փոխել չափը. մեծացնելիս՝ hole
-
-#include <stdio.h>
-int rename(const char *old_path, const char *new_path);  // mv նույն ֆայլային համակարգում
-```
-
 ---
 
 ## 1. «Ամեն ինչ ֆայլ է»
@@ -201,6 +116,8 @@ Windows-ում յուրաքանչյուր սկավառակ ունի իր տառ�
 | `/usr` | Օգտատիրոջ ծրագրեր, գրադարաններ, փաստաթղթեր |
 | `/var` | Փոփոխվող տվյալներ. log-եր (`/var/log`), cache, հերթեր |
 
+Ծառը տեսնելու համար հարմար է `tree` ծրագիրը (`sudo apt install tree`). `tree -L 2 -d /usr`-ը ցույց է տալիս միայն թղթապանակները՝ երկու մակարդակ խորությամբ։
+
 Սա պայմանավորվածություն է (**Filesystem Hierarchy Standard**), և distribution-ները մի փոքր տարբերվում են։
 
 **Partition-ներ.** Սկավառակը կարելի է բաժանել մասերի, յուրաքանչյուրը իր ֆայլային համակարգով։ Առավելությունը. եթե `/var`-ը լցվի log-երով կամ վնասվի, `/`-ը և `/home`-ը կշարունակեն աշխատել։ Առանձին partition են դնում `/boot`-ը, `/home`-ը, `/var`-ը։ Կա նաև **swap** partition, որով kernel-ը ընդլայնում է RAM-ը սկավառակի հաշվին։
@@ -221,6 +138,8 @@ df -h                            # mount արված ֆայլային համակ�
 
 **Absolute** path-ը սկսվում է `/`-ով, **relative**-ը՝ հաշվվում է ընթացիկ թղթապանակից.
 
+Ուր եմ ես հիմա՝ ցույց է տալիս `pwd`-ը (print working directory). `cd`-ն առանց argument-ի և `cd ~`-ը տանում են home, `cd -`-ն՝ նախորդ թղթապանակ։
+
 ```bash
 cd /usr/local/lib        # absolute
 echo $HOME               # /home/student
@@ -235,6 +154,7 @@ cd /lib && ls -d */      # միայն թղթապանակները
 cd ~
 mkdir test
 echo 'Hello everyone' > test/myfile.txt
+touch test/empty.txt                # դատարկ ֆայլ (կամ, եթե կա, թարմացնել նրա ժամը)
 echo 'Goodbye all' >> test/myfile.txt
 less test/myfile.txt
 mkdir test/subdir1/subdir2          # սխալ. subdir1 չկա
@@ -314,6 +234,14 @@ ext2-ը (Second Extended File System) Linux-ի դասական ֆայլային �
 6. **Data block-եր**՝ ֆայլերի և directory-ների պարունակությունը։
 
 Group-ի գաղափարը արագության համար է. kernel-ը փորձում է ֆայլի տվյալները դնել նույն group-ում, ինչ նրա inode-ը, որ սկավառակի գլխիկը քիչ շարժվի։
+
+Superblock-ը և group-երը կարելի է տեսնել իրական (կամ փորձնական) ֆայլային համակարգում.
+
+```bash
+truncate -s 64M disk.img && mkfs.ext4 -q disk.img     # փորձնական ֆայլային համակարգ ֆայլում
+dumpe2fs -h disk.img | head -30                      # superblock-ի դաշտերը. block size, inode count, magic
+debugfs -R 'stat <2>' disk.img                        # root directory-ի inode-ը (համար 2)
+```
 
 ### Ինչպես է inode-ը գտնում տվյալները
 
@@ -396,6 +324,13 @@ cat s.txt                   # No such file or directory. symlink-ը կախված
 | Այլ ֆայլային համակարգում | Չի կարելի (inode number-ը իմաստ ունի միայն իր ֆայլային համակարգում) | Կարելի է |
 | Օրինակ | Backup-ների համակարգեր, որ նույն ֆայլը չպատճենեն | `/bin → /usr/bin`, ծրագրի տարբերակներ. `python3 → python3.12` |
 
+Symlink-ի թիրախը ցույց է տալիս `readlink -f s.txt`-ը (`-f`. հետևել բոլոր link-երին մինչև վերջնական ճանապարհը)։ Hard link-ի դեպքում «գլխավոր» անուն չկա. նույն inode-ի բոլոր անունները կարելի է գտնել `find`-ով.
+
+```bash
+find . -samefile b.txt              # բոլոր անունները, որոնք ցույց են տալիս նույն inode-ը
+find / -inum 1045 2>/dev/null       # նույնը inode number-ով
+```
+
 **`rm`-ը իրականում `unlink` է.** այն ջնջում է անունը և նվազեցնում link count-ը։ Տվյալները ազատվում են միայն երբ link count-ը 0 է **և** ֆայլը ոչ մի process բաց չի պահում։ Սա պատճառն է, որ երբեմն `rm`-ից հետո `df`-ը տեղ չի ազատում. ինչ-որ ծրագիր դեռ պահում է ֆայլը բաց (`lsof | grep deleted`)։ Օր 2-ի `mkstemp` + `unlink` հնարքը հենց սրա վրա է հիմնված։
 
 ## 8. VFS. մեկ ինտերֆեյս բոլոր ֆայլային համակարգերի համար
@@ -445,6 +380,91 @@ while (!in.eof()) { std::getline(in, line); /* ... */ }
 C-ում ճիշտ ձևը `while (fgets(buf, sizeof buf, f))` կամ `while (EOF != (c = getchar()))`։ `feof()`-ը օգտագործիր միայն ցիկլից **հետո**՝ տարբերելու ֆայլի վերջը իրական սխալից։
 
 ---
+
+## Commands · Հրամաններ
+
+*Ամփոփում. այս օրվա հրամանները, որոնք բացատրված են վերևում։ Անգիր անել պետք չէ. վերադարձիր այստեղ, երբ մոռանաս գրելաձևը։ Բոլոր օրերի հրամանների ցանկը [COMMANDS.md](../COMMANDS.md)-ում է։*
+
+```bash
+# Շարժվել
+pwd ; cd /usr/local/lib ; cd .. ; cd ~ ; cd -
+ls -d */                         # միայն թղթապանակները
+tree -L 2 -d /usr | less         # ծառը, 2 մակարդակ (sudo apt install tree)
+
+# ls-ի option-ներ
+ls -a        # նաև թաքնված ֆայլերը (կետով սկսվող)
+ls -l        # մանրամասն
+ls -lh       # չափերը KB/MB/GB-ով
+ls -lS       # դասավորել ըստ չափի
+ls -lt       # դասավորել ըստ փոփոխման ժամի
+ls -ld dir   # թղթապանակն ինքը, ոչ թե պարունակությունը
+ls -F        # նշան անվան վերջում. / թղթապանակ, * կատարվող, @ link, | pipe, = socket
+ls -i        # inode number-ները
+
+# Ստեղծել, տեղափոխել, ջնջել
+mkdir -p a/b/c ; rmdir a/b/c     # rmdir-ը ջնջում է միայն դատարկ թղթապանակ
+touch f.txt                      # ստեղծել դատարկ ֆայլ կամ թարմացնել ժամը
+cp f.txt g.txt ; cp -r a a2 ; cp -a a a3    # -a՝ պահպանել ամեն ինչ (իրավունքներ, ժամեր, link-եր)
+mv g.txt a/ ; mv a2 b2           # տեղափոխել / վերանվանել
+rm f.txt ; rm -r a3 ; rm -i *.txt          # -i՝ հարցնել ամեն ֆայլի համար
+
+# Ֆայլի մասին
+file /bin/ls /etc/passwd /dev/sda       # տեսակը ըստ պարունակության
+stat f.txt                              # inode-ի բոլոր դաշտերը
+ls -li f.txt                            # inode number + link count
+
+# Link-եր
+ln f.txt hard.txt                       # hard link
+ln -s f.txt soft.txt                    # symbolic link
+readlink -f soft.txt                    # ուր է ցույց տալիս
+find . -samefile f.txt                  # բոլոր hard link-երը
+find / -inum 1234 2>/dev/null           # ֆայլը ըստ inode number-ի
+
+# Ֆայլային համակարգեր
+df -h ; df -i                           # ազատ տեղ / ազատ inode-ներ
+lsblk -f                                # սկավառակներ, partition-ներ, ֆայլային համակարգեր
+findmnt ; mount | column -t             # ինչ է mount արված և ուր
+cat /etc/fstab                          # ինչ է mount արվում boot-ի ժամանակ
+cat /proc/filesystems                   # kernel-ի աջակցած ֆայլային համակարգերը
+sudo dumpe2fs -h image.ext4             # superblock-ը
+sudo debugfs -R 'stat <2>' image.ext4   # root inode-ը
+
+# Sparse ֆայլեր
+truncate -s 1G sparse.img ; ls -lh sparse.img ; du -h sparse.img
+mkfifo mypipe                           # named pipe
+```
+
+## Functions · Ֆունկցիաներ
+
+*Ֆայլային համակարգի C ֆունկցիաները, որոնք պետք են Self-Learning առաջադրանքների համար։ Ամբողջական ցանկը [API.md](../API.md)-ում է։*
+
+```c
+#include <sys/stat.h>
+// Inode-ի տվյալները. st_ino, st_mode (տեսակ + իրավունքներ), st_nlink, st_size,
+// st_blocks (512-բայթանոց միավորներով), st_atime/st_mtime/st_ctime. 0 կամ -1
+int stat(const char *path, struct stat *st);
+// Նույնը, բայց symlink-ի համար տալիս է link-ի, ոչ թե թիրախի տվյալները
+int lstat(const char *path, struct stat *st);
+// Տեսակը ստուգող macro-ներ. S_ISREG(m), S_ISDIR(m), S_ISLNK(m), S_ISCHR(m), S_ISBLK(m), S_ISFIFO(m), S_ISSOCK(m)
+int mkdir(const char *path, mode_t mode);
+
+#include <dirent.h>
+// Կարդալ directory-ն entry առ entry. readdir-ը վերադարձնում է NULL, երբ entry-ները վերջացան
+DIR *opendir(const char *path);
+struct dirent *readdir(DIR *dir);       // d_ino՝ inode number, d_name՝ անուն, d_type՝ տեսակ
+int closedir(DIR *dir);
+
+#include <unistd.h>
+int link(const char *target, const char *new_path);      // hard link
+int symlink(const char *target, const char *link_path);  // symbolic link
+ssize_t readlink(const char *path, char *buf, size_t size);  // symlink-ի պարունակությունը, առանց '\0'-ի
+int unlink(const char *path);                            // ջնջել անունը
+int rmdir(const char *path);                             // ջնջել դատարկ թղթապանակ
+int truncate(const char *path, off_t length);            // փոխել չափը. մեծացնելիս՝ hole
+
+#include <stdio.h>
+int rename(const char *old_path, const char *new_path);  // mv նույն ֆայլային համակարգում
+```
 
 ## Resources · Աղբյուրներ
 - [The Linux Kernel: The File System](http://www.tldp.org/LDP/tlk/fs/filesystem.html), David Rusling, TLDP. VFS, ext2-ի կառուցվածքը, inode-ներ, directory-ներ, ֆայլի որոնում

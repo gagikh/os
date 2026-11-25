@@ -61,65 +61,6 @@
 
 **Man page** — Հրամանի, system call-ի կամ ֆայլի ձևաչափի պաշտոնական նկարագրությունը, որը բացվում է `man`-ով։ Բաժանված է բաժինների. `1`՝ հրամաններ, `2`՝ system call-եր, `3`՝ գրադարանային ֆունկցիաներ, `5`՝ ֆայլերի ձևաչափեր, `8`՝ ադմինիստրատորի հրամաններ։
 
-## Commands · Հրամաններ
-
-*Այսօրվա հրամանները։ Բոլոր օրերի հրամանների ցանկը [COMMANDS.md](../COMMANDS.md)-ում է։*
-
-```bash
-# Ով, որտեղ, ինչ համակարգ
-whoami ; hostname ; date ; cal ; free -h ; w ; uptime
-uname -a                      # kernel-ի անունը, տարբերակը, architecture-ը
-cat /proc/version             # ինչով և երբ է հավաքվել kernel-ը
-cat /etc/os-release           # distribution-ը
-cat /proc/sys/kernel/tainted  # 0՝ kernel-ը «մաքուր» է
-
-# Shell
-echo $SHELL ; which bash      # որ shell-ն է, որտեղ է
-echo "$SHELL" ; echo '$SHELL' # "..."-ում փոփոխականը բացվում է, '...'-ում՝ ոչ
-
-# Հրամանի կառուցվածքը
-cal -j 3 1999                 # հրաման, option, երկու argument
-date -u ; date --universal    # կարճ և երկար option-ներ
-
-# History և խմբագրում
-history ; !42 ; !!            # ցանկը, 42-րդ հրամանը, վերջին հրամանը
-# Ctrl+R՝ փնտրել, Ctrl+A / Ctrl+E՝ տողի սկիզբ / վերջ, Ctrl+U / Ctrl+K՝ ջնջել մինչև սկիզբ / վերջ
-
-# Օգնություն
-hostname --help ; man hostname ; info hostname
-man 1 uname ; man 2 uname     # uname հրամանը և uname() system call-ը
-man -k partition              # փնտրել բոլոր man page-երում
-
-# Առաջին pipe
-w | grep root
-ps -e -o ruser,comm | grep bash
-
-# Միանալ այլ Linux համակարգի
-ssh student@192.168.1.10
-ping -c 3 192.168.1.10        # հասանելի՞ է
-nc -vz 192.168.1.10 22        # բա՞ց է SSH port-ը
-```
-
-## Functions · Ֆունկցիաներ
-
-*Այսօրվա C/C++ ֆունկցիաները։ Ամբողջական ցանկը [API.md](../API.md)-ում է։*
-
-```c
-#include <sys/utsname.h>
-// Լրացնում է struct utsname-ը. sysname, nodename, release, version, machine։
-// Հաջողության դեպքում՝ 0, սխալի դեպքում՝ -1 և errno
-int uname(struct utsname *buf);
-
-#include <string.h>
-// errno-ի թվային կոդը դարձնում է տեքստ. ENOENT → "No such file or directory"
-char *strerror(int errnum);
-
-// common/sys_check.h
-// Փաթաթում է system call-ը. եթե այն վերադարձրեց -1, տպում է ֆայլը, տողը,
-// կանչը և strerror(errno), ապա ավարտում ծրագիրը
-SYS_CHECK(call);
-```
-
 ---
 
 ## 1. Ի՞նչ է Linux-ը
@@ -430,6 +371,65 @@ ps -e -o ruser,comm | grep bash       # ով է աշխատեցնում bash
 `ps`-ն այստեղ ունի և՛ option-ներ (`-e`՝ բոլոր process-ները, `-o`՝ ինչ սյունակներ), և՛ argument (`ruser,comm`)։ Pipe-երի և ֆիլտրերի մանրամասները Օր 4-ում են։
 
 ---
+
+## Commands · Հրամաններ
+
+*Ամփոփում. այս օրվա հրամանները, որոնք բացատրված են վերևում։ Անգիր անել պետք չէ. վերադարձիր այստեղ, երբ մոռանաս գրելաձևը։ Բոլոր օրերի հրամանների ցանկը [COMMANDS.md](../COMMANDS.md)-ում է։*
+
+```bash
+# Ով, որտեղ, ինչ համակարգ
+whoami ; hostname ; date ; cal ; free -h ; w ; uptime
+uname -a                      # kernel-ի անունը, տարբերակը, architecture-ը
+cat /proc/version             # ինչով և երբ է հավաքվել kernel-ը
+cat /etc/os-release           # distribution-ը
+cat /proc/sys/kernel/tainted  # 0՝ kernel-ը «մաքուր» է
+
+# Shell
+echo $SHELL ; which bash      # որ shell-ն է, որտեղ է
+echo "$SHELL" ; echo '$SHELL' # "..."-ում փոփոխականը բացվում է, '...'-ում՝ ոչ
+
+# Հրամանի կառուցվածքը
+cal -j 3 1999                 # հրաման, option, երկու argument
+date -u ; date --universal    # կարճ և երկար option-ներ
+
+# History և խմբագրում
+history ; !42 ; !!            # ցանկը, 42-րդ հրամանը, վերջին հրամանը
+# Ctrl+R՝ փնտրել, Ctrl+A / Ctrl+E՝ տողի սկիզբ / վերջ, Ctrl+U / Ctrl+K՝ ջնջել մինչև սկիզբ / վերջ
+
+# Օգնություն
+hostname --help ; man hostname ; info hostname
+man 1 uname ; man 2 uname     # uname հրամանը և uname() system call-ը
+man -k partition              # փնտրել բոլոր man page-երում
+
+# Առաջին pipe
+w | grep root
+ps -e -o ruser,comm | grep bash
+
+# Միանալ այլ Linux համակարգի
+ssh student@192.168.1.10
+ping -c 3 192.168.1.10        # հասանելի՞ է
+nc -vz 192.168.1.10 22        # բա՞ց է SSH port-ը
+```
+
+## Functions · Ֆունկցիաներ
+
+*Ամփոփում. այս օրվա C/C++ ֆունկցիաները։ Ամբողջական ցանկը [API.md](../API.md)-ում է։*
+
+```c
+#include <sys/utsname.h>
+// Լրացնում է struct utsname-ը. sysname, nodename, release, version, machine։
+// Հաջողության դեպքում՝ 0, սխալի դեպքում՝ -1 և errno
+int uname(struct utsname *buf);
+
+#include <string.h>
+// errno-ի թվային կոդը դարձնում է տեքստ. ENOENT → "No such file or directory"
+char *strerror(int errnum);
+
+// common/sys_check.h
+// Փաթաթում է system call-ը. եթե այն վերադարձրեց -1, տպում է ֆայլը, տողը,
+// կանչը և strerror(errno), ապա ավարտում ծրագիրը
+SYS_CHECK(call);
+```
 
 ## Resources · Աղբյուրներ
 - [Introduction to Linux](http://www.bu.edu/tech/files/2012/09/Introduction-to-Linux.pptx), Boston University IS&T. դասի սլայդները. 1–31 սլայդները՝ այսօրվա նյութը, մնացածը՝ Օր 3, 4, 6, 7

@@ -47,54 +47,6 @@
 
 **`clone`** — Linux-ի system call, որը ստեղծում է նոր process՝ ընտրելով, թե ինչ է կիսում ծնողի հետ (հիշողություն, ֆայլեր, signal handler-ներ)։ `fork`-ը և `pthread_create`-ը երկուսն էլ իրականացված են `clone`-ով։
 
-## Commands · Հրամաններ
-
-*Այսօրվա հրամանները։ Բոլոր օրերի հրամանների ցանկը [COMMANDS.md](../COMMANDS.md)-ում է։*
-
-```bash
-ps -o pid,ppid,stat,cmd --forest          # ծառը. ծնող-երեխա
-ps -eLf | head ; ps -o pid,nlwp,cmd -p PID # thread-երը. LWP, NLWP՝ thread-ների քանակը
-top -H -p PID                              # process-ի thread-երը top-ում
-ls /proc/PID/task                          # ամեն thread-ի համար թղթապանակ
-strace -f -e trace=clone,clone3,execve,wait4 bash -c 'ls | wc -l'   # ինչ է անում shell-ը
-cat /proc/sys/kernel/threads-max ; ulimit -u
-g++ -std=c++17 -pthread prog.cpp -o prog   # thread-երով ծրագիր
-valgrind --tool=helgrind ./prog            # գտնել race condition-ները
-g++ -fsanitize=thread -g prog.cpp -o prog  # ThreadSanitizer
-```
-
-## Functions · Ֆունկցիաներ
-
-*Այսօրվա C/C++ ֆունկցիաները։ Ամբողջական ցանկը [API.md](../API.md)-ում է։*
-
-```c
-#include <unistd.h>
-pid_t fork(void);                         // ծնողում՝ երեխայի PID, երեխայում՝ 0, սխալի դեպքում՝ -1
-int execvp(const char *file, char *const argv[]);   // փնտրում է PATH-ում (Օր 2). argv-ի վերջում NULL
-void _exit(int status);                   // ավարտ առանց stdio buffer-ների դատարկման. երեխայում exec-ի սխալից հետո
-int pipe(int fds[2]);                     // fds[0]՝ կարդալու ծայր, fds[1]՝ գրելու ծայր
-int dup2(int oldfd, int newfd);           // newfd-ն դառնում է oldfd-ի պատճեն
-int chdir(const char *path);              // փոխել ընթացիկ թղթապանակը. cd-ն built-in է (Օր 2)
-
-#include <sys/wait.h>
-// Սպասել երեխային. pid = -1՝ ցանկացածին. options = WNOHANG՝ չսպասել, եթե ոչ մեկը չի ավարտվել
-pid_t waitpid(pid_t pid, int *status, int options);
-// status-ի վերծանում. WIFEXITED(s) → WEXITSTATUS(s), WIFSIGNALED(s) → WTERMSIG(s)
-
-#include <pthread.h>
-int pthread_create(pthread_t *t, const pthread_attr_t *attr, void *(*fn)(void *), void *arg);
-int pthread_join(pthread_t t, void **result);
-int pthread_mutex_lock(pthread_mutex_t *m);
-int pthread_mutex_unlock(pthread_mutex_t *m);
-```
-
-```cpp
-#include <thread>
-#include <mutex>
-std::thread t(function, args...);  t.join();          // C++11 թղթակիցը
-std::mutex m;  std::lock_guard<std::mutex> lock(m);    // unlock-ը ավտոմատ է scope-ի վերջում
-```
-
 ---
 
 ## 1. `fork`, `exec`, `wait`
@@ -242,6 +194,15 @@ C-ում նույնը անում է POSIX threads գրադարանը (`pthread_c
 
 Linux kernel-ի համար thread-ը առանձին տեսակ չէ. և՛ `fork`-ը, և՛ `pthread_create`-ը կանչում են **`clone`** system call-ը, պարզապես տարբեր դրոշներով. thread-ի դեպքում նոր «process»-ը կիսում է ծնողի հիշողությունը (`CLONE_VM`), ֆայլերը (`CLONE_FILES`), signal handler-ները։ Ամեն thread ունի իր ID-ն (TID), որը երևում է `ps -eLf`-ում և `/proc/PID/task/`-ում։
 
+Տես ինքդ.
+
+```bash
+ps -eLf | head               # LWP սյունակը thread-ի ID-ն է, NLWP-ն՝ thread-ների քանակը process-ում
+top -H -p PID                # -H. ցույց տալ thread-երը առանձին տողերով
+ls /proc/PID/task            # ամեն thread-ի համար թղթապանակ
+cat /proc/sys/kernel/threads-max ; ulimit -u    # քանի thread/process է թույլատրված համակարգում և քեզ
+```
+
 ## 5. Race condition և mutex
 
 ```cpp
@@ -316,6 +277,54 @@ cv.notify_one();
 Կանոն. եթե առաջադրանքները անկախ են կամ պետք է մեկուսացված լինեն՝ process-ներ, եթե պետք է կիսել շատ տվյալներ և արագ՝ thread-եր։
 
 ---
+
+## Commands · Հրամաններ
+
+*Ամփոփում. այս օրվա հրամանները, որոնք բացատրված են վերևում։ Անգիր անել պետք չէ. վերադարձիր այստեղ, երբ մոռանաս գրելաձևը։ Բոլոր օրերի հրամանների ցանկը [COMMANDS.md](../COMMANDS.md)-ում է։*
+
+```bash
+ps -o pid,ppid,stat,cmd --forest          # ծառը. ծնող-երեխա
+ps -eLf | head ; ps -o pid,nlwp,cmd -p PID # thread-երը. LWP, NLWP՝ thread-ների քանակը
+top -H -p PID                              # process-ի thread-երը top-ում
+ls /proc/PID/task                          # ամեն thread-ի համար թղթապանակ
+strace -f -e trace=clone,clone3,execve,wait4 bash -c 'ls | wc -l'   # ինչ է անում shell-ը
+cat /proc/sys/kernel/threads-max ; ulimit -u
+g++ -std=c++17 -pthread prog.cpp -o prog   # thread-երով ծրագիր
+valgrind --tool=helgrind ./prog            # գտնել race condition-ները
+g++ -fsanitize=thread -g prog.cpp -o prog  # ThreadSanitizer
+```
+
+## Functions · Ֆունկցիաներ
+
+*Ամփոփում. այս օրվա C/C++ ֆունկցիաները։ Ամբողջական ցանկը [API.md](../API.md)-ում է։*
+
+```c
+#include <unistd.h>
+pid_t fork(void);                         // ծնողում՝ երեխայի PID, երեխայում՝ 0, սխալի դեպքում՝ -1
+int execvp(const char *file, char *const argv[]);   // փնտրում է PATH-ում (Օր 2). argv-ի վերջում NULL
+void _exit(int status);                   // ավարտ առանց stdio buffer-ների դատարկման. երեխայում exec-ի սխալից հետո
+int pipe(int fds[2]);                     // fds[0]՝ կարդալու ծայր, fds[1]՝ գրելու ծայր
+int dup2(int oldfd, int newfd);           // newfd-ն դառնում է oldfd-ի պատճեն
+int chdir(const char *path);              // փոխել ընթացիկ թղթապանակը. cd-ն built-in է (Օր 2)
+
+#include <sys/wait.h>
+// Սպասել երեխային. pid = -1՝ ցանկացածին. options = WNOHANG՝ չսպասել, եթե ոչ մեկը չի ավարտվել
+pid_t waitpid(pid_t pid, int *status, int options);
+// status-ի վերծանում. WIFEXITED(s) → WEXITSTATUS(s), WIFSIGNALED(s) → WTERMSIG(s)
+
+#include <pthread.h>
+int pthread_create(pthread_t *t, const pthread_attr_t *attr, void *(*fn)(void *), void *arg);
+int pthread_join(pthread_t t, void **result);
+int pthread_mutex_lock(pthread_mutex_t *m);
+int pthread_mutex_unlock(pthread_mutex_t *m);
+```
+
+```cpp
+#include <thread>
+#include <mutex>
+std::thread t(function, args...);  t.join();          // C++11 թղթակիցը
+std::mutex m;  std::lock_guard<std::mutex> lock(m);    // unlock-ը ավտոմատ է scope-ի վերջում
+```
 
 ## Resources · Աղբյուրներ
 - *Advanced Linux Programming*, Chapter 3 «Processes» (3.2 fork և exec, 3.4 wait, zombie-ներ) և Chapter 4 «Threads» (ստեղծում, race condition-ներ, mutex-ներ, condition variable-ներ, 4.5 thread-երը Linux-ում, 4.6 process-ներ և thread-եր). [`docs/linux_book.pdf`](../docs/linux_book.pdf)

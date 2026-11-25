@@ -54,71 +54,6 @@
 
 **Repository** — Սերվեր, որտեղ պահվում են փաթեթները և նրանց ցանկը։ `apt update`-ը ներբեռնում է ցանկը, `apt install`-ը՝ փաթեթը և նրա dependency-ները։
 
-## Commands · Հրամաններ
-
-*Այսօրվա հրամանները։ Բոլոր օրերի հրամանների ցանկը [COMMANDS.md](../COMMANDS.md)-ում է։*
-
-```bash
-# Process-ներ
-ps ; ps aux ; ps -ef --forest ; ps -o pid,ppid,stat,ni,%cpu,%mem,cmd -p $$
-pstree -p ; top ; htop
-pgrep -a ssh ; pidof sshd
-cat /proc/$$/status ; ls -l /proc/$$/fd ; cat /proc/$$/maps
-nice -n 10 ./long_job ; renice -n 5 -p 1234
-
-# Job control
-sleep 100 &                  # ֆոնում
-jobs ; fg %1 ; bg %1         # Ctrl+Z կասեցնում է առաջին պլանի process-ը
-nohup ./long_job > out.log 2>&1 &   # չի մեռնի terminal-ը փակելիս
-disown %1
-
-# Signal-ներ
-kill -l                      # ցանկը
-kill 1234                    # SIGTERM. խնդրել ավարտվել
-kill -9 1234                 # SIGKILL. ստիպել
-kill -HUP 1234 ; kill -USR1 1234 ; kill -STOP 1234 ; kill -CONT 1234
-pkill -f myserver ; killall sleep
-trap 'echo caught' INT       # bash-ում
-
-# systemd
-systemctl status ssh ; systemctl list-units --type=service --state=running
-sudo systemctl start|stop|restart|reload nginx
-sudo systemctl enable --now myapp ; sudo systemctl disable myapp
-systemctl cat ssh ; sudo systemctl edit myapp ; sudo systemctl daemon-reload
-journalctl -u ssh -f ; journalctl -b -p err ; journalctl --since "10 min ago"
-systemd-analyze blame
-
-# Փաթեթներ
-sudo apt update ; apt list --upgradable ; sudo apt upgrade
-sudo apt install htop ; sudo apt remove htop ; sudo apt purge htop ; sudo apt autoremove
-apt search json ; apt show htop ; apt policy htop
-dpkg -l | grep ssh ; dpkg -L htop ; dpkg -S /usr/bin/top
-sudo apt install ./package.deb
-```
-
-## Functions · Ֆունկցիաներ
-
-*Այսօրվա C ֆունկցիաները։ Ամբողջական ցանկը [API.md](../API.md)-ում է։*
-
-```c
-#include <unistd.h>
-pid_t getpid(void);                // իմ PID-ը
-pid_t getppid(void);               // ծնողի PID-ը
-int nice(int inc);                 // ավելացնել nice-ին inc (դրական՝ ցածր priority)
-int pause(void);                   // քնել մինչև signal
-
-#include <signal.h>
-// Սահմանել signal-ի disposition-ը. act.sa_handler = SIG_DFL / SIG_IGN / ֆունկցիա
-int sigaction(int sig, const struct sigaction *act, struct sigaction *old);
-int kill(pid_t pid, int sig);      // ուղարկել signal (pid-ին)
-int raise(int sig);                // ուղարկել ինքն իրեն
-volatile sig_atomic_t flag;        // միակ անվտանգ բանը, որ handler-ը կարող է փոխել
-
-#include <time.h>
-// Քնել. signal-ը արթնացնում է շուտ, և ֆունկցիան վերադարձնում է -1 (errno = EINTR)
-int nanosleep(const struct timespec *req, struct timespec *rem);
-```
-
 ---
 
 ## 1. Ի՞նչ է process-ը
@@ -230,6 +165,8 @@ Terminal-ը փակելիս shell-ը իր job-երին ուղարկում է `SIG
 Համարները x86 և ARM Linux-ի համար են. ծրագրում միշտ օգտագործիր անունները։ Լրիվ ցանկը՝ `kill -l` և `man 7 signal`։
 
 **`SIGTERM` և `SIGKILL`**. `SIGTERM`-ը խնդրանք է. ծրագիրը կարող է որսալ այն, պահել տվյալները, փակել ֆայլերը և ավարտվել կոկիկ։ `SIGKILL`-ը kernel-ն է կատարում առանց ծրագրին հարցնելու. ծրագիրը ոչինչ չի հասցնում։ Այդ պատճառով միշտ սկզբում `kill`, և միայն եթե չօգնեց՝ `kill -9`։
+
+PID-ը փնտրելու փոխարեն կարելի է ուղարկել signal ըստ անվան. `pidof sleep`-ը տպում է PID-ները, `pkill -f myserver`-ը signal է ուղարկում բոլոր process-ներին, որոնց հրամանի տողում կա `myserver`, `killall sleep`-ը՝ ճիշտ այդ անունով բոլոր process-ներին։ Զգույշ. սրանք կարող են դիպչել ավելի շատ process-ների, քան կարծում ես. նախ ստուգիր `pgrep -a`-ով։
 
 ### Signal-ի մշակում C/C++-ում
 
@@ -343,6 +280,71 @@ Repository-ների ցանկը `/etc/apt/sources.list`-ում և `/etc/apt/sourc
 Այլ distribution-ներում նույն գաղափարն է՝ այլ անուններով. `dnf` (Fedora, RHEL), `pacman` (Arch), `apk` (Alpine)։ Կան նաև distribution-ից անկախ ձևաչափեր՝ `snap`, `flatpak`, `AppImage`, իսկ Python-ի համար՝ `pip` `venv`-ում (Օր 1)։
 
 ---
+
+## Commands · Հրամաններ
+
+*Ամփոփում. այս օրվա հրամանները, որոնք բացատրված են վերևում։ Անգիր անել պետք չէ. վերադարձիր այստեղ, երբ մոռանաս գրելաձևը։ Բոլոր օրերի հրամանների ցանկը [COMMANDS.md](../COMMANDS.md)-ում է։*
+
+```bash
+# Process-ներ
+ps ; ps aux ; ps -ef --forest ; ps -o pid,ppid,stat,ni,%cpu,%mem,cmd -p $$
+pstree -p ; top ; htop
+pgrep -a ssh ; pidof sshd
+cat /proc/$$/status ; ls -l /proc/$$/fd ; cat /proc/$$/maps
+nice -n 10 ./long_job ; renice -n 5 -p 1234
+
+# Job control
+sleep 100 &                  # ֆոնում
+jobs ; fg %1 ; bg %1         # Ctrl+Z կասեցնում է առաջին պլանի process-ը
+nohup ./long_job > out.log 2>&1 &   # չի մեռնի terminal-ը փակելիս
+disown %1
+
+# Signal-ներ
+kill -l                      # ցանկը
+kill 1234                    # SIGTERM. խնդրել ավարտվել
+kill -9 1234                 # SIGKILL. ստիպել
+kill -HUP 1234 ; kill -USR1 1234 ; kill -STOP 1234 ; kill -CONT 1234
+pkill -f myserver ; killall sleep
+trap 'echo caught' INT       # bash-ում
+
+# systemd
+systemctl status ssh ; systemctl list-units --type=service --state=running
+sudo systemctl start|stop|restart|reload nginx
+sudo systemctl enable --now myapp ; sudo systemctl disable myapp
+systemctl cat ssh ; sudo systemctl edit myapp ; sudo systemctl daemon-reload
+journalctl -u ssh -f ; journalctl -b -p err ; journalctl --since "10 min ago"
+systemd-analyze blame
+
+# Փաթեթներ
+sudo apt update ; apt list --upgradable ; sudo apt upgrade
+sudo apt install htop ; sudo apt remove htop ; sudo apt purge htop ; sudo apt autoremove
+apt search json ; apt show htop ; apt policy htop
+dpkg -l | grep ssh ; dpkg -L htop ; dpkg -S /usr/bin/top
+sudo apt install ./package.deb
+```
+
+## Functions · Ֆունկցիաներ
+
+*Ամփոփում. այս օրվա C/C++ ֆունկցիաները։ Ամբողջական ցանկը [API.md](../API.md)-ում է։*
+
+```c
+#include <unistd.h>
+pid_t getpid(void);                // իմ PID-ը
+pid_t getppid(void);               // ծնողի PID-ը
+int nice(int inc);                 // ավելացնել nice-ին inc (դրական՝ ցածր priority)
+int pause(void);                   // քնել մինչև signal
+
+#include <signal.h>
+// Սահմանել signal-ի disposition-ը. act.sa_handler = SIG_DFL / SIG_IGN / ֆունկցիա
+int sigaction(int sig, const struct sigaction *act, struct sigaction *old);
+int kill(pid_t pid, int sig);      // ուղարկել signal (pid-ին)
+int raise(int sig);                // ուղարկել ինքն իրեն
+volatile sig_atomic_t flag;        // միակ անվտանգ բանը, որ handler-ը կարող է փոխել
+
+#include <time.h>
+// Քնել. signal-ը արթնացնում է շուտ, և ֆունկցիան վերադարձնում է -1 (errno = EINTR)
+int nanosleep(const struct timespec *req, struct timespec *rem);
+```
 
 ## Resources · Աղբյուրներ
 - *Advanced Linux Programming*, Chapter 3 «Processes» (3.1–3.3) և Appendix C «Table of Signals». [`docs/linux_book.pdf`](../docs/linux_book.pdf)

@@ -44,76 +44,6 @@
 
 **`ioctl`** — Համընդհանուր system call սարքին հատուկ հրամաններ ուղարկելու համար, որոնք չեն տեղավորվում `read`/`write`-ի մեջ. ստանալ էկրանի չափը, փոխել serial port-ի արագությունը, բացել CD-ROM-ը։
 
-## Commands · Հրամաններ
-
-*Այսօրվա հրամանները։ Բոլոր օրերի հրամանների ցանկը [COMMANDS.md](../COMMANDS.md)-ում է։*
-
-```bash
-# Ինչ hardware ունեմ
-lscpu ; nproc ; cat /proc/cpuinfo | head -30
-free -h ; cat /proc/meminfo | head
-lsblk ; lsblk -o NAME,SIZE,TYPE,MOUNTPOINT,MODEL ; cat /proc/partitions
-lspci ; lspci -k                         # PCI սարքերը և նրանց driver-ները
-lsusb ; lsusb -t                         # USB սարքերը, ծառի տեսքով
-ip link ; cat /sys/class/net/eth0/address
-sudo lshw -short ; sudo dmidecode -t memory ; inxi -F
-sensors                                  # ջերմաստիճաններ (lm-sensors)
-cat /proc/interrupts ; cat /proc/devices
-
-# Սարքերի ֆայլեր
-ls -l /dev/sda /dev/null /dev/tty
-stat -c '%t:%T %n' /dev/sda             # major:minor, hex
-sudo mknod ./mynull c 1 3                # ձեռքով ստեղծել սարքի ֆայլ
-udevadm monitor                          # միացրու USB flash և դիտիր իրադարձությունները
-udevadm info -a -n /dev/ttyUSB0          # սարքի բոլոր հատկությունները կանոնների համար
-
-# Հատուկ սարքեր
-head -c 16 /dev/urandom | xxd ; cat /dev/zero | head -c 1M > zeros.bin ; echo test > /dev/null
-echo x > /dev/full                       # No space left on device
-sudo losetup -f --show disk.img          # ֆայլը որպես block սարք (Օր 3)
-
-# Module-ներ
-lsmod ; modinfo e1000e ; modinfo -F license snd
-sudo modprobe loop ; sudo modprobe -r loop
-ls /lib/modules/$(uname -r)/kernel/drivers
-sudo dmesg -w                            # դիտիր, ինչ է տպում driver-ը միացնելիս
-
-# /sys
-ls /sys/class ; ls /sys/class/net ; cat /sys/block/sda/size
-cat /sys/class/thermal/thermal_zone*/temp
-cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
-```
-
-## Functions · Ֆունկցիաներ
-
-*Այսօրվա C/C++ ֆունկցիաները։ Ամբողջական ցանկը [API.md](../API.md)-ում է։*
-
-```c
-#include <fcntl.h>
-#include <unistd.h>
-// Սարքի ֆայլը բացվում և կարդացվում է ինչպես սովորական ֆայլը
-int open(const char *path, int flags);          // O_RDONLY, O_WRONLY, O_RDWR. վերադարձնում է fd
-ssize_t read(int fd, void *buf, size_t count);   // կարդացած բայթերի քանակը, 0՝ EOF
-ssize_t write(int fd, const void *buf, size_t count);
-int close(int fd);
-
-#include <sys/ioctl.h>
-// Սարքին հատուկ հրաման. request-ը driver-ի սահմանած կոդն է
-int ioctl(int fd, unsigned long request, ...);
-
-#include <sys/sysmacros.h>
-// Սարքի համարից (st_rdev) առանձնացնել major-ը և minor-ը
-unsigned int major(dev_t dev);
-unsigned int minor(dev_t dev);
-```
-
-```cpp
-#include <filesystem>
-// C++17. թղթապանակի entry-ների ցիկլ (opendir/readdir-ի փոխարեն, Օր 3)
-for (auto &entry : std::filesystem::directory_iterator("/sys/class/net"))
-    std::cout << entry.path().filename() << '\n';
-```
-
 ---
 
 ## 1. Ծրագրից մինչև սարք
@@ -148,6 +78,8 @@ Driver-ները Linux kernel-ի կոդի կեսից ավելին են։ Դրա �
 | Interrupt-ներ | | `/proc/interrupts` |
 | Ամեն ինչ | `sudo lshw -short`, `inxi -F` | |
 
+`sudo dmidecode -t memory`-ը կարդում է BIOS/UEFI-ի աղյուսակները (RAM-ի մոդուլներ, motherboard). աշխատում է PC-ների վրա, բայց ոչ ARM board-երի մեծ մասի վրա, որոնք փոխարենը ունեն device tree (embedded Օր 1)։
+
 `lspci -k`-ը ցույց է տալիս նաև, թե որ driver-ն է սպասարկում յուրաքանչյուր սարքը.
 
 ```
@@ -174,6 +106,8 @@ ls -l /dev/sda /dev/sda1 /dev/ttyS0 /dev/null
 ```
 
 Չափի տեղում `ls`-ը ցույց է տալիս **major, minor** համարները։ **Major**-ը ընտրում է driver-ը, **minor**-ը՝ սարքը այդ driver-ի ներսում։ Բեռնված driver-ների major համարները `/proc/devices`-ում են։
+
+Ծրագրում նույնը տալիս է `stat()`-ի `st_rdev` դաշտը (§7, Functions), իսկ terminal-ում՝ `stat -c '%t:%T %n' /dev/sda` (major:minor, hex)։
 
 Սարքի ֆայլ կարելի է ստեղծել ձեռքով `mknod`-ով (միայն root). ֆայլի անունը նշանակություն չունի, կարևոր են տեսակը և համարները.
 
@@ -219,6 +153,8 @@ ls -l /dev/gps                   # /dev/gps -> ttyACM0. անունը չի փոխ
 | `/dev/tty` | Ընթացիկ terminal-ը | Ընթացիկ terminal-ը | Հարցնել գաղտնաբառ, նույնիսկ եթե stdin-ը ուղղորդված է |
 | `/dev/loopN` | Ֆայլի պարունակությունը | Ֆայլի մեջ | Ֆայլը որպես սկավառակ (Օր 3). `losetup`, `mount -o loop` |
 
+Բինար տվյալները տեսնելու համար օգտագործիր `xxd` (hex dump). `head -c 16 /dev/urandom | xxd`։
+
 `/dev/urandom`-ը kernel-ի պատահական թվերի գեներատորն է, որը սնվում է hardware-ի աղմուկով (interrupt-ների ժամանակներ, սարքերի ազդանշաններ)։ Բոլոր կրիպտոգրաֆիկ key-երը գեներացվում են դրանից։
 
 ## 5. Kernel module-ներ
@@ -232,6 +168,8 @@ sudo modprobe loop               # բեռնել (dependency-ների հետ մի
 sudo modprobe -r loop            # հեռացնել
 ls /lib/modules/$(uname -r)/kernel/drivers/
 ```
+
+Ինչ է անում driver-ը բեռնվելիս, երևում է kernel-ի log-ում. `sudo dmesg -w`-ը (`-w`՝ սպասել նոր հաղորդագրությունների) բաց պահիր մեկ terminal-ում և մյուսում բեռնիր module-ը կամ միացրու USB սարք։
 
 `modprobe`-ը ավելի խելացի է, քան ցածր մակարդակի `insmod`-ը և `rmmod`-ը. այն գիտի module-ների կախվածությունները (`modules.dep`)։ Module-ի բեռնումը արգելելու համար՝ `blacklist` տող `/etc/modprobe.d/`-ում։
 
@@ -298,6 +236,76 @@ if (0 == ioctl(STDOUT_FILENO, TIOCGWINSZ, &ws))
 Հրամանների համարները սահմանում է ամեն driver, և դրանք նկարագրված են նրա header-ներում և փաստաթղթերում։
 
 ---
+
+## Commands · Հրամաններ
+
+*Ամփոփում. այս օրվա հրամանները, որոնք բացատրված են վերևում։ Անգիր անել պետք չէ. վերադարձիր այստեղ, երբ մոռանաս գրելաձևը։ Բոլոր օրերի հրամանների ցանկը [COMMANDS.md](../COMMANDS.md)-ում է։*
+
+```bash
+# Ինչ hardware ունեմ
+lscpu ; nproc ; cat /proc/cpuinfo | head -30
+free -h ; cat /proc/meminfo | head
+lsblk ; lsblk -o NAME,SIZE,TYPE,MOUNTPOINT,MODEL ; cat /proc/partitions
+lspci ; lspci -k                         # PCI սարքերը և նրանց driver-ները
+lsusb ; lsusb -t                         # USB սարքերը, ծառի տեսքով
+ip link ; cat /sys/class/net/eth0/address
+sudo lshw -short ; sudo dmidecode -t memory ; inxi -F
+sensors                                  # ջերմաստիճաններ (lm-sensors)
+cat /proc/interrupts ; cat /proc/devices
+
+# Սարքերի ֆայլեր
+ls -l /dev/sda /dev/null /dev/tty
+stat -c '%t:%T %n' /dev/sda             # major:minor, hex
+sudo mknod ./mynull c 1 3                # ձեռքով ստեղծել սարքի ֆայլ
+udevadm monitor                          # միացրու USB flash և դիտիր իրադարձությունները
+udevadm info -a -n /dev/ttyUSB0          # սարքի բոլոր հատկությունները կանոնների համար
+
+# Հատուկ սարքեր
+head -c 16 /dev/urandom | xxd ; cat /dev/zero | head -c 1M > zeros.bin ; echo test > /dev/null
+echo x > /dev/full                       # No space left on device
+sudo losetup -f --show disk.img          # ֆայլը որպես block սարք (Օր 3)
+
+# Module-ներ
+lsmod ; modinfo e1000e ; modinfo -F license snd
+sudo modprobe loop ; sudo modprobe -r loop
+ls /lib/modules/$(uname -r)/kernel/drivers
+sudo dmesg -w                            # դիտիր, ինչ է տպում driver-ը միացնելիս
+
+# /sys
+ls /sys/class ; ls /sys/class/net ; cat /sys/block/sda/size
+cat /sys/class/thermal/thermal_zone*/temp
+cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
+```
+
+## Functions · Ֆունկցիաներ
+
+*Ամփոփում. այս օրվա C/C++ ֆունկցիաները։ Ամբողջական ցանկը [API.md](../API.md)-ում է։*
+
+```c
+#include <fcntl.h>
+#include <unistd.h>
+// Սարքի ֆայլը բացվում և կարդացվում է ինչպես սովորական ֆայլը
+int open(const char *path, int flags);          // O_RDONLY, O_WRONLY, O_RDWR. վերադարձնում է fd
+ssize_t read(int fd, void *buf, size_t count);   // կարդացած բայթերի քանակը, 0՝ EOF
+ssize_t write(int fd, const void *buf, size_t count);
+int close(int fd);
+
+#include <sys/ioctl.h>
+// Սարքին հատուկ հրաման. request-ը driver-ի սահմանած կոդն է
+int ioctl(int fd, unsigned long request, ...);
+
+#include <sys/sysmacros.h>
+// Սարքի համարից (st_rdev) առանձնացնել major-ը և minor-ը
+unsigned int major(dev_t dev);
+unsigned int minor(dev_t dev);
+```
+
+```cpp
+#include <filesystem>
+// C++17. թղթապանակի entry-ների ցիկլ (opendir/readdir-ի փոխարեն, Օր 3)
+for (auto &entry : std::filesystem::directory_iterator("/sys/class/net"))
+    std::cout << entry.path().filename() << '\n';
+```
 
 ## Resources · Աղբյուրներ
 - *Advanced Linux Programming*, Chapter 6 «Devices» և Chapter 7 «The /proc File System». [`docs/linux_book.pdf`](../docs/linux_book.pdf). Նկատի ունեցիր, որ գիրքը 2001 թ. է. `/dev/hda`-ի փոխարեն այսօր `/dev/sda` և `/dev/nvme0n1` է, իսկ `/dev`-ը կառավարում է udev-ը

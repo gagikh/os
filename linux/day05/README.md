@@ -43,62 +43,6 @@
 
 **Checksum (hash)** — Ֆայլի պարունակությունից հաշվված կարճ թիվ (`sha256sum`)։ Եթե ֆայլում փոխվի գեթ մեկ բիթ, checksum-ը ամբողջովին կփոխվի. այդպես ստուգում են, որ ներբեռնված կամ պատճենված արխիվը վնասված չէ։
 
-## Commands · Հրամաններ
-
-*Այսօրվա հրամանները։ Բոլոր օրերի հրամանների ցանկը [COMMANDS.md](../COMMANDS.md)-ում է։*
-
-```bash
-# tar
-tar -cvf project.tar project/            # create, verbose, file
-tar -tvf project.tar                     # list
-tar -xvf project.tar                     # extract ընթացիկ թղթապանակում
-tar -xvf project.tar -C /tmp/restore     # extract այլ թղթապանակում
-tar -czf project.tar.gz project/         # + gzip
-tar -cjf project.tar.bz2 project/        # + bzip2
-tar -cJf project.tar.xz project/         # + xz
-tar --zstd -cf project.tar.zst project/  # + zstd
-tar -xf archive.tar.xz                   # extract-ը ինքն է ճանաչում սեղմումը
-tar -czf src.tar.gz --exclude='*.o' --exclude=build src/
-tar -xf big.tar.gz path/inside/file.txt  # միայն մեկ ֆայլ
-
-# Սեղմում
-gzip file ; gunzip file.gz ; gzip -k -9 file ; gzip -l file.gz
-bzip2 file ; bunzip2 file.bz2
-xz -T0 file ; unxz file.xz               # -T0. բոլոր core-երը
-zstd file ; unzstd file.zst
-zcat f.gz ; zless f.gz ; zgrep error log.gz   # առանց բացելու
-
-# zip (Windows-ի հետ համատեղելի)
-zip -r project.zip project/ ; unzip -l project.zip ; unzip project.zip -d out/
-
-# Ամբողջականություն, բաժանում, ցանցով
-sha256sum project.tar.gz > project.tar.gz.sha256 ; sha256sum -c project.tar.gz.sha256
-split -b 100M big.tar.gz part_ ; cat part_* > big.tar.gz
-tar -czf - project/ | ssh user@host 'tar -xzf - -C /backup'
-```
-
-## Functions · Ֆունկցիաներ
-
-*Այսօրվա C/C++ ֆունկցիաները։ Ամբողջական ցանկը [API.md](../API.md)-ում է։*
-
-```c
-#include <sys/stat.h>
-// Ֆայլի տվյալները header-ի համար. st_mode, st_uid, st_gid, st_size, st_mtime (Օր 3)
-int stat(const char *path, struct stat *st);
-
-#include <pwd.h>
-#include <grp.h>
-// uid → օգտատիրոջ անուն (pw_name), gid → group-ի անուն (gr_name). NULL եթե չկա
-struct passwd *getpwuid(uid_t uid);
-struct group *getgrgid(gid_t gid);
-
-#include <cstdio>
-// Գրել թիվը տողում ֆորմատով. "%07o"՝ 7 նիշանոց octal զրոներով
-int snprintf(char *buf, size_t size, const char *format, ...);
-// Կարդալ թիվը տողից. strtoul(s, nullptr, 8)՝ octal
-unsigned long strtoul(const char *s, char **end, int base);
-```
-
 ---
 
 ## 1. Արխիվ և սեղմում. երկու տարբեր քայլ
@@ -232,6 +176,8 @@ gzip -k photo.jpg && ls -l photo.jpg photo.jpg.gz      # գրեթե նույն �
 
 `gzip`-ը լռելյայն **փոխարինում է** ֆայլը `.gz`-ով՝ պահպանելով իրավունքները և ժամերը։ Մակարդակները՝ `-1` (ամենաարագ) մինչև `-9` (ամենաուժեղ), լռելյայնը `-6` է։ `-k`-ն պահում է սկզբնականը, `-c`-ն գրում է stdout, `-d`-ն բացում է, `-l`-ը ցույց է տալիս սեղմման աստիճանը։
 
+Յուրաքանչյուր գործիք ունի բացող զույգ. `gunzip`, `bunzip2`, `unxz`, `unzstd` (նույնն են, ինչ `gzip -d`, `bzip2 -d` ...)։ `zip`-ը տարբերվում է. այն և՛ արխիվ է, և՛ սեղմում, և բացվում է `unzip`-ով (`unzip -l`-ը միայն ցույց է տալիս ցանկը)։ Սեղմված տեքստը կարելի է կարդալ առանց ֆայլը բացելու. `zcat`, `zless`, `zgrep`։
+
 Ինքդ համեմատիր.
 
 ```bash
@@ -266,6 +212,62 @@ cat big.tar.gz.part_* > big.tar.gz
 ```
 
 ---
+
+## Commands · Հրամաններ
+
+*Ամփոփում. այս օրվա հրամանները, որոնք բացատրված են վերևում։ Անգիր անել պետք չէ. վերադարձիր այստեղ, երբ մոռանաս գրելաձևը։ Բոլոր օրերի հրամանների ցանկը [COMMANDS.md](../COMMANDS.md)-ում է։*
+
+```bash
+# tar
+tar -cvf project.tar project/            # create, verbose, file
+tar -tvf project.tar                     # list
+tar -xvf project.tar                     # extract ընթացիկ թղթապանակում
+tar -xvf project.tar -C /tmp/restore     # extract այլ թղթապանակում
+tar -czf project.tar.gz project/         # + gzip
+tar -cjf project.tar.bz2 project/        # + bzip2
+tar -cJf project.tar.xz project/         # + xz
+tar --zstd -cf project.tar.zst project/  # + zstd
+tar -xf archive.tar.xz                   # extract-ը ինքն է ճանաչում սեղմումը
+tar -czf src.tar.gz --exclude='*.o' --exclude=build src/
+tar -xf big.tar.gz path/inside/file.txt  # միայն մեկ ֆայլ
+
+# Սեղմում
+gzip file ; gunzip file.gz ; gzip -k -9 file ; gzip -l file.gz
+bzip2 file ; bunzip2 file.bz2
+xz -T0 file ; unxz file.xz               # -T0. բոլոր core-երը
+zstd file ; unzstd file.zst
+zcat f.gz ; zless f.gz ; zgrep error log.gz   # առանց բացելու
+
+# zip (Windows-ի հետ համատեղելի)
+zip -r project.zip project/ ; unzip -l project.zip ; unzip project.zip -d out/
+
+# Ամբողջականություն, բաժանում, ցանցով
+sha256sum project.tar.gz > project.tar.gz.sha256 ; sha256sum -c project.tar.gz.sha256
+split -b 100M big.tar.gz part_ ; cat part_* > big.tar.gz
+tar -czf - project/ | ssh user@host 'tar -xzf - -C /backup'
+```
+
+## Functions · Ֆունկցիաներ
+
+*Ամփոփում. այս օրվա C/C++ ֆունկցիաները։ Ամբողջական ցանկը [API.md](../API.md)-ում է։*
+
+```c
+#include <sys/stat.h>
+// Ֆայլի տվյալները header-ի համար. st_mode, st_uid, st_gid, st_size, st_mtime (Օր 3)
+int stat(const char *path, struct stat *st);
+
+#include <pwd.h>
+#include <grp.h>
+// uid → օգտատիրոջ անուն (pw_name), gid → group-ի անուն (gr_name). NULL եթե չկա
+struct passwd *getpwuid(uid_t uid);
+struct group *getgrgid(gid_t gid);
+
+#include <cstdio>
+// Գրել թիվը տողում ֆորմատով. "%07o"՝ 7 նիշանոց octal զրոներով
+int snprintf(char *buf, size_t size, const char *format, ...);
+// Կարդալ թիվը տողից. strtoul(s, nullptr, 8)՝ octal
+unsigned long strtoul(const char *s, char **end, int base);
+```
 
 ## Resources · Աղբյուրներ
 - [GNU tar manual](https://www.gnu.org/software/tar/manual/), մասնավորապես [Basic tar Format](https://www.gnu.org/software/tar/manual/html_node/Standard.html). ustar header-ի դաշտերը, checksum-ը, block-երը

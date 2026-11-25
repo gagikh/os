@@ -50,70 +50,6 @@
 
 **Least privilege** — Անվտանգության սկզբունք. ծրագիրը և օգտատերը պետք է ունենան միայն այն իրավունքները, որոնք անհրաժեշտ են աշխատանքի համար, և ոչ ավելին։
 
-## Commands · Հրամաններ
-
-*Այսօրվա հրամանները։ Բոլոր օրերի հրամանների ցանկը [COMMANDS.md](../COMMANDS.md)-ում է։*
-
-```bash
-# Ով եմ ես
-id ; whoami ; groups ; id anna
-getent passwd student ; getent group sudo
-
-# Օգտատերեր և group-եր (root-ի իրավունքներով)
-sudo adduser anna                   # ինտերակտիվ (Debian/Ubuntu)
-sudo useradd -m -s /bin/bash aram   # ցածր մակարդակի տարբերակ
-sudo passwd aram
-sudo groupadd lab ; sudo usermod -aG lab anna ; sudo gpasswd -d anna lab
-sudo deluser --remove-home aram
-sudo -i ; sudo -u anna whoami ; su - anna
-sudo visudo                         # խմբագրել /etc/sudoers-ը անվտանգ
-
-# Իրավունքներ
-ls -l f ; ls -ld dir ; stat -c '%A %a %U %G' f
-chmod u+x f ; chmod g-w,o-r f ; chmod a+r f ; chmod 640 f ; chmod -R g+rX dir
-sudo chown anna f ; sudo chown anna:lab f ; chgrp lab f
-umask ; umask 027
-
-# Հատուկ բիթեր
-ls -l /usr/bin/passwd ; ls -ld /tmp
-chmod u+s prog ; chmod g+s shared/ ; chmod +t public/ ; chmod 2775 shared/
-find / -perm -4000 -type f 2>/dev/null       # բոլոր setuid ծրագրերը
-find / -perm -o+w -type f 2>/dev/null        # ֆայլեր, որտեղ բոլորը կարող են գրել
-
-# Լրացուցիչ
-getfacl f ; setfacl -m u:anna:r f            # ACL. իրավունքներ կոնկրետ օգտատիրոջ համար
-getcap /usr/bin/ping                         # capabilities. root-ի իրավունքների մի մասը
-last ; lastlog ; sudo tail /var/log/auth.log # ով և երբ է մուտք գործել
-```
-
-## Functions · Ֆունկցիաներ
-
-*Այսօրվա C ֆունկցիաները։ Ամբողջական ցանկը [API.md](../API.md)-ում է։*
-
-```c
-#include <unistd.h>
-uid_t getuid(void);   uid_t geteuid(void);    // real / effective UID. միշտ հաջող են
-gid_t getgid(void);   gid_t getegid(void);    // real / effective GID
-// Լրացուցիչ group-երը. վերադարձնում է քանակը. size = 0-ով՝ միայն քանակը
-int getgroups(int size, gid_t list[]);
-// Ստուգել իրավունքը real UID-ով. mode = R_OK | W_OK | X_OK կամ F_OK (գոյություն). 0 կամ -1
-int access(const char *path, int mode);
-// Փոխել real և effective UID-ը (միայն root-ը կամ setuid ծրագիրը՝ սահմանափակ)
-int setreuid(uid_t ruid, uid_t euid);
-int chown(const char *path, uid_t owner, gid_t group);
-
-#include <sys/stat.h>
-int chmod(const char *path, mode_t mode);     // mode = S_IRUSR | S_IWUSR | ... կամ 0644
-mode_t umask(mode_t mask);                    // նոր դիմակ, վերադարձնում է հինը
-// st_mode-ի բիթերը. S_IRUSR S_IWUSR S_IXUSR (owner), S_IRGRP ... (group),
-// S_IROTH ... (other), S_ISUID (setuid), S_ISGID (setgid), S_ISVTX (sticky)
-
-#include <pwd.h>
-#include <grp.h>
-struct passwd *getpwnam(const char *name);    // անուն → UID, GID, home, shell
-struct group *getgrgid(gid_t gid);            // GID → անուն և անդամներ
-```
-
 ---
 
 ## 1. Օգտատերեր և group-եր
@@ -124,6 +60,8 @@ Linux-ը multiuser համակարգ է (Օր 1)։ Յուրաքանչյուր օ�
 id
 # uid=1000(student) gid=1000(student) groups=1000(student),4(adm),27(sudo),20(dialout)
 ```
+
+`whoami`-ն տպում է միայն անունը, `id anna`-ն՝ այլ օգտատիրոջ տվյալները։
 
 `gid`-ը process-ի ընթացիկ (հիմնական) group-ն է, `groups`-ը՝ բոլոր group-երը, որոնց անդամ է օգտատերը։
 
@@ -141,6 +79,8 @@ sudo grep student /etc/shadow
 grep lab /etc/group
 # lab:x:1001:anna,aram                                ← group-ի անդամները
 ```
+
+Ֆայլերը կարդալու փոխարեն ավելի ճիշտ է հարցնել `getent`-ին. `getent passwd student`, `getent group sudo`։ Այն գտնում է օգտատիրոջը, նույնիսկ եթե նա `/etc/passwd`-ում չէ, այլ, օրինակ, համալսարանի LDAP սերվերում։
 
 | UID | Ով |
 |---|---|
@@ -162,6 +102,8 @@ sudo usermod -L anna                 # արգելափակել
 sudo deluser --remove-home anna      # ջնջել
 ```
 
+`adduser`-ը Debian/Ubuntu-ի հարմար script-ն է։ Նրա տակ աշխատում է ցածր մակարդակի `useradd`-ը, որը կա բոլոր distribution-ներում, բայց առանց option-ների չի ստեղծում home թղթապանակ. `sudo useradd -m -s /bin/bash aram`։ Group-ից հեռացնել՝ `sudo gpasswd -d anna lab`։
+
 Group-ի փոփոխությունը կիրառվում է **հաջորդ մուտքից**. արդեն աշխատող process-ները պահում են հին group-երը (կամ `newgrp lab` նույն terminal-ում)։
 
 **`sudo` և `su`**.
@@ -172,6 +114,8 @@ Group-ի փոփոխությունը կիրառվում է **հաջորդ մու�
 | Գաղտնաբառը | **Քո**ը | **root**-ինը |
 | Ով կարող է | Ով նշված է `/etc/sudoers`-ում (Ubuntu-ում՝ `sudo` group-ը) | Ով գիտի root-ի գաղտնաբառը |
 | Log | Ամեն հրաման գրանցվում է (`/var/log/auth.log`) | Միայն մուտքը |
+
+Ով և երբ է մուտք գործել. `last` (վերջին մուտքերը), `lastlog` (յուրաքանչյուր օգտատիրոջ վերջին մուտքը), իսկ `sudo`-ի բոլոր հրամանները՝ `sudo tail /var/log/auth.log`-ում։
 
 `/etc/sudoers`-ը խմբագրիր միայն `sudo visudo`-ով. այն ստուգում է syntax-ը պահելուց առաջ. սխալ ֆայլը կարող է զրկել քեզ `sudo`-ից ընդհանրապես։
 
@@ -228,6 +172,8 @@ chmod -R g+rX project/         # ռեկուրսիվ. X-ը x է տալիս միա
 | `755` | `rwxr-xr-x` | Ծրագիր, թղթապանակ |
 | `700` | `rwx------` | Անձնական թղթապանակ. `~/.ssh` |
 | `775` | `rwxrwxr-x` | Թիմի ընդհանուր թղթապանակ |
+
+Ստուգել արդյունքը կարելի է երկու ձևով միանգամից. `stat -c '%A %a %U %G' secret.txt` տպում է `-rw-r----- 640 anna lab`. symbolic, octal, owner և group։
 
 **Owner-ի փոփոխություն** կարող է անել միայն `root`-ը (այլապես օգտատերը կարող էր «նվիրել» ֆայլեր ուրիշներին և խաբել disk quota-ն).
 
@@ -322,7 +268,7 @@ find / -nouser 2>/dev/null                      # ֆայլեր առանց գոյ
 
 **Link-եր և `/tmp`.** Եթե root-ով աշխատող ծրագիրը գրում է `/tmp/report.txt`-ում, հարձակվողը կարող է նախապես ստեղծել `/tmp/report.txt` անունով symlink դեպի `/etc/passwd`, և ծրագիրը կվերագրի այն։ Լուծումը՝ `mkstemp` (Օր 2) և `O_EXCL`, իսկ ժամանակակից kernel-ները ունեն `fs.protected_symlinks` պաշտպանություն։
 
-**ACL և capabilities.** Եթե `rwx`-ի երեք դասը բավական չէ, կարելի է տալ իրավունքներ կոնկրետ օգտատիրոջ՝ **ACL**-ով (`setfacl -m u:anna:r file`)։ Եթե ծրագրին պետք է root-ի իրավունքների մի փոքր մասը (օրինակ՝ `ping`-ին՝ raw socket-ներ), setuid-ի փոխարեն տալիս են **capability** (`getcap /usr/bin/ping`)։
+**ACL և capabilities.** Եթե `rwx`-ի երեք դասը բավական չէ, կարելի է տալ իրավունքներ կոնկրետ օգտատիրոջ՝ **ACL**-ով (`setfacl -m u:anna:r file`, իսկ `getfacl file`-ը ցույց է տալիս դրանք. ACL ունեցող ֆայլի `ls -l`-ում իրավունքներից հետո երևում է `+`)։ Եթե ծրագրին պետք է root-ի իրավունքների մի փոքր մասը (օրինակ՝ `ping`-ին՝ raw socket-ներ), setuid-ի փոխարեն տալիս են **capability** (`getcap /usr/bin/ping`)։
 
 ## 8. Տիպիկ անվտանգության անցքեր ծրագրերում
 
@@ -333,6 +279,70 @@ ALP-ի 10.6 բաժինը թվարկում է սխալներ, որոնք հատկ
 - **`system()` և `popen()` օգտատիրոջ մուտքով**. `system("grep " + word + " dict")`-ը, երբ `word = "x; rm -rf ~"`, կկատարի երկրորդ հրամանը (**command injection**)։ Օգտագործիր `fork` + `exec` (Օր 10) առանց shell-ի։
 
 ---
+
+## Commands · Հրամաններ
+
+*Ամփոփում. այս օրվա հրամանները, որոնք բացատրված են վերևում։ Անգիր անել պետք չէ. վերադարձիր այստեղ, երբ մոռանաս գրելաձևը։ Բոլոր օրերի հրամանների ցանկը [COMMANDS.md](../COMMANDS.md)-ում է։*
+
+```bash
+# Ով եմ ես
+id ; whoami ; groups ; id anna
+getent passwd student ; getent group sudo
+
+# Օգտատերեր և group-եր (root-ի իրավունքներով)
+sudo adduser anna                   # ինտերակտիվ (Debian/Ubuntu)
+sudo useradd -m -s /bin/bash aram   # ցածր մակարդակի տարբերակ
+sudo passwd aram
+sudo groupadd lab ; sudo usermod -aG lab anna ; sudo gpasswd -d anna lab
+sudo deluser --remove-home aram
+sudo -i ; sudo -u anna whoami ; su - anna
+sudo visudo                         # խմբագրել /etc/sudoers-ը անվտանգ
+
+# Իրավունքներ
+ls -l f ; ls -ld dir ; stat -c '%A %a %U %G' f
+chmod u+x f ; chmod g-w,o-r f ; chmod a+r f ; chmod 640 f ; chmod -R g+rX dir
+sudo chown anna f ; sudo chown anna:lab f ; chgrp lab f
+umask ; umask 027
+
+# Հատուկ բիթեր
+ls -l /usr/bin/passwd ; ls -ld /tmp
+chmod u+s prog ; chmod g+s shared/ ; chmod +t public/ ; chmod 2775 shared/
+find / -perm -4000 -type f 2>/dev/null       # բոլոր setuid ծրագրերը
+find / -perm -o+w -type f 2>/dev/null        # ֆայլեր, որտեղ բոլորը կարող են գրել
+
+# Լրացուցիչ
+getfacl f ; setfacl -m u:anna:r f            # ACL. իրավունքներ կոնկրետ օգտատիրոջ համար
+getcap /usr/bin/ping                         # capabilities. root-ի իրավունքների մի մասը
+last ; lastlog ; sudo tail /var/log/auth.log # ով և երբ է մուտք գործել
+```
+
+## Functions · Ֆունկցիաներ
+
+*Ամփոփում. այս օրվա C/C++ ֆունկցիաները։ Ամբողջական ցանկը [API.md](../API.md)-ում է։*
+
+```c
+#include <unistd.h>
+uid_t getuid(void);   uid_t geteuid(void);    // real / effective UID. միշտ հաջող են
+gid_t getgid(void);   gid_t getegid(void);    // real / effective GID
+// Լրացուցիչ group-երը. վերադարձնում է քանակը. size = 0-ով՝ միայն քանակը
+int getgroups(int size, gid_t list[]);
+// Ստուգել իրավունքը real UID-ով. mode = R_OK | W_OK | X_OK կամ F_OK (գոյություն). 0 կամ -1
+int access(const char *path, int mode);
+// Փոխել real և effective UID-ը (միայն root-ը կամ setuid ծրագիրը՝ սահմանափակ)
+int setreuid(uid_t ruid, uid_t euid);
+int chown(const char *path, uid_t owner, gid_t group);
+
+#include <sys/stat.h>
+int chmod(const char *path, mode_t mode);     // mode = S_IRUSR | S_IWUSR | ... կամ 0644
+mode_t umask(mode_t mask);                    // նոր դիմակ, վերադարձնում է հինը
+// st_mode-ի բիթերը. S_IRUSR S_IWUSR S_IXUSR (owner), S_IRGRP ... (group),
+// S_IROTH ... (other), S_ISUID (setuid), S_ISGID (setgid), S_ISVTX (sticky)
+
+#include <pwd.h>
+#include <grp.h>
+struct passwd *getpwnam(const char *name);    // անուն → UID, GID, home, shell
+struct group *getgrgid(gid_t gid);            // GID → անուն և անդամներ
+```
 
 ## Resources · Աղբյուրներ
 - *Advanced Linux Programming*, Mitchell, Oldham, Samuel. Chapter 10 «Security». [`docs/linux_book.pdf`](../docs/linux_book.pdf)

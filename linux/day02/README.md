@@ -47,96 +47,6 @@
 
 **Temporary file** — Ֆայլ՝ տվյալները կարճ ժամանակով պահելու համար, սովորաբար `/tmp`-ում։ Անունը պետք է լինի եզակի և անկանխատեսելի, իրավունքները՝ միայն owner-ի համար. դա ապահովում են `mktemp` հրամանը և `mkstemp()` ֆունկցիան։
 
-## Commands · Հրամաններ
-
-*Այսօրվա հրամանները։ Բոլոր օրերի հրամանների ցանկը [COMMANDS.md](../COMMANDS.md)-ում է։*
-
-```bash
-# Ստանդարտ հոսքեր և redirection
-ls / /nothing                       # stdout և stderr միասին terminal-ում
-ls / /nothing > out.txt             # stdout՝ ֆայլ, stderr՝ terminal
-ls / /nothing 2> err.txt            # stderr՝ ֆայլ
-ls / /nothing > all.txt 2>&1        # երկուսն էլ ֆայլ (հերթականությունը կարևոր է)
-ls / /nothing 2>&1 | less           # երկուսն էլ pipe
-wc -l < /etc/passwd                 # stdin ֆայլից
-
-# Exit status
-ls / ; echo $?                      # 0
-ls /nothing ; echo $?               # 2
-mkdir d && cd d                     # cd միայն եթե mkdir-ը հաջողվեց
-cd /nothing || echo "no such dir"   # echo միայն եթե cd-ն ձախողվեց
-! false ; echo $?                   # 0. ! շրջում է արդյունքը
-true ; false                        # հրամաններ, որոնք միայն 0 կամ 1 են վերադարձնում
-
-# Փոփոխականներ և environment
-x=10 ; echo $x                      # shell variable. = նշանի շուրջ բացատ չի կարելի
-export x                            # դարձնել environment variable
-export EDITOR=nano                  # ստեղծել և export անել միանգամից
-env ; printenv HOME                 # environment-ը / մեկ փոփոխական
-set | less                          # բոլոր փոփոխականները՝ նաև shell-ինը
-unset x                             # ջնջել
-LANG=C ls /nothing                  # փոփոխականը միայն այս հրամանի համար
-echo $PATH | tr ':' '\n'            # PATH-ը՝ տող առ տող
-type cd ls                          # built-in է, թե ծրագիր
-
-# Ժամանակավոր ֆայլեր
-f=$(mktemp) ; echo $f ; rm $f       # /tmp/tmp.k3J9xQ2aBc
-
-# Համակարգի մասին
-who ; tty ; last | head             # ով է մուտք գործել, իմ terminal-ը, մուտքերի պատմությունը
-arch ; uname -m                     # architecture
-stat /etc/passwd                    # ֆայլի մանրամասները՝ inode, չափ, ժամեր
-du -sh ~ ; df -h /                  # թղթապանակի չափը, սկավառակի ազատ տեղը
-vmstat 1 5                          # հիշողություն, CPU, I/O. 5 անգամ, ամեն վայրկյան
-lsof -p $$ | head                   # shell-ի բաց ֆայլերը
-sudo dmesg | tail                   # kernel-ի հաղորդագրությունները
-strace -c ls > /dev/null            # ինչ system call-եր արեց ls-ը և քանի անգամ
-strace -e trace=openat cat /etc/hostname   # միայն ֆայլերի բացումը
-ltrace -c ls > /dev/null            # գրադարանային ֆունկցիաների կանչերը
-kill -l                             # signal-ների ցանկը
-write student pts/1 ; mesg n        # հաղորդագրություն ուրիշի terminal-ին / արգելել
-```
-
-## Functions · Ֆունկցիաներ
-
-*Այսօրվա C/C++ ֆունկցիաները։ Ամբողջական ցանկը [API.md](../API.md)-ում է։*
-
-```c
-// Ծրագրի մուտքի կետը. argc՝ argument-ների քանակը (ներառյալ ծրագրի անունը),
-// argv՝ argc հատ տող, argv[argc] == NULL
-int main(int argc, char *argv[]);
-
-#include <getopt.h>
-// Մեկ կանչ՝ մեկ option. վերադարձնում է option-ի կարճ տառը, '?' անհայտ option-ի դեպքում,
-// -1 երբ option-ները վերջացան։ optarg՝ option-ի argument-ը, optind՝ առաջին ոչ-option-ի ինդեքսը
-int getopt_long(int argc, char *const argv[], const char *optstring,
-                const struct option *longopts, int *longindex);
-
-#include <stdlib.h>
-// Environment variable-ի արժեքը, կամ NULL եթե այն չկա
-char *getenv(const char *name);
-// Ստեղծել կամ փոխել (overwrite != 0) / ջնջել environment variable. 0 կամ -1
-int setenv(const char *name, const char *value, int overwrite);
-int unsetenv(const char *name);
-// Ավարտել ծրագիրը status կոդով. stdout-ի buffer-ները դատարկվում են
-void exit(int status);
-// Ստեղծել և բացել եզակի ժամանակավոր ֆայլ. template-ը պետք է ավարտվի "XXXXXX"-ով.
-// վերադարձնում է file descriptor կամ -1
-int mkstemp(char *template);
-
-#include <unistd.h>
-// NULL-ով ավարտվող "NAME=value" տողերի զանգված. ամբողջ environment-ը
-extern char **environ;
-// Ջնջել ֆայլի անունը. ֆայլը վերանում է, երբ այն այլևս ոչ ոք բաց չի պահում
-int unlink(const char *pathname);
-
-#include <stdio.h>
-// Տպել ընտրված հոսքում. stderr՝ սխալների համար
-int fprintf(FILE *stream, const char *format, ...);
-// Դատարկել stdout-ի buffer-ը հիմա
-int fflush(FILE *stream);
-```
-
 ---
 
 ## 1. Ի՞նչ է ստանում ծրագիրը գործարկվելիս
@@ -241,6 +151,13 @@ ls / /nothing &> all.txt        # նույնը, bash-ի կարճ ձևը
 ls / /nothing > all.txt 2>&1    # նախ 1 → ֆայլ, հետո 2 → ուր 1-ն է (ֆայլ)։ Երկուսն էլ ֆայլում են
 ls / /nothing 2>&1 > all.txt    # նախ 2 → ուր 1-ն է (terminal), հետո 1 → ֆայլ։ Սխալը terminal-ում է
 ls / /nothing 2>&1 | less       # pipe-ի դեպքում 2>&1-ը գրվում է |-ից առաջ
+```
+
+`<`-ը նույն ձևով փոխում է fd 0-ն. ծրագիրը կարդում է ֆայլը՝ կարծելով, թե կարդում է ստեղնաշարից։ Օրինակ՝ `wc`-ը (word count) հաշվում է տողերը (`-l`), բառերը (`-w`) և բայթերը (`-c`).
+
+```bash
+wc -l /etc/passwd          # 42 /etc/passwd. wc-ը ինքն է բացում ֆայլը և գիտի նրա անունը
+wc -l < /etc/passwd        # 42. ֆայլը բացում է shell-ը, wc-ը տեսնում է միայն stdin-ը
 ```
 
 ### Buffering
@@ -458,6 +375,7 @@ mesg n              # արգելել ուրիշներին գրել իմ terminal
 | Սկավառակների ազատ տեղը | `df -h` | |
 | Բաց ֆայլեր | `lsof -p PID`, `lsof file` | ով է պահում ֆայլը բաց |
 | Kernel-ի հաղորդագրություններ | `dmesg`, `journalctl -k` | կարող է պահանջել `sudo` |
+| Ֆայլի վերջը | `tail file`, `tail -n 20 file`, `tail -f log` | վերջին 10 (20) տողը. `-f`՝ շարունակել տպել նոր տողերը. `sudo dmesg \| tail`՝ kernel-ի վերջին հաղորդագրությունները |
 | Signal-ներ | `kill -l` | Օր 8 |
 
 ### `strace`. ինչ է իրականում անում ծրագիրը
@@ -475,6 +393,96 @@ ltrace -c ls > /dev/null                     # գրադարանային ֆուն
 Երբ ծրագիրը «լուռ» չի աշխատում, `strace`-ը հաճախ միանգամից ցույց է տալիս պատճառը. `openat(... "config.txt" ...) = -1 ENOENT (No such file or directory)`։
 
 ---
+
+## Commands · Հրամաններ
+
+*Ամփոփում. այս օրվա հրամանները, որոնք բացատրված են վերևում։ Անգիր անել պետք չէ. վերադարձիր այստեղ, երբ մոռանաս գրելաձևը։ Բոլոր օրերի հրամանների ցանկը [COMMANDS.md](../COMMANDS.md)-ում է։*
+
+```bash
+# Ստանդարտ հոսքեր և redirection
+ls / /nothing                       # stdout և stderr միասին terminal-ում
+ls / /nothing > out.txt             # stdout՝ ֆայլ, stderr՝ terminal
+ls / /nothing 2> err.txt            # stderr՝ ֆայլ
+ls / /nothing > all.txt 2>&1        # երկուսն էլ ֆայլ (հերթականությունը կարևոր է)
+ls / /nothing 2>&1 | less           # երկուսն էլ pipe
+wc -l < /etc/passwd                 # stdin ֆայլից
+
+# Exit status
+ls / ; echo $?                      # 0
+ls /nothing ; echo $?               # 2
+mkdir d && cd d                     # cd միայն եթե mkdir-ը հաջողվեց
+cd /nothing || echo "no such dir"   # echo միայն եթե cd-ն ձախողվեց
+! false ; echo $?                   # 0. ! շրջում է արդյունքը
+true ; false                        # հրամաններ, որոնք միայն 0 կամ 1 են վերադարձնում
+
+# Փոփոխականներ և environment
+x=10 ; echo $x                      # shell variable. = նշանի շուրջ բացատ չի կարելի
+export x                            # դարձնել environment variable
+export EDITOR=nano                  # ստեղծել և export անել միանգամից
+env ; printenv HOME                 # environment-ը / մեկ փոփոխական
+set | less                          # բոլոր փոփոխականները՝ նաև shell-ինը
+unset x                             # ջնջել
+LANG=C ls /nothing                  # փոփոխականը միայն այս հրամանի համար
+echo $PATH | tr ':' '\n'            # PATH-ը՝ տող առ տող
+type cd ls                          # built-in է, թե ծրագիր
+
+# Ժամանակավոր ֆայլեր
+f=$(mktemp) ; echo $f ; rm $f       # /tmp/tmp.k3J9xQ2aBc
+
+# Համակարգի մասին
+who ; tty ; last | head             # ով է մուտք գործել, իմ terminal-ը, մուտքերի պատմությունը
+arch ; uname -m                     # architecture
+stat /etc/passwd                    # ֆայլի մանրամասները՝ inode, չափ, ժամեր
+du -sh ~ ; df -h /                  # թղթապանակի չափը, սկավառակի ազատ տեղը
+vmstat 1 5                          # հիշողություն, CPU, I/O. 5 անգամ, ամեն վայրկյան
+lsof -p $$ | head                   # shell-ի բաց ֆայլերը
+sudo dmesg | tail                   # kernel-ի հաղորդագրությունները
+strace -c ls > /dev/null            # ինչ system call-եր արեց ls-ը և քանի անգամ
+strace -e trace=openat cat /etc/hostname   # միայն ֆայլերի բացումը
+ltrace -c ls > /dev/null            # գրադարանային ֆունկցիաների կանչերը
+kill -l                             # signal-ների ցանկը
+write student pts/1 ; mesg n        # հաղորդագրություն ուրիշի terminal-ին / արգելել
+```
+
+## Functions · Ֆունկցիաներ
+
+*Ամփոփում. այս օրվա C/C++ ֆունկցիաները։ Ամբողջական ցանկը [API.md](../API.md)-ում է։*
+
+```c
+// Ծրագրի մուտքի կետը. argc՝ argument-ների քանակը (ներառյալ ծրագրի անունը),
+// argv՝ argc հատ տող, argv[argc] == NULL
+int main(int argc, char *argv[]);
+
+#include <getopt.h>
+// Մեկ կանչ՝ մեկ option. վերադարձնում է option-ի կարճ տառը, '?' անհայտ option-ի դեպքում,
+// -1 երբ option-ները վերջացան։ optarg՝ option-ի argument-ը, optind՝ առաջին ոչ-option-ի ինդեքսը
+int getopt_long(int argc, char *const argv[], const char *optstring,
+                const struct option *longopts, int *longindex);
+
+#include <stdlib.h>
+// Environment variable-ի արժեքը, կամ NULL եթե այն չկա
+char *getenv(const char *name);
+// Ստեղծել կամ փոխել (overwrite != 0) / ջնջել environment variable. 0 կամ -1
+int setenv(const char *name, const char *value, int overwrite);
+int unsetenv(const char *name);
+// Ավարտել ծրագիրը status կոդով. stdout-ի buffer-ները դատարկվում են
+void exit(int status);
+// Ստեղծել և բացել եզակի ժամանակավոր ֆայլ. template-ը պետք է ավարտվի "XXXXXX"-ով.
+// վերադարձնում է file descriptor կամ -1
+int mkstemp(char *template);
+
+#include <unistd.h>
+// NULL-ով ավարտվող "NAME=value" տողերի զանգված. ամբողջ environment-ը
+extern char **environ;
+// Ջնջել ֆայլի անունը. ֆայլը վերանում է, երբ այն այլևս ոչ ոք բաց չի պահում
+int unlink(const char *pathname);
+
+#include <stdio.h>
+// Տպել ընտրված հոսքում. stderr՝ սխալների համար
+int fprintf(FILE *stream, const char *format, ...);
+// Դատարկել stdout-ի buffer-ը հիմա
+int fflush(FILE *stream);
+```
 
 ## Resources · Աղբյուրներ
 - *Advanced Linux Programming*, Mitchell, Oldham, Samuel. Chapter 2.1 «Interaction With the Execution Environment» և 2.2 «Coding Defensively». գիրքը կա ռեպոզիտորիայում՝ [`docs/linux_book.pdf`](../docs/linux_book.pdf) (Open Publication License)

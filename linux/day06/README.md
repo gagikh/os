@@ -48,52 +48,6 @@
 
 **`set -euo pipefail`** — Script-ը դարձնում է խիստ. `-e`՝ կանգնել առաջին սխալի վրա, `-u`՝ չսահմանված փոփոխականը սխալ է, `-o pipefail`՝ pipeline-ը ձախողված է, եթե ձախողվել է նրա ցանկացած հրաման։
 
-## Commands · Հրամաններ
-
-*Այսօրվա հրամանները։ Բոլոր օրերի հրամանների ցանկը [COMMANDS.md](../COMMANDS.md)-ում է։*
-
-```bash
-# Գործարկել
-chmod +x script.sh && ./script.sh arg1 arg2
-bash script.sh ; source script.sh ; . script.sh
-bash -x script.sh                       # տպել ամեն հրամանը կատարելուց առաջ
-bash -n script.sh                       # միայն ստուգել syntax-ը
-shellcheck script.sh                    # գտնել տիպիկ սխալները (sudo apt install shellcheck)
-
-# Փոփոխականներ և expansion
-name="Linux" ; echo "Hello, ${name}!"
-echo "${1:-default}" "${#name}" "${name,,}" "${name^^}"
-f=photo.tar.gz ; echo "${f##*.}" "${f#*.}" "${f%.*}" "${f%%.*}"   # gz tar.gz photo.tar photo
-echo "${f/photo/image}"                 # image.tar.gz
-n=$(ls | wc -l) ; echo $(( n * 2 + 1 ))
-arr=(a b "c d") ; echo "${arr[1]}" "${#arr[@]}" ; for x in "${arr[@]}"; do echo "$x"; done
-declare -A count ; count[jpg]=3 ; echo "${!count[@]}" "${count[jpg]}"
-read -r -p "Your name: " user
-
-# Պայմաններ և ցիկլեր
-[ -f file ] && echo exists ; [[ $s == *.txt ]] ; (( x > 5 ))
-for f in *.txt; do echo "$f"; done
-for ((i = 0; i < 10; i++)); do echo $i; done ; for i in {1..10}; do :; done
-while IFS= read -r line; do echo "$line"; done < file.txt
-case "$ext" in jpg|png) echo image ;; *) echo other ;; esac
-```
-
-## Functions · Ֆունկցիաներ
-
-*Այսօր C ֆունկցիաներ չկան. bash-ի ներքին հրամանները, որոնք script-երում փոխարինում են դրանց. Ամբողջական ցանկը [API.md](../API.md)-ում է։*
-
-```bash
-getopts "nvh" opt        # option-ների մշակում, ինչպես C-ի getopt-ը (Օր 2). OPTARG, OPTIND
-shift [N]                # տեղաշարժել positional parameter-ները ձախ
-local var=value          # ֆունկցիայի տեղային փոփոխական
-return [N]               # ֆունկցիայի exit status
-exit [N]                 # script-ի exit status
-trap 'commands' EXIT INT TERM   # կատարել ավարտվելիս / signal ստանալիս
-shopt -s nullglob        # *.txt-ը, եթե ֆայլ չկա, դառնում է դատարկ, ոչ թե բառացի "*.txt"
-declare -A map           # associative array (dictionary)
-printf '%-10s %5d\n' "$name" "$n"   # ֆորմատավորված տպում, ինչպես C-ում
-```
-
 ---
 
 ## 1. Առաջին script-ը
@@ -346,6 +300,52 @@ shellcheck script.sh     # ստատիկ վերլուծություն. գտնու
 `shellcheck`-ը ամենաօգտակար գործիքն է bash սովորողի համար. գործարկիր այն ամեն script-ի վրա։
 
 ---
+
+## Commands · Հրամաններ
+
+*Ամփոփում. այս օրվա հրամանները, որոնք բացատրված են վերևում։ Անգիր անել պետք չէ. վերադարձիր այստեղ, երբ մոռանաս գրելաձևը։ Բոլոր օրերի հրամանների ցանկը [COMMANDS.md](../COMMANDS.md)-ում է։*
+
+```bash
+# Գործարկել
+chmod +x script.sh && ./script.sh arg1 arg2
+bash script.sh ; source script.sh ; . script.sh
+bash -x script.sh                       # տպել ամեն հրամանը կատարելուց առաջ
+bash -n script.sh                       # միայն ստուգել syntax-ը
+shellcheck script.sh                    # գտնել տիպիկ սխալները (sudo apt install shellcheck)
+
+# Փոփոխականներ և expansion
+name="Linux" ; echo "Hello, ${name}!"
+echo "${1:-default}" "${#name}" "${name,,}" "${name^^}"
+f=photo.tar.gz ; echo "${f##*.}" "${f#*.}" "${f%.*}" "${f%%.*}"   # gz tar.gz photo.tar photo
+echo "${f/photo/image}"                 # image.tar.gz
+n=$(ls | wc -l) ; echo $(( n * 2 + 1 ))
+arr=(a b "c d") ; echo "${arr[1]}" "${#arr[@]}" ; for x in "${arr[@]}"; do echo "$x"; done
+declare -A count ; count[jpg]=3 ; echo "${!count[@]}" "${count[jpg]}"
+read -r -p "Your name: " user
+
+# Պայմաններ և ցիկլեր
+[ -f file ] && echo exists ; [[ $s == *.txt ]] ; (( x > 5 ))
+for f in *.txt; do echo "$f"; done
+for ((i = 0; i < 10; i++)); do echo $i; done ; for i in {1..10}; do :; done
+while IFS= read -r line; do echo "$line"; done < file.txt
+case "$ext" in jpg|png) echo image ;; *) echo other ;; esac
+```
+
+## Functions · Ֆունկցիաներ
+
+*Այսօր C ֆունկցիաներ չկան. bash-ի ներքին հրամանները, որոնք script-երում փոխարինում են դրանց. Ամբողջական ցանկը [API.md](../API.md)-ում է։*
+
+```bash
+getopts "nvh" opt        # option-ների մշակում, ինչպես C-ի getopt-ը (Օր 2). OPTARG, OPTIND
+shift [N]                # տեղաշարժել positional parameter-ները ձախ
+local var=value          # ֆունկցիայի տեղային փոփոխական
+return [N]               # ֆունկցիայի exit status
+exit [N]                 # script-ի exit status
+trap 'commands' EXIT INT TERM   # կատարել ավարտվելիս / signal ստանալիս
+shopt -s nullglob        # *.txt-ը, եթե ֆայլ չկա, դառնում է դատարկ, ոչ թե բառացի "*.txt"
+declare -A map           # associative array (dictionary)
+printf '%-10s %5d\n' "$name" "$n"   # ֆորմատավորված տպում, ինչպես C-ում
+```
 
 ## Resources · Աղբյուրներ
 - [Advanced Bash-Scripting Guide](https://tldp.org/LDP/abs/html/), TLDP. [Loops](https://tldp.org/LDP/abs/html/loops1.html), [Test Constructs](https://tldp.org/LDP/abs/html/testconstructs.html), [Positional Parameters](https://tldp.org/LDP/abs/html/othertypesv.html), [Loops and Branches](http://tldp.org/LDP/abs/html/loops.html) (հին դասի հղումը)
