@@ -1,8 +1,0 @@
-File properties
-File system logic
-Inode
-EFS
-File Holes
-File permissions, user/group/owner permissions
-Pipes
-Sockets

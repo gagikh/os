@@ -1,0 +1,34 @@
+# Day 8: run the template as a real systemd service.
+#
+#   g++ -std=c++17 -Wall -Wextra -O2 template.cpp -o day08
+#   sudo install -D day08 /opt/day08/day08
+#   printf 'interval_ms=2000\nmessage=working\n' | sudo tee /etc/day08.conf
+#   sudo cp day08.service /etc/systemd/system/
+#   sudo systemctl daemon-reload
+#   sudo systemctl enable --now day08
+#
+#   systemctl status day08         state, PID, last log lines
+#   journalctl -u day08 -f         its stderr, live
+#   sudo systemctl reload day08    sends SIGHUP (ExecReload below)
+#   sudo kill -USR1 $(systemctl show -p MainPID --value day08)
+#   sudo systemctl stop day08      sends SIGTERM, then SIGKILL after TimeoutStopSec
+#   sudo systemctl disable --now day08
+
+[Unit]
+Description=Day 8 demo service (signals, reload, clean stop)
+After=network.target
+
+[Service]
+ExecStart=/opt/day08/day08 --config /etc/day08.conf
+ExecReload=/bin/kill -HUP $MAINPID
+Restart=on-failure
+RestartSec=2
+TimeoutStopSec=10
+# Least privilege (Day 7): do not run as root
+DynamicUser=yes
+ProtectSystem=strict
+ProtectHome=yes
+NoNewPrivileges=yes
+
+[Install]
+WantedBy=multi-user.target
