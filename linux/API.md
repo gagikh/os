@@ -13,10 +13,11 @@ Signature-ները համապատասխանում են [Linux man pages](https:/
 | [1](day01/README.md#functions--ֆունկցիաներ) | `uname` · `strerror` · `SYS_CHECK` ([common/sys_check.h](common/sys_check.h)) |
 | [2](day02/README.md#functions--ֆունկցիաներ) | `main(argc, argv)` · `getopt_long` · `getenv` · `setenv` · `unsetenv` · `environ` · `exit` · `fprintf(stderr)` · `fflush` · `mkstemp` · `unlink` |
 | [3](day03/README.md#functions--ֆունկցիաներ) | `stat` · `lstat` · `S_ISREG`/`S_ISDIR`/`S_ISLNK`... · `mkdir` · `opendir` · `readdir` · `closedir` · `link` · `symlink` · `readlink` · `unlink` · `rmdir` · `truncate` · `rename` |
-| [4](day04/README.md#functions--ֆունկցիաներ) | `regcomp` · `regexec` · `regerror` · `regfree` · `getopt` |
+| [4](day04/README.md#functions--ֆունկցիաներ) | `pipe` · `read` · `write` · `close` · `dup2` · `fcntl` (`O_NONBLOCK`, `F_GETPIPE_SZ`, `F_SETPIPE_SZ`) · `mkfifo` · `popen` · `pclose` · `PIPE_BUF` · `regcomp` · `regexec` · `regerror` · `regfree` |
 | [5](day05/README.md#functions--ֆունկցիաներ) | `stat` · `getpwuid` · `getgrgid` · `snprintf` · `strtoul` |
 | [6](day06/README.md#functions--ֆունկցիաներ) | bash. `getopts` · `shift` · `local` · `return` · `exit` · `trap` · `shopt -s nullglob` · `declare -A` · `printf` |
 | [7](day07/README.md#functions--ֆունկցիաներ) | `getuid` · `geteuid` · `getgid` · `getegid` · `getgroups` · `access` · `setreuid` · `chown` · `chmod` · `umask` · `getpwnam` · `getgrgid` |
 | [8](day08/README.md#functions--ֆունկցիաներ) | `getpid` · `getppid` · `nice` · `pause` · `sigaction` · `kill` · `raise` · `sig_atomic_t` · `nanosleep` |
 | [9](day09/README.md#functions--ֆունկցիաներ) | `open` · `read` · `write` · `close` · `ioctl` · `major` · `minor` · `std::filesystem::directory_iterator` |
 | [10](day10/README.md#functions--ֆունկցիաներ) | `fork` · `execvp` · `_exit` · `waitpid` · `WEXITSTATUS` · `WTERMSIG` · `pipe` · `dup2` · `chdir` · `pthread_create` · `pthread_join` · `pthread_mutex_lock` · `std::thread` · `std::mutex` · `std::lock_guard` · `std::condition_variable` |
+| [11](day11/README.md#functions--ֆունկցիաներ) | `socket` · `setsockopt` · `bind` · `listen` · `accept` · `connect` · `send` · `recv` · `sendto` · `recvfrom` · `getpeername` · `htons` · `ntohs` · `inet_pton` · `inet_ntop` · `getaddrinfo` · `poll` |

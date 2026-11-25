@@ -125,6 +125,10 @@
 
 | Հրաման | Ինչ է անում | Օր |
 |---|---|---|
+| `ls -l /proc/PID/fd` | Process-ի fd-ները. pipe-երը երևում են որպես `pipe:[inode]` | 4 |
+| `getconf PIPE_BUF /`, `getconf PAGESIZE`, `cat /proc/sys/fs/pipe-max-size` | Pipe-ի սահմանները | 4 |
+| `echo "${PIPESTATUS[@]}"` | Pipeline-ի բոլոր հրամանների exit status-ները | 4 |
+| `mkfifo name` | Անվանված pipe (FIFO) | 4 |
 | `a \| b \| c` | Pipeline | 4 |
 | `tee f` | Պատճենել stdin-ը ֆայլ և stdout | 4 |
 | `xargs cmd`, `find -print0 \| xargs -0` | stdin-ի բառերը դարձնել argument-ներ | 4 |
@@ -258,3 +262,16 @@
 | `strace -f -e trace=clone,execve,wait4 cmd` | Ինչ process-ներ է ստեղծում ծրագիրը | 10 |
 | `g++ -pthread`, `g++ -fsanitize=thread` | Thread-երով ծրագիր, ThreadSanitizer | 10 |
 | `valgrind --tool=helgrind ./prog` | Race condition-ների որոնում | 10 |
+
+## Ցանց
+
+| Հրաման | Ինչ է անում | Օր |
+|---|---|---|
+| `ip -br addr`, `ip link`, `ip route` | Ինտերֆեյսներ, IP-ներ, gateway | 11 |
+| `ping -c 3 host` | Հասանելիություն | 11 |
+| `cat /etc/hosts /etc/resolv.conf`, `dig +short name` | DNS | 11 |
+| `ss -tlnp`, `ss -tnp`, `ss -tan` | Լսող port-եր, կապեր, վիճակներ (`TIME_WAIT`) | 11 |
+| `nc -l 5555`, `nc host 5555`, `nc -u` | TCP/UDP սերվեր և հաճախորդ terminal-ից | 11 |
+| `nmap -p 1-1024 host` | Բաց port-եր (միայն քո սարքերի վրա) | 11 |
+| `curl -v url` | HTTP հարցում | 11 |
+| `sudo tcpdump -i lo port 5555 -A` | Փաթեթների դիտում | 11 |

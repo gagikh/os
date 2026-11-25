@@ -66,11 +66,11 @@ Every template uses [`common/sys_check.h`](common/sys_check.h): wrap a system ca
 - VFS, sparse files, EOF
 
 ### [Day 4: Pipes, Filters and Regular Expressions](day04/README.md)
-- Pipes from the kernel's view; building pipelines step by step  
-- Filters: `sort`, `uniq`, `wc`, `cut`, `tr`, `tee`, `xargs`  
-- Regular expressions: anchors, brackets, POSIX classes, quantifiers, groups, back-references; BRE vs ERE  
-- `grep`, `find`, `sed`, `awk`  
-- POSIX regex in C: `regcomp`, `regexec`
+- What a pipe is: a kernel buffer with two file descriptors; `pipe()` in C  
+- Parent and child: closing unused ends, EOF, the read/write rules  
+- Buffer size (16 pages, `F_GETPIPE_SZ`/`F_SETPIPE_SZ`), backpressure, deadlock; `PIPE_BUF` atomicity  
+- `SIGPIPE`/`EPIPE`; how the shell builds `a | b` (`fork`, `dup2`, `exec`), `popen`; FIFOs  
+- Filters, regular expressions, `grep`, `find`, `sed`, `awk`
 
 ### [Day 5: Archiving and Compression](day05/README.md)
 - Archive vs compression; `tar` create, list, extract  
@@ -114,6 +114,8 @@ Every template uses [`common/sys_check.h`](common/sys_check.h): wrap a system ca
 - Race conditions, mutexes, deadlock, condition variables  
 - Processes vs threads
 
-### Day 11: Networking and Sockets *(in progress)*
-- IP addresses, interfaces, ports  
-- POSIX sockets: a simple chat; `nc`
+### [Day 11: Networking and Sockets](day11/README.md)
+- IP, interfaces, ports, TCP vs UDP, DNS; `ip`, `ss`, `ping`, `nc`, `nmap`  
+- Socket API: `socket`, `bind`, `listen`, `accept`, `connect`, `send`, `recv`  
+- Byte order (`htons`), TCP is a byte stream, partial `send`, `SIGPIPE`  
+- Many clients: `fork`, threads, `poll`/`epoll`
